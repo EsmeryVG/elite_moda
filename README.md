@@ -22,18 +22,18 @@ git clone https://github.com/EsmeryVG/elite_moda.git
 cd elite_moda
 
 2. Instalar dependencias
-Instala los paquetes de PHP y las librerías de Frontend:
 
-Bash
+Instala los paquetes de PHP y las librerías de Frontend:
 composer install
 npm install
+
 3. Configurar variables de entorno
 Copia el archivo de ejemplo y genera la clave de seguridad:
-
-Bash
 cp .env.example .env
 php artisan key:generate
+
 4. Configuración de Base de Datos
+
 Abre XAMPP e inicia Apache y MySQL.
 
 Entra a phpMyAdmin y crea una base de datos llamada elite_moda.
