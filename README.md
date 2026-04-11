@@ -48,18 +48,15 @@ DB_PASSWORD= (vacío por defecto en XAMPP)
 
 5. Migraciones
 Crea la estructura de tablas inicial:
-
-Bash
 php artisan migrate
+
 Ejecución del Proyecto
 Para trabajar, debes mantener dos terminales abiertas:
 
 Servidor Laravel:
-
-Bash
 php artisan serve
-Compilador Vite (Estilos y JS):
 
-Bash
+Compilador Vite (Estilos y JS):
 npm run dev
+
 Accede al sistema
