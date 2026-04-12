@@ -21,7 +21,7 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 ### 1. Clonar el Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/elite-moda.git
+git clone https://github.com/EsmeryVG/elite_moda.git
 cd elite-moda
 ```
 
