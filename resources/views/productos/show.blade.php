@@ -21,6 +21,11 @@
 
                 <div class="row g-3">
                     <div class="col-12">
+                     <label class="form-label text-muted">Código</label>
+                      <div class="form-control bg-light">{{ $producto->codigo }}</div>
+                 </div>
+
+                    <div class="col-12">
                         <label class="form-label text-muted">Nombre</label>
                         <div class="form-control bg-light">{{ $producto->nombre }}</div>
                     </div>
@@ -73,16 +78,18 @@
                     <table class="table table-hover align-middle">
                         <thead>
                             <tr>
+                                <th>Código</th>
                                 <th>Color</th>
                                 <th>Talla</th>
                                 <th>Material</th>
                                 <th>Precio</th>
-                                <th class="text-end">Acciones</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($producto->variantes as $variante)
                                 <tr>
+                                    <td>{{ $variante->codigo }}</td>
                                     <td class="fw-semibold">{{ $variante->color }}</td>
                                     <td>{{ $variante->talla }}</td>
                                     <td>{{ $variante->material }}</td>
@@ -103,9 +110,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        No hay variantes registradas para este producto.
-                                    </td>
+                                    <td colspan="6">No hay variantes</td>
                                 </tr>
                             @endforelse
                         </tbody>

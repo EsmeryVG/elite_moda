@@ -14,19 +14,47 @@ class ProductoController extends Controller
         return view('productos.index', compact('productos'));
     }
 
-    public function create()
-    {
-        $categorias = Categoria::where('estado', 1)->orderBy('nombre')->get();
-        return view('productos.create', compact('categorias'));
+  public function create()
+{
+    $categorias = Categoria::where('estado', 1)->orderBy('nombre')->get();
+
+    $marcas = Producto::whereNotNull('marca')
+        ->where('marca', '!=', '')
+        ->select('marca')
+        ->distinct()
+        ->orderBy('marca')
+        ->pluck('marca');
+
+    return view('productos.create', compact('categorias', 'marcas'));
+}
+
+  public function store(ProductoRequest $request)
+{
+    $data = $request->validated();
+
+    $data['nombre'] = trim($data['nombre']);
+    $data['descripcion'] = isset($data['descripcion']) ? trim($data['descripcion']) : null;
+
+    if (($data['marca'] ?? null) === '__otra__') {
+        $data['marca'] = !empty($data['nueva_marca'])
+            ? trim(ucwords(strtolower($data['nueva_marca'])))
+            : null;
+    } else {
+        $data['marca'] = !empty($data['marca'])
+            ? trim(ucwords(strtolower($data['marca'])))
+            : null;
     }
 
-    public function store(ProductoRequest $request)
-    {
-        Producto::create($request->validated());
+    unset($data['nueva_marca']);
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto creado correctamente.');
-    }
+    $producto = Producto::create($data);
+
+    $producto->codigo = 'PROD-' . str_pad($producto->id, 3, '0', STR_PAD_LEFT);
+    $producto->save();
+
+    return redirect()->route('productos.index')
+        ->with('success', 'Producto creado correctamente.');
+}
 
     public function show(Producto $producto)
     {
@@ -35,18 +63,43 @@ class ProductoController extends Controller
     }
 
     public function edit(Producto $producto)
-    {
-        $categorias = Categoria::where('estado', 1)->orderBy('nombre')->get();
-        return view('productos.edit', compact('producto', 'categorias'));
-    }
+{
+    $categorias = Categoria::where('estado', 1)->orderBy('nombre')->get();
+
+    $marcas = Producto::whereNotNull('marca')
+        ->where('marca', '!=', '')
+        ->select('marca')
+        ->distinct()
+        ->orderBy('marca')
+        ->pluck('marca');
+
+    return view('productos.edit', compact('producto', 'categorias', 'marcas'));
+}
 
     public function update(ProductoRequest $request, Producto $producto)
-    {
-        $producto->update($request->validated());
+{
+    $data = $request->validated();
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto actualizado correctamente.');
+    $data['nombre'] = trim($data['nombre']);
+    $data['descripcion'] = isset($data['descripcion']) ? trim($data['descripcion']) : null;
+
+    if (($data['marca'] ?? null) === '__otra__') {
+        $data['marca'] = !empty($data['nueva_marca'])
+            ? trim(ucwords(strtolower($data['nueva_marca'])))
+            : null;
+    } else {
+        $data['marca'] = !empty($data['marca'])
+            ? trim(ucwords(strtolower($data['marca'])))
+            : null;
     }
+
+    unset($data['nueva_marca']);
+
+    $producto->update($data);
+
+    return redirect()->route('productos.index')
+        ->with('success', 'Producto actualizado correctamente.');
+}
 
     public function destroy(Producto $producto)
     {

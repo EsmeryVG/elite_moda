@@ -88,20 +88,25 @@
             <i class="bi bi-bag-heart-fill me-2"></i> Elite Moda
         </div>
 
-        <nav class="nav flex-column">
+            <nav class="nav flex-column">
             <a href="{{ route('home') }}"
-               class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+            class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2-fill me-2"></i> Inicio
             </a>
 
             <a href="{{ route('categorias.index') }}"
-               class="nav-link {{ request()->is('categorias*') ? 'active' : '' }}">
+            class="nav-link {{ request()->is('categorias*') ? 'active' : '' }}">
                 <i class="bi bi-tags-fill me-2"></i> Categorías
             </a>
 
             <a href="{{ route('productos.index') }}"
-               class="nav-link {{ request()->is('productos*') || request()->is('variantes*') ? 'active' : '' }}">
+            class="nav-link {{ request()->is('productos*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam-fill me-2"></i> Productos
+            </a>
+
+            <a href="{{ route('variantes.index') }}"
+            class="nav-link {{ request()->is('variantes*') ? 'active' : '' }}">
+                <i class="bi bi-palette-fill me-2"></i> Variantes
             </a>
         </nav>
     </aside>

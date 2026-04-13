@@ -46,14 +46,31 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="marca" class="form-label">Marca</label>
-                        <input type="text"
-                               name="marca"
-                               id="marca"
-                               class="form-control"
-                               value="{{ old('marca') }}"
-                               placeholder="Ej: Zara">
-                    </div>
+    <label for="marca" class="form-label">Marca</label>
+    <select name="marca" id="marca" class="form-select" onchange="toggleNuevaMarca()">
+        <option value="">Seleccione una marca</option>
+
+        @foreach($marcas as $marca)
+            <option value="{{ $marca }}" {{ old('marca') == $marca ? 'selected' : '' }}>
+                {{ $marca }}
+            </option>
+        @endforeach
+
+        <option value="__otra__" {{ old('marca') == '__otra__' ? 'selected' : '' }}>
+            Otra...
+        </option>
+    </select>
+</div>
+
+<div class="mb-3" id="contenedorNuevaMarca" style="display: none;">
+    <label for="nueva_marca" class="form-label">Nueva marca</label>
+    <input type="text"
+           name="nueva_marca"
+           id="nueva_marca"
+           class="form-control"
+           value="{{ old('nueva_marca') }}"
+           placeholder="Escriba la nueva marca">
+</div>
 
                     <div class="mb-4">
                         <label for="categoria_id" class="form-label">Categoría</label>
@@ -82,3 +99,20 @@
     </div>
 </div>
 @endsection
+
+<script>
+    function toggleNuevaMarca() {
+        const selectMarca = document.getElementById('marca');
+        const contenedorNuevaMarca = document.getElementById('contenedorNuevaMarca');
+
+        if (selectMarca.value === '__otra__') {
+            contenedorNuevaMarca.style.display = 'block';
+        } else {
+            contenedorNuevaMarca.style.display = 'none';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleNuevaMarca();
+    });
+</script>

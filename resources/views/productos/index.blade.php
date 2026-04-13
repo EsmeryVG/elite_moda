@@ -26,7 +26,7 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Código</th>
                         <th>Nombre</th>
                         <th>Marca</th>
                         <th>Categoría</th>
@@ -36,7 +36,7 @@
                 <tbody>
                     @forelse($productos as $producto)
                         <tr>
-                            <td>{{ $producto->id }}</td>
+                            <td>{{ $producto->codigo }}</td>
                             <td class="fw-semibold">{{ $producto->nombre }}</td>
                             <td>{{ $producto->marca }}</td>
                             <td>

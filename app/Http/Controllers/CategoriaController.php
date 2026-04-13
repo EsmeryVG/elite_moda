@@ -30,7 +30,14 @@ class CategoriaController extends Controller
      */
  public function store(CategoriaRequest $request)
 {
-    Categoria::create($request->validated());
+    $data = $request->validated();
+    $data['nombre'] = trim($data['nombre']);
+    $data['descripcion'] = isset($data['descripcion']) ? trim($data['descripcion']) : null;
+
+    $categoria = Categoria::create($data);
+
+    $categoria->codigo = 'CAT-' . str_pad($categoria->id, 3, '0', STR_PAD_LEFT);
+    $categoria->save();
 
     return redirect()->route('categorias.index')
         ->with('success', 'Categoría creada correctamente.');
