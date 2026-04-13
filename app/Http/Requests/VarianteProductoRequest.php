@@ -20,14 +20,21 @@ class VarianteProductoRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+   public function rules(): array
     {
         return [
             'producto_id' => 'required|exists:productos,id',
             'descripcion' => 'nullable|string',
-            'color' => 'required|string|max:255',
-            'talla' => 'required|string|max:255',
-            'material' => 'required|string|max:255',
+
+            'color' => 'nullable|string|max:100',
+            'nuevo_color' => 'nullable|string|max:100',
+
+            'talla' => 'nullable|string|max:50',
+            'nueva_talla' => 'nullable|string|max:50',
+
+            'material' => 'nullable|string|max:100',
+            'nuevo_material' => 'nullable|string|max:100',
+
             'precio_venta' => 'required|numeric|min:0',
         ];
     }

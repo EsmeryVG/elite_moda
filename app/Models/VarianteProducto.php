@@ -12,13 +12,14 @@ class VarianteProducto extends Model
     protected $table = 'variante_productos';
 
     protected $fillable = [
-        'producto_id',
-        'descripcion',
-        'color',
-        'talla',
-        'material',
-        'precio_venta',
-    ];
+    'codigo',
+    'producto_id',
+    'descripcion',
+    'color',
+    'talla',
+    'material',
+    'precio_venta',
+];
 
     public function producto()
     {

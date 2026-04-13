@@ -26,6 +26,7 @@ class ProductoRequest extends FormRequest
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'marca' => 'nullable|string|max:255',
+            'nueva_marca' => 'nullable|string|max:255',
             'categoria_id' => 'required|exists:categorias,id',
         ];
     }
