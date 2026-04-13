@@ -1,80 +1,125 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos</title>
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Bootswatch + Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/materia/bootstrap.min.css" rel="stylesheet">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fb;
+        }
 
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+        .sidebar {
+            width: 260px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1f3c88 0%, #0f2557 100%);
+        }
+
+        .sidebar .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.88);
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 0.35rem;
+            transition: 0.2s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+
+        .content-wrapper {
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #ffffff;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .page-card {
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(31, 60, 136, 0.08);
+        }
+
+        .table thead th {
+            border-bottom-width: 1px;
+            white-space: nowrap;
+        }
+
+        .btn {
+            border-radius: 10px;
+        }
+
+        .form-control,
+        .form-select,
+        .form-control:focus,
+        .form-select:focus {
+            border-radius: 10px;
+            box-shadow: none;
+        }
+
+        .badge-soft {
+            background-color: #eef3ff;
+            color: #1f3c88;
+            border: 1px solid #dce6ff;
+        }
+    </style>
 </head>
 <body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<div class="d-flex">
+    <aside class="sidebar text-white p-3 p-lg-4">
+        <div class="brand mb-4">
+            <i class="bi bi-bag-heart-fill me-2"></i> Elite Moda
+        </div>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+        <nav class="nav flex-column">
+            <a href="{{ route('home') }}"
+               class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2-fill me-2"></i> Inicio
+            </a>
 
-                    </ul>
+            <a href="{{ route('categorias.index') }}"
+               class="nav-link {{ request()->is('categorias*') ? 'active' : '' }}">
+                <i class="bi bi-tags-fill me-2"></i> Categorías
+            </a>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
+            <a href="{{ route('productos.index') }}"
+               class="nav-link {{ request()->is('productos*') || request()->is('variantes*') ? 'active' : '' }}">
+                <i class="bi bi-box-seam-fill me-2"></i> Productos
+            </a>
         </nav>
+    </aside>
 
-        <main class="py-4">
+    <main class="flex-grow-1 content-wrapper">
+        <div class="topbar px-4 py-3 d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">@yield('page_title', 'Panel de gestión')</h4>
+                <small class="text-muted">@yield('page_subtitle', 'Administra tu catálogo de forma clara y rápida')</small>
+            </div>
+        </div>
+
+        <div class="p-4">
             @yield('content')
-        </main>
-    </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
