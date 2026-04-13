@@ -73,11 +73,16 @@ class CategoriaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Categoria $categoria)
-    {
-          $categoria->delete();
-
+ public function destroy(Categoria $categoria)
+{
+    if ($categoria->productos()->exists()) {
         return redirect()->route('categorias.index')
-            ->with('success', 'Categoría eliminada correctamente.');
+            ->with('error', 'No puedes eliminar esta categoría porque tiene productos asociados.');
     }
+
+    $categoria->delete();
+
+    return redirect()->route('categorias.index')
+        ->with('success', 'Categoría eliminada correctamente.');
+}
 }
