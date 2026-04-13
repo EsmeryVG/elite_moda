@@ -102,10 +102,15 @@ class ProductoController extends Controller
 }
 
     public function destroy(Producto $producto)
-    {
-        $producto->delete();
-
+{
+    if ($producto->variantes()->exists()) {
         return redirect()->route('productos.index')
-            ->with('success', 'Producto eliminado correctamente.');
+            ->with('error', 'No puedes eliminar este producto porque tiene variantes asociadas.');
     }
+
+    $producto->delete();
+
+    return redirect()->route('productos.index')
+        ->with('success', 'Producto eliminado correctamente.');
+}
 }
