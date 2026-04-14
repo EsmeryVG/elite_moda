@@ -1,4 +1,5 @@
 # Elite Moda
+### Esmery Vásquez, Hugo Concepción y Colsen Charité
 
 Sistema web desarrollado con **Laravel** y **Vite**, diseñado para la gestión de una tienda de moda.
 
