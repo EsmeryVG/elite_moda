@@ -15,8 +15,8 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label text-muted">ID</label>
-                        <div class="form-control bg-light">{{ $categoria->id }}</div>
+                        <label class="form-label text-muted">Código</label>
+                        <div class="form-control bg-light">{{ $categoria->codigo }}</div>
                     </div>
 
                     <div class="col-md-6">
