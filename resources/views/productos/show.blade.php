@@ -75,47 +75,62 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Color</th>
-                                <th>Talla</th>
-                                <th>Material</th>
-                                <th>Precio</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($producto->variantes as $variante)
-                                <tr>
-                                    <td>{{ $variante->codigo }}</td>
-                                    <td class="fw-semibold">{{ $variante->color }}</td>
-                                    <td>{{ $variante->talla }}</td>
-                                    <td>{{ $variante->material }}</td>
-                                    <td>RD$ {{ number_format($variante->precio_venta, 2) }}</td>
-                                    <td class="text-end">
-                                        <a href="{{ route('variantes.edit', $variante) }}" class="btn btn-outline-warning btn-sm">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Combinación</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($producto->variantes as $variante)
+                <tr>
+                    <td>{{ $variante->codigo }}</td>
 
-                                        <form action="{{ route('variantes.destroy', $variante) }}" method="POST" class="d-inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Eliminar esta variante?')">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6">No hay variantes</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                    <td>
+                        @forelse($variante->valores as $valor)
+                            <span class="badge bg-light text-dark border me-1 mb-1">
+                                {{ $valor->atributo?->nombre }}: {{ $valor->valor }}
+                            </span>
+                        @empty
+                            <span class="text-muted">Sin atributos</span>
+                        @endforelse
+                    </td>
+
+                    <td>{{ $variante->descripcion ?: 'Sin descripción' }}</td>
+
+                    <td>RD$ {{ number_format($variante->precio_venta, 2) }}</td>
+
+                    <td class="text-end">
+                        <a href="{{ route('variantes.edit', $variante) }}" class="btn btn-outline-warning btn-sm" title="Editar variante">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <form action="{{ route('variantes.destroy', $variante) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-sm"
+                                    title="Eliminar variante"
+                                    onclick="return confirm('¿Eliminar esta variante?')">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        No hay variantes registradas para este producto.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
             </div>
         </div>
     </div>

@@ -12,17 +12,27 @@ class VarianteProducto extends Model
     protected $table = 'variante_productos';
 
     protected $fillable = [
-    'codigo',
-    'producto_id',
-    'descripcion',
-    'color',
-    'talla',
-    'material',
-    'precio_venta',
-];
+        'codigo',
+        'producto_id',
+        'descripcion',
+        'color',
+        'talla',
+        'material',
+        'precio_venta',
+    ];
 
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'producto_id');
+    }
+
+    public function valores()
+    {
+        return $this->belongsToMany(
+            AtributoValor::class,
+            'variante_valores',
+            'variante_producto_id',
+            'atributo_valor_id'
+        );
     }
 }
