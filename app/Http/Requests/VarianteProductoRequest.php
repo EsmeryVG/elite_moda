@@ -2,40 +2,35 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VarianteProductoRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
-   public function rules(): array
+    public function rules(): array
     {
         return [
             'producto_id' => 'required|exists:productos,id',
             'descripcion' => 'nullable|string',
-
-            'color' => 'nullable|string|max:100',
-            'nuevo_color' => 'nullable|string|max:100',
-
-            'talla' => 'nullable|string|max:50',
-            'nueva_talla' => 'nullable|string|max:50',
-
-            'material' => 'nullable|string|max:100',
-            'nuevo_material' => 'nullable|string|max:100',
-
+            'atributo_valor_ids' => 'required|array|min:1',
+            'atributo_valor_ids.*' => 'required|exists:atributo_valores,id',
             'precio_venta' => 'required|numeric|min:0',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'atributo_valor_ids.required' => 'Debe seleccionar al menos un atributo con su valor.',
+            'atributo_valor_ids.array' => 'Los valores de atributos deben enviarse correctamente.',
+            'atributo_valor_ids.min' => 'Debe seleccionar al menos un atributo con su valor.',
+            'atributo_valor_ids.*.exists' => 'Uno de los valores seleccionados no existe.',
+            'precio_venta.required' => 'El precio de venta es obligatorio.',
+            'precio_venta.numeric' => 'El precio de venta debe ser numérico.',
         ];
     }
 }

@@ -28,4 +28,13 @@ class Producto extends Model
     {
         return $this->hasMany(VarianteProducto::class, 'producto_id');
     }
+    public function atributos()
+    {
+        return $this->belongsToMany(
+            Atributo::class,
+            'producto_atributos',
+            'producto_id',
+            'atributo_id'
+        );
+    }
 }

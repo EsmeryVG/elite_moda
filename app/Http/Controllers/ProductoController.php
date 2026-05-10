@@ -56,11 +56,15 @@ class ProductoController extends Controller
         ->with('success', 'Producto creado correctamente.');
 }
 
-    public function show(Producto $producto)
-    {
-        $producto->load('categoria');
-        return view('productos.show', compact('producto'));
-    }
+public function show(Producto $producto)
+{
+    $producto->load([
+        'categoria',
+        'variantes.valores.atributo'
+    ]);
+
+    return view('productos.show', compact('producto'));
+}
 
     public function edit(Producto $producto)
 {
