@@ -33,7 +33,6 @@ return new class extends Migration
             $table->foreignId('variante_producto_id')->constrained('variante_productos');
             $table->integer('cantidad');
             $table->decimal('precio_unitario', 10, 2);       // Precio al momento de vender
-            $table->decimal('costo_unitario', 10, 2);        // Costo al momento (para margen)
             $table->decimal('descuento_aplicado', 10, 2)->default(0);
             $table->decimal('subtotal', 12, 2);
             $table->boolean('itbis_aplicado')->default(true);
