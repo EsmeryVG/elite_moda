@@ -14,9 +14,8 @@ return new class extends Migration
             $table->string('codigo')->unique()->nullable();
             $table->string('codigo_barras', 100)->unique()->nullable();
             $table->string('descripcion')->nullable();
-            $table->decimal('costo', 10, 2);
+            $table->decimal('costo', 10, 2)->nullable();
             $table->decimal('precio_venta', 10, 2);
-            $table->decimal('descuento_maximo', 5, 2)->default(0);   // % máximo permitido
             $table->boolean('es_default')->default(false);            // true = variante de producto simple
             $table->boolean('estado')->default(true);
             $table->timestamps();

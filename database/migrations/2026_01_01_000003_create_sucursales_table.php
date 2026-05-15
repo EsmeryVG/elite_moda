@@ -8,12 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('almacenes', function (Blueprint $table) {
+        Schema::create('sucursales', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
+            $table->string('codigo')->unique()->nullable();
             $table->string('nombre');
-            $table->string('tipo')->default('principal');  // principal, secundario
             $table->string('direccion')->nullable();
+            $table->string('telefono')->nullable();
+            $table->boolean('es_principal')->default(false); // Solo una puede ser principal
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
@@ -21,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('almacenes');
+        Schema::dropIfExists('sucursales');
     }
 };

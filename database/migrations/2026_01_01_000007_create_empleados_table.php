@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('empleados', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
             $table->string('codigo')->unique()->nullable();
             $table->string('cedula')->unique();
             $table->string('nombre');
