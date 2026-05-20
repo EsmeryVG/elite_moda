@@ -26,4 +26,10 @@ namespace App\Models;
         {
             return $this->hasMany(Producto::class, 'categoria_id');
         }
+
+            public function scopeActivas($query)
+        {
+            return $query->where('estado', true);
+        }
+
     }

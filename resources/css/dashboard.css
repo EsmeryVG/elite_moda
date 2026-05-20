@@ -76,7 +76,7 @@ body {
 ══════════════════════════════════════════════════════ */
 .em-sidebar {
     width: var(--sidebar-w);
-    min-height: 100vh;
+    height: 100vh;
     background: var(--sidebar-bg);
     border-right: none;
     display: flex;
@@ -86,8 +86,9 @@ body {
     left: 0;
     z-index: 200;
     transition: width var(--transition), transform var(--transition);
-    overflow: hidden;
-    box-shadow: 4px 0 16px rgba(0,0,0,0.08);
+    overflow-x: hidden;      /* ← solo ocultar desbordamiento horizontal */
+    overflow-y: visible;     /* ← permitir que el hijo haga scroll */
+    box-shadow: 4px 0px 16px rgba(0,0,0,0.08);
 }
 
 .em-sidebar.collapsed {
@@ -144,10 +145,11 @@ body {
 }
 
 .em-sidebar__nav {
-    flex: 1;
+    flex: 1 1 0;
     padding: 16px 0;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 0;
 }
 
 .em-sidebar__nav::-webkit-scrollbar { width: 3px; }
@@ -1002,6 +1004,18 @@ body {
     color: var(--text-primary);
 }
 
+/* Asegurar que el contenido principal ocupe todo el ancho */
+.em-main > .card.page-card,
+.em-main > .row,
+.em-main > .container-fluid {
+    width: 100%;
+}
+
+.em-main {
+    width: 100%;
+    max-width: 100%;
+}
+
 /* Reescribir Bootstrap para contexto oscuro */
 .table { color: var(--text-secondary); border-color: var(--border); }
 .table thead th { border-color: var(--border); color: var(--text-muted); }
@@ -1049,4 +1063,95 @@ body {
     background: rgba(211,47,47,0.08);
     border-color: rgba(211,47,47,0.2);
     color: #c62828;
+}
+
+/* ══════════════════════════════════════════════════════
+   BOOTSTRAP OVERRIDES — BOTONES
+══════════════════════════════════════════════════════ */
+.btn.btn-primary,
+.btn.btn-primary:focus {
+    background-color: #1f2125 !important;
+    border-color: #1f2125 !important;
+    color: #ffffff !important;
+    font-family: var(--font-body);
+}
+
+.btn.btn-primary:hover {
+    background-color: #2a2d32 !important;
+    border-color: #2a2d32 !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    color: #ffffff !important;
+}
+
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    background-color: #111316 !important;
+    border-color: #111316 !important;
+}
+
+.btn.btn-secondary,
+.btn.btn-secondary:focus {
+    background-color: var(--bg-elevated) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
+}
+
+.btn.btn-secondary:hover {
+    background-color: #e2e5e9 !important;
+    color: var(--text-primary) !important;
+}
+
+.btn.btn-outline-warning {
+    color: #b45309 !important;
+    border-color: #b45309 !important;
+    background: transparent !important;
+}
+
+.btn.btn-outline-warning:hover {
+    background-color: rgba(180, 83, 9, 0.08) !important;
+    color: #b45309 !important;
+}
+
+.btn.btn-outline-danger {
+    color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    background: transparent !important;
+}
+
+.btn.btn-outline-danger:hover {
+    background-color: var(--accent-soft) !important;
+    color: var(--accent) !important;
+}
+
+.btn.btn-outline-success {
+    color: #2e7d32 !important;
+    border-color: #2e7d32 !important;
+    background: transparent !important;
+}
+
+.btn.btn-outline-success:hover {
+    background-color: rgba(46, 125, 50, 0.08) !important;
+    color: #2e7d32 !important;
+}
+
+.btn.btn-outline-info {
+    color: #0369a1 !important;
+    border-color: #0369a1 !important;
+    background: transparent !important;
+}
+
+.btn.btn-outline-info:hover {
+    background-color: rgba(3, 105, 161, 0.08) !important;
+    color: #0369a1 !important;
+}
+
+#emSidebar {
+    height: 100vh !important;
+    overflow-x: hidden !important;
+}
+
+#emSidebar .em-sidebar__nav {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Http\Requests\CategoriaRequest;
 use App\Models\Categoria;
 
@@ -11,14 +13,34 @@ use App\Models\Categoria;
         /**
          * Display a listing of the resource.
          */
-      public function index()
-        {
-             $categorias = Categoria::orderBy('estado', 'desc')
-                            ->orderBy('nombre', 'asc')
-                            ->get();
+    public function index(Request $request)
+{
+    $query = Categoria::orderBy('estado', 'desc')
+                      ->orderBy('nombre', 'asc');
 
-             return view('categorias.index', compact('categorias'));
+    // Filtro por estado
+    if ($request->filled('estado')) {
+        if ($request->estado === 'activas') {
+            $query->where('estado', true);
+        } elseif ($request->estado === 'inactivas') {
+            $query->where('estado', false);
         }
+    }
+
+    // Filtro por búsqueda
+    if ($request->filled('buscar')) {
+        $buscar = $request->buscar;
+        $query->where(function ($q) use ($buscar) {
+            $q->where('nombre', 'like', "%{$buscar}%")
+              ->orWhere('codigo', 'like', "%{$buscar}%")
+              ->orWhere('descripcion', 'like', "%{$buscar}%");
+        });
+    }
+
+    $categorias = $query->paginate(8)->withQueryString();
+
+    return view('categorias.index', compact('categorias'));
+}
 
         /**
          * Show the form for creating a new resource.
