@@ -16,6 +16,8 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::resource('categorias', CategoriaController::class);
+Route::patch('categorias/{categoria}/reactivar', [CategoriaController::class, 'reactivar'])
+    ->name('categorias.reactivar');
 Route::resource('productos', ProductoController::class);
 Route::get('productos/{producto}/variantes/create', [VarianteProductoController::class, 'create'])->name('variantes.create');
 Route::get('/variantes', [App\Http\Controllers\VarianteProductoController::class, 'index'])

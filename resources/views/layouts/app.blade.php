@@ -3,128 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Productos</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Bootswatch + Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/materia/bootstrap.min.css" rel="stylesheet">
+    <title>@yield('page_title', 'Dashboard') — Elite Moda</title>
 
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    {{-- Bootstrap 5 --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #f5f7fb;
-        }
+    {{-- Bootstrap Icons --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-        .sidebar {
-            width: 260px;
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1f3c88 0%, #0f2557 100%);
-        }
+    {{-- Elite Moda Dashboard CSS --}}
+    @vite(['resources/css/dashboard.css', 'resources/js/dashboard.js'])
 
-        .sidebar .brand {
-            font-weight: 700;
-            font-size: 1.2rem;
-            letter-spacing: 0.4px;
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.88);
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            margin-bottom: 0.35rem;
-            transition: 0.2s ease;
-        }
-
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.14);
-            color: #fff;
-        }
-
-        .content-wrapper {
-            min-height: 100vh;
-        }
-
-        .topbar {
-            background: #ffffff;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .page-card {
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 10px 30px rgba(31, 60, 136, 0.08);
-        }
-
-        .table thead th {
-            border-bottom-width: 1px;
-            white-space: nowrap;
-        }
-
-        .btn {
-            border-radius: 10px;
-        }
-
-        .form-control,
-        .form-select,
-        .form-control:focus,
-        .form-select:focus {
-            border-radius: 10px;
-            box-shadow: none;
-        }
-
-        .badge-soft {
-            background-color: #eef3ff;
-            color: #1f3c88;
-            border: 1px solid #dce6ff;
-        }
-    </style>
+    @stack('styles')
 </head>
 <body>
-<div class="d-flex">
-    <aside class="sidebar text-white p-3 p-lg-4">
-        <div class="brand mb-4">
-            <i class="bi bi-bag-heart-fill me-2"></i> Elite Moda
-        </div>
 
-            <nav class="nav flex-column">
-            <a href="{{ route('home') }}"
-            class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
-                <i class="bi bi-grid-1x2-fill me-2"></i> Inicio
-            </a>
+{{-- ── Mobile overlay ────────────────────────────────── --}}
+<div class="em-overlay" id="emOverlay"></div>
 
-            <a href="{{ route('categorias.index') }}"
-            class="nav-link {{ request()->is('categorias*') ? 'active' : '' }}">
-                <i class="bi bi-tags-fill me-2"></i> Categorías
-            </a>
+{{-- ── Layout principal ───────────────────────────────── --}}
+<div class="em-layout" id="emLayout">
 
-            <a href="{{ route('productos.index') }}"
-            class="nav-link {{ request()->is('productos*') ? 'active' : '' }}">
-                <i class="bi bi-box-seam-fill me-2"></i> Productos
-            </a>
+    {{-- Sidebar --}}
+    @include('layouts.sidebar')
 
-            <a href="{{ route('variantes.index') }}"
-            class="nav-link {{ request()->is('variantes*') ? 'active' : '' }}">
-                <i class="bi bi-palette-fill me-2"></i> Variantes
-            </a>
-        </nav>
-    </aside>
+    {{-- Main wrapper --}}
+    <div class="em-main-wrapper">
 
-    <main class="flex-grow-1 content-wrapper">
-        <div class="topbar px-4 py-3 d-flex justify-content-between align-items-center">
-            <div>
-                <h4 class="mb-0">@yield('page_title', 'Panel de gestión')</h4>
-                <small class="text-muted">@yield('page_subtitle', 'Administra tu catálogo de forma clara y rápida')</small>
+        {{-- Navbar --}}
+        @include('layouts.navbar')
+
+        {{-- Contenido principal --}}
+        <main class="em-main">
+
+            {{-- Page header --}}
+            @hasSection('page_title')
+            <div class="em-page-header">
+                <h1 class="em-page-title">@yield('page_title')</h1>
+                @hasSection('page_subtitle')
+                    <p class="em-page-subtitle">@yield('page_subtitle')</p>
+                @endif
             </div>
-        </div>
+            @endif
 
-        <div class="p-4">
+            {{-- Flash messages --}}
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible rounded-3 mb-4" role="alert">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill"></i>
+                        {{ session('success') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-em-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-danger alert-dismissible rounded-3 mb-4" role="alert">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ session('error') }}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-em-dismiss="alert"></button>
+                </div>
+            @endif
+
+            @if(session('warning'))
+                <div class="alert alert-warning alert-dismissible rounded-3 mb-4" role="alert">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        {{ session('warning') }}
+                    </div>
+                    <button type="button" class="btn-close" data-em-dismiss="alert"></button>
+                </div>
+            @endif
+
+            {{-- Errores de validación globales (si los hay) --}}
+            @if($errors->any())
+                <div class="alert alert-danger rounded-3 mb-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-x-circle-fill"></i>
+                        <strong>Por favor corrige los siguientes errores:</strong>
+                    </div>
+                    <ul class="mb-0 ps-3">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{-- ── Contenido de cada vista ───────────────── --}}
             @yield('content')
-        </div>
-    </main>
-</div>
 
+        </main>
+
+    </div>{{-- /em-main-wrapper --}}
+
+</div>{{-- /em-layout --}}
+
+{{-- Bootstrap 5 JS --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- Elite Moda Dashboard JS --}}
+@vite(['resources/css/dashboard.css', 'resources/js/dashboard.js'])
+
+@stack('scripts')
+
 </body>
 </html>

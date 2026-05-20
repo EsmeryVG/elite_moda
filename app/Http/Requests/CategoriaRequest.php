@@ -22,10 +22,28 @@ class CategoriaRequest extends FormRequest
      */
     public function rules(): array
     {
+        // En edición ignoramos el registro actual para el unique
+        $categoriaId = $this->route('categoria')?->id;
+
         return [
-            'nombre' => 'required|string|max:255',
+            'nombre' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('categorias', 'nombre')
+                    ->ignore($categoriaId),
+            ],
             'descripcion' => 'nullable|string',
-            'estado' => 'required|boolean',
+            'estado'      => 'nullable|boolean',
+        ];
+    }
+
+        public function messages(): array
+    {
+        return [
+            'nombre.required' => 'El nombre de la categoría es obligatorio.',
+            'nombre.unique'   => 'Ya existe una categoría con ese nombre.',
+            'nombre.max'      => 'El nombre no puede superar los 255 caracteres.',
         ];
     }
 }
