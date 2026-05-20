@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('cajas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
             $table->string('nombre');                               // Caja 1, Caja 2
             $table->decimal('monto_apertura', 12, 2)->default(0);
             $table->datetime('fecha_apertura')->nullable();
@@ -25,6 +26,7 @@ return new class extends Migration
 
         Schema::create('caja_chica', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->nullOnDelete();
             $table->string('nombre')->default('Caja Chica');
             $table->decimal('monto_asignado', 12, 2)->default(0);
             $table->decimal('monto_disponible', 12, 2)->default(0);
