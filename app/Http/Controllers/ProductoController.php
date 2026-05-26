@@ -158,14 +158,18 @@ public function edit(Producto $producto)
     public function desactivar(Producto $producto)
     {
         $producto->update(['estado' => false]);
+        $producto->variantes()->update(['estado' => false]);
+
         return redirect()->route('productos.index')
-            ->with('success', 'Producto desactivado correctamente.');
+            ->with('success', 'Producto y sus variantes desactivados correctamente.');
     }
 
     public function reactivar(Producto $producto)
     {
         $producto->update(['estado' => true]);
+        $producto->variantes()->update(['estado' => true]);
+
         return redirect()->route('productos.index')
-            ->with('success', 'Producto reactivado correctamente.');
+            ->with('success', 'Producto y sus variantes reactivados correctamente.');
     }
 }

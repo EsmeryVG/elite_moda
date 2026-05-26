@@ -207,11 +207,12 @@
                                              id="checks-edit-{{ $atributo->id }}">
                                             @foreach($atributo->valores as $valor)
                                                 <div class="form-check">
-                                                    <input class="form-check-input"
-                                                           type="checkbox"
-                                                           id="eval_{{ $valor->id }}"
-                                                           value="{{ $valor->id }}"
-                                                           data-valor="{{ $valor->valor }}">
+                                                   <input class="form-check-input"
+                                                    type="checkbox"
+                                                    id="eval_{{ $valor->id }}"
+                                                    name="atributo_valor_ids[]"
+                                                    value="{{ $valor->id }}"
+                                                    data-valor="{{ $valor->valor }}">
                                                     <label class="form-check-label"
                                                            for="eval_{{ $valor->id }}">
                                                         {{ $valor->valor }}
