@@ -10,6 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 class ProductoVarianteService
 {
+    // ── Crear variante individual (edición posterior) ──
+
     public function crearVarianteDinamica(Producto $producto, array $data): VarianteProducto
     {
         return DB::transaction(function () use ($producto, $data) {
@@ -17,7 +19,7 @@ class ProductoVarianteService
 
             if (count($atributoValorIds) === 0) {
                 throw ValidationException::withMessages([
-                    'atributo_valor_ids' => 'Debe seleccionar al menos un valor de atributo para crear la variante.',
+                    'atributo_valor_ids' => 'Debe seleccionar al menos un valor de atributo.',
                 ]);
             }
 
@@ -26,60 +28,124 @@ class ProductoVarianteService
             $this->validarCombinacionNoDuplicada($producto, $atributoValorIds);
 
             $variante = VarianteProducto::create([
-                'producto_id' => $producto->id,
-                'descripcion' => $data['descripcion'] ?? null,
+                'producto_id'  => $producto->id,
+                'descripcion'  => $data['descripcion'] ?? null,
+                'costo'        => $data['costo'] ?? null,
                 'precio_venta' => $data['precio_venta'],
+                'es_default'   => false,
+                'estado'       => true,
             ]);
 
             $variante->codigo = 'VAR-' . str_pad($variante->id, 3, '0', STR_PAD_LEFT);
             $variante->save();
 
             $variante->valores()->sync($atributoValorIds);
-
-            $atributoIds = AtributoValor::whereIn('id', $atributoValorIds)
-                ->pluck('atributo_id')
-                ->unique()
-                ->values()
-                ->toArray();
-
-            $producto->atributos()->syncWithoutDetaching($atributoIds);
+            $this->sincronizarAtributosProducto($producto, $atributoValorIds);
 
             return $variante;
         });
     }
+
+    // ── Crear producto simple (variante default) ────────
+
+    public function crearVarianteDefault(Producto $producto, array $data): VarianteProducto
+    {
+        return DB::transaction(function () use ($producto, $data) {
+            $variante = VarianteProducto::create([
+                'producto_id'  => $producto->id,
+                'descripcion'  => $producto->nombre,
+                'costo'        => $data['costo'] ?? null,
+                'precio_venta' => $data['precio_venta'],
+                'es_default'   => true,
+                'estado'       => true,
+            ]);
+
+            $variante->codigo = 'VAR-' . str_pad($variante->id, 3, '0', STR_PAD_LEFT);
+            $variante->save();
+
+            return $variante;
+        });
+    }
+
+    // ── Crear múltiples variantes desde grilla ──────────
+
+    public function crearVariantesMasivo(Producto $producto, array $variantes): void
+    {
+        DB::transaction(function () use ($producto, $variantes) {
+            foreach ($variantes as $datos) {
+                $atributoValorIds = $this->normalizarIds($datos['atributo_valor_ids'] ?? []);
+
+                if (count($atributoValorIds) === 0) continue;
+
+                $this->validarValoresExistentes($atributoValorIds);
+                $this->validarAtributosNoRepetidos($atributoValorIds);
+                $this->validarCombinacionNoDuplicada($producto, $atributoValorIds);
+
+                $variante = VarianteProducto::create([
+                    'producto_id'      => $producto->id,
+                    'descripcion'      => $datos['descripcion'] ?? null,
+                    'costo'            => $datos['costo'] ?? null,
+                    'precio_venta'     => $datos['precio_venta'],
+                    'codigo_barras'    => !empty($datos['codigo_barras']) ? $datos['codigo_barras'] : null,
+                    'es_default'       => false,
+                    'estado'           => true,
+                ]);
+
+                $variante->codigo = 'VAR-' . str_pad($variante->id, 3, '0', STR_PAD_LEFT);
+                $variante->save();
+
+                $variante->valores()->sync($atributoValorIds);
+                $this->sincronizarAtributosProducto($producto, $atributoValorIds);
+            }
+        });
+    }
+
+    // ── Actualizar variante individual ──────────────────
 
     public function actualizarVarianteDinamica(VarianteProducto $variante, array $data): VarianteProducto
     {
         return DB::transaction(function () use ($variante, $data) {
             $atributoValorIds = $this->normalizarIds($data['atributo_valor_ids'] ?? []);
 
-            if (count($atributoValorIds) === 0) {
+            if (!$variante->es_default && count($atributoValorIds) === 0) {
                 throw ValidationException::withMessages([
-                    'atributo_valor_ids' => 'Debe seleccionar al menos un valor de atributo para actualizar la variante.',
+                    'atributo_valor_ids' => 'Debe seleccionar al menos un valor de atributo.',
                 ]);
             }
 
-            $this->validarValoresExistentes($atributoValorIds);
-            $this->validarAtributosNoRepetidos($atributoValorIds);
-            $this->validarCombinacionNoDuplicada($variante->producto, $atributoValorIds, $variante->id);
+            if (!$variante->es_default) {
+                $this->validarValoresExistentes($atributoValorIds);
+                $this->validarAtributosNoRepetidos($atributoValorIds);
+                $this->validarCombinacionNoDuplicada($variante->producto, $atributoValorIds, $variante->id);
+            }
 
             $variante->update([
-                'descripcion' => $data['descripcion'] ?? null,
-                'precio_venta' => $data['precio_venta'],
+                'descripcion'      => $data['descripcion'] ?? null,
+                'costo'            => $data['costo'] ?? null,
+                'precio_venta'     => $data['precio_venta'],
+                'codigo_barras'    => $data['codigo_barras'] ?? null,
             ]);
 
-            $variante->valores()->sync($atributoValorIds);
-
-            $atributoIds = AtributoValor::whereIn('id', $atributoValorIds)
-                ->pluck('atributo_id')
-                ->unique()
-                ->values()
-                ->toArray();
-
-            $variante->producto->atributos()->syncWithoutDetaching($atributoIds);
+            if (!$variante->es_default) {
+                $variante->valores()->sync($atributoValorIds);
+                $this->sincronizarAtributosProducto($variante->producto, $atributoValorIds);
+            }
 
             return $variante;
         });
+    }
+
+    // ── Helpers privados ────────────────────────────────
+
+    private function sincronizarAtributosProducto(Producto $producto, array $atributoValorIds): void
+    {
+        $atributoIds = AtributoValor::whereIn('id', $atributoValorIds)
+            ->pluck('atributo_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $producto->atributos()->syncWithoutDetaching($atributoIds);
     }
 
     private function normalizarIds(array $ids): array
@@ -95,7 +161,6 @@ class ProductoVarianteService
     private function validarValoresExistentes(array $atributoValorIds): void
     {
         $cantidadExistente = AtributoValor::whereIn('id', $atributoValorIds)->count();
-
         if ($cantidadExistente !== count($atributoValorIds)) {
             throw ValidationException::withMessages([
                 'atributo_valor_ids' => 'Uno o más valores de atributo no existen.',
@@ -105,9 +170,7 @@ class ProductoVarianteService
 
     private function validarAtributosNoRepetidos(array $atributoValorIds): void
     {
-        $atributoIds = AtributoValor::whereIn('id', $atributoValorIds)
-            ->pluck('atributo_id');
-
+        $atributoIds = AtributoValor::whereIn('id', $atributoValorIds)->pluck('atributo_id');
         if ($atributoIds->count() !== $atributoIds->unique()->count()) {
             throw ValidationException::withMessages([
                 'atributo_valor_ids' => 'No puedes seleccionar más de un valor para el mismo atributo.',
@@ -121,9 +184,7 @@ class ProductoVarianteService
 
         $variantes = $producto->variantes()
             ->with('valores')
-            ->when($ignorarVarianteId, function ($query) use ($ignorarVarianteId) {
-                $query->where('id', '!=', $ignorarVarianteId);
-            })
+            ->when($ignorarVarianteId, fn ($q) => $q->where('id', '!=', $ignorarVarianteId))
             ->get();
 
         foreach ($variantes as $variante) {

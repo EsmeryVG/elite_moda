@@ -2,85 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\VarianteProductoRequest;
 use App\Models\Producto;
 use App\Models\VarianteProducto;
-use App\Models\Atributo;
 use App\Services\ProductoVarianteService;
+use Illuminate\Http\Request;
 
 class VarianteProductoController extends Controller
 {
-    public function create(Producto $producto)
-{
-    $atributos = Atributo::with(['valores' => function ($query) {
-        $query->where('estado', 1)->orderBy('orden')->orderBy('valor');
-    }])
-    ->where('estado', 1)
-    ->orderBy('nombre')
-    ->get();
+    public function store(Request $request, ProductoVarianteService $service)
+    {
+        $request->validate([
+            'producto_id'              => 'required|exists:productos,id',
+            'atributo_valor_ids'       => 'required|array|min:1',
+            'atributo_valor_ids.*'     => 'required|exists:atributo_valores,id',
+            'precio_venta'             => 'required|numeric|min:0',
+            'costo'                    => 'nullable|numeric|min:0',
+            'codigo_barras'            => 'nullable|string|max:100',
+        ], [
+            'atributo_valor_ids.required' => 'Debes seleccionar al menos un valor.',
+            'precio_venta.required'       => 'El precio de venta es obligatorio.',
+        ]);
 
-    return view('variantes.create', compact('producto', 'atributos'));
-}
+        $producto = Producto::findOrFail($request->producto_id);
 
-    public function store(VarianteProductoRequest $request, ProductoVarianteService $productoVarianteService)
-{
-    $producto = Producto::findOrFail($request->producto_id);
+        $service->crearVarianteDinamica($producto, $request->all());
 
-    $productoVarianteService->crearVarianteDinamica(
-        $producto,
-        $request->validated()
-    );
+        return redirect()->route('productos.show', $producto)
+            ->with('success', 'Variante agregada correctamente.');
+    }
 
-    return redirect()->route('productos.show', $producto)
-        ->with('success', 'Variante creada correctamente.');
-}
+    public function update(Request $request, VarianteProducto $variante, ProductoVarianteService $service)
+    {
+        $request->validate([
+            'atributo_valor_ids'       => 'nullable|array',
+            'atributo_valor_ids.*'     => 'exists:atributo_valores,id',
+            'precio_venta'             => 'required|numeric|min:0',
+            'costo'                    => 'nullable|numeric|min:0',
+            'codigo_barras'            => 'nullable|string|max:100',
+            'descuento_maximo'         => 'nullable|numeric|min:0|max:100',
+        ], [
+            'precio_venta.required' => 'El precio de venta es obligatorio.',
+        ]);
 
-public function edit(VarianteProducto $variante)
-{
-    $variante->load('valores.atributo', 'producto');
+        $service->actualizarVarianteDinamica($variante, $request->all());
 
-    $atributos = Atributo::with(['valores' => function ($query) {
-        $query->where('estado', 1)->orderBy('orden')->orderBy('valor');
-    }])
-    ->where('estado', 1)
-    ->orderBy('nombre')
-    ->get();
+        return redirect()->route('productos.show', $variante->producto_id)
+            ->with('success', 'Variante actualizada correctamente.');
+    }
 
-    $valoresSeleccionados = $variante->valores->pluck('id')->toArray();
+    public function desactivar(VarianteProducto $variante)
+    {
+        $variante->update(['estado' => false]);
 
-    return view('variantes.edit', compact('variante', 'atributos', 'valoresSeleccionados'));
-}
+        return redirect()->route('productos.show', $variante->producto_id)
+            ->with('success', 'Variante desactivada correctamente.');
+    }
 
-   public function update(
-    VarianteProductoRequest $request,
-    VarianteProducto $variante,
-    ProductoVarianteService $productoVarianteService
-) {
-    $productoVarianteService->actualizarVarianteDinamica(
-        $variante,
-        $request->validated()
-    );
+    public function reactivar(VarianteProducto $variante)
+    {
+        $variante->update(['estado' => true]);
 
-    return redirect()->route('productos.show', $variante->producto_id)
-        ->with('success', 'Variante actualizada correctamente.');
-}
-
-public function index()
-{
-    $variantes = VarianteProducto::with('producto')
-        ->orderBy('id', 'desc')
-        ->get();
-
-    return view('variantes.index', compact('variantes'));
-}
+        return redirect()->route('productos.show', $variante->producto_id)
+            ->with('success', 'Variante reactivada correctamente.');
+    }
 
     public function destroy(VarianteProducto $variante)
     {
         $productoId = $variante->producto_id;
-
         $variante->delete();
 
         return redirect()->route('productos.show', $productoId)
             ->with('success', 'Variante eliminada correctamente.');
     }
+
+    public function editarForm(VarianteProducto $variante)
+{
+    $variante->load('valores.atributo', 'producto');
+
+    $atributos = Atributo::activos()
+        ->with(['valores' => fn ($q) =>
+            $q->where('estado', true)->orderBy('orden')->orderBy('valor')
+        ])
+        ->orderBy('nombre')
+        ->get();
+
+    $valoresSeleccionados = $variante->valores->pluck('id')->toArray();
+
+    return view('variantes.edit', compact('variante', 'atributos', 'valoresSeleccionados'));
+}
 }

@@ -1,0 +1,324 @@
+/* =====================================================
+   Productos — Estilos del módulo
+   ===================================================== */
+
+/* ── Filtros ───────────────────────────────────────── */
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+/* ── Paginación ────────────────────────────────────── */
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+/* ── Loading ───────────────────────────────────────── */
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Variantes expandibles en index ───────────────── */
+.producto-row {
+    cursor: pointer;
+}
+
+.variantes-row {
+    display: none !important;
+}
+
+.variantes-row.open {
+    display: table-row !important;
+}
+
+.variantes-row > td {
+    background: var(--bg-elevated) !important;
+    padding: 0 !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+.variantes-inner {
+    padding: 12px 20px 16px 52px;
+}
+
+.variantes-inner table {
+    width: 100%;
+    font-size: 12.5px;
+}
+
+.variantes-inner thead th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    background: transparent;
+}
+
+.variantes-inner tbody td {
+    padding: 8px 10px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.variantes-inner tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.chevron-icon {
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.producto-row.open .chevron-icon {
+    transform: rotate(180deg);
+}
+
+/* ── Sección título en formularios ────────────────── */
+.prod-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+}
+
+/* ── Toggle tipo producto ──────────────────────────── */
+.tipo-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    width: fit-content;
+    margin-bottom: 20px;
+}
+
+.tipo-toggle-btn {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.tipo-toggle-btn + .tipo-toggle-btn {
+    border-left: 1px solid var(--border);
+}
+
+.tipo-toggle-btn.active {
+    background: #1f2125;
+    color: #ffffff;
+}
+
+.tipo-toggle-btn:hover:not(.active) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ── Grilla de variantes ───────────────────────────── */
+.grilla-variantes {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-top: 16px;
+}
+
+.grilla-variantes table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.grilla-variantes thead th {
+    background: var(--bg-elevated);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.grilla-variantes tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.grilla-variantes tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.precio-unico-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-muted);
+    flex-wrap: wrap;
+}
+
+.precio-unico-bar .form-control {
+    width: 120px;
+    font-size: 13px;
+    padding: 5px 10px;
+}
+
+/* ── Atributos con checkboxes ──────────────────────── */
+.atributo-grupo {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.atributo-grupo:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.atributo-grupo-nombre {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+
+.atributo-checks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.atributo-checks .form-check {
+    margin: 0;
+    padding: 0;
+}
+
+.atributo-checks .form-check-input {
+    display: none;
+}
+
+.atributo-checks .form-check-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--bg-surface);
+    color: var(--text-secondary);
+    user-select: none;
+    white-space: nowrap;
+}
+
+.atributo-checks .form-check-label:hover {
+    border-color: #1f2125;
+    color: var(--text-primary);
+}
+
+.atributo-checks .form-check-input:checked + .form-check-label {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+/* ── Formulario agregar variante inline ────────────── */
+#wrapperAgregarVariante {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* ── Readonly fields en show ───────────────────────── */
+.field-readonly {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    min-height: 42px;
+}
+
+.field-readonly.multiline {
+    min-height: 80px;
+}
+
+.field-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+

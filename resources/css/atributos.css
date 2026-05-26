@@ -1,0 +1,250 @@
+/* =====================================================
+   Atributos — Estilos específicos del módulo
+   ===================================================== */
+
+/* ── Tarjeta de atributo ───────────────────────────── */
+.atributo-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+    overflow: hidden;
+}
+
+.atributo-card:hover {
+    border-color: #c4c9d1;
+}
+
+.atributo-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    gap: 12px;
+}
+
+.atributo-card__header:hover {
+    background: var(--bg-elevated);
+}
+
+.atributo-card__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.atributo-card__chevron {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.atributo-card.open .atributo-card__chevron {
+    transform: rotate(180deg);
+}
+
+.atributo-card__nombre {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.atributo-card__meta {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.atributo-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* ── Cuerpo expandible ─────────────────────────────── */
+.atributo-card__body {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 16px 20px;
+    background: var(--bg-elevated);
+}
+
+.atributo-card.open .atributo-card__body {
+    display: block;
+}
+
+/* ── Tabla de valores ──────────────────────────────── */
+.valores-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+}
+
+.valores-table th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.valores-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.valores-table tr:last-child td {
+    border-bottom: none;
+}
+
+.valores-table tr:hover td {
+    background: var(--bg-hover);
+}
+
+/* ── Formulario inline de nuevo valor ──────────────── */
+.form-nuevo-valor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    margin-top: 8px;
+}
+
+.form-nuevo-valor .form-control {
+    flex: 1;
+    font-size: 13px;
+    padding: 7px 12px;
+}
+
+.form-nuevo-valor .orden-input {
+    width: 70px;
+    font-size: 13px;
+    padding: 7px 10px;
+    text-align: center;
+}
+
+/* ── Modal de edición ──────────────────────────────── */
+.em-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.em-modal-overlay.open {
+    display: flex;
+}
+
+.em-modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: var(--shadow-lg);
+}
+
+.em-modal__title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+}
+
+.em-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+/* ── Filtros ───────────────────────────────────────── */
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active[data-filtro="todos"] {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-filtro.active[data-filtro="activos"] {
+    background: rgba(46, 125, 50, 0.12);
+    border-color: rgba(46, 125, 50, 0.4);
+    color: #2e7d32;
+}
+
+.em-filtro.active[data-filtro="inactivos"] {
+    background: rgba(158, 158, 158, 0.15);
+    border-color: rgba(100, 100, 100, 0.3);
+    color: #555;
+}
+
+/* ── Paginación ────────────────────────────────────── */
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+/* ── Loading ───────────────────────────────────────── */
+#listaAtributos.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}

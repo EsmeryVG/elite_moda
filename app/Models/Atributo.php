@@ -16,6 +16,15 @@ class Atributo extends Model
         'estado',
     ];
 
+    protected $casts = [
+    'estado' => 'boolean',
+    ];
+
+    public function scopeActivos($query)
+    {
+        return $query->where('estado', true);
+    }
+
     public function valores()
     {
         return $this->hasMany(AtributoValor::class, 'atributo_id');

@@ -13,12 +13,11 @@ use App\Models\Categoria;
         /**
          * Display a listing of the resource.
          */
-    public function index(Request $request)
+public function index(Request $request)
 {
     $query = Categoria::orderBy('estado', 'desc')
                       ->orderBy('nombre', 'asc');
 
-    // Filtro por estado
     if ($request->filled('estado')) {
         if ($request->estado === 'activas') {
             $query->where('estado', true);
@@ -27,7 +26,6 @@ use App\Models\Categoria;
         }
     }
 
-    // Filtro por búsqueda
     if ($request->filled('buscar')) {
         $buscar = $request->buscar;
         $query->where(function ($q) use ($buscar) {
@@ -38,6 +36,11 @@ use App\Models\Categoria;
     }
 
     $categorias = $query->paginate(8)->withQueryString();
+
+    // Si es AJAX devuelve solo el parcial
+    if ($request->ajax()) {
+        return view('categorias._tabla', compact('categorias'))->render();
+    }
 
     return view('categorias.index', compact('categorias'));
 }

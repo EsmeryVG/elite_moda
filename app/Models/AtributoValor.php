@@ -18,6 +18,10 @@ class AtributoValor extends Model
         'estado',
     ];
 
+    protected $casts = [
+    'estado' => 'boolean',
+    ];
+
     public function atributo()
     {
         return $this->belongsTo(Atributo::class, 'atributo_id');
