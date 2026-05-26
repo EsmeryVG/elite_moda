@@ -82,7 +82,6 @@
             <td colspan="8" class="p-3">
                 <div class="variantes-inner p-3 bg-white rounded border shadow-sm mx-4">
                     <div class="d-flex align-items-center mb-2">
-                        <i class="bi bi-boxes me-2 text-primary"></i>
                         <span class="fw-semibold text-secondary" style="font-size: 13px;">Desglose de Combinaciones</span>
                     </div>
                     
@@ -94,7 +93,6 @@
                                 <th>Combinación / Atributos</th>
                                 <th style="width: 150px;" class="text-end">Precio de Venta</th>
                                 <th style="width: 100px;" class="text-center">Estado</th>
-                                <th style="width: 80px;" class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,12 +121,6 @@
                                         @else
                                             <span class="text-muted" style="font-size: 12px;">● Inactiva</span>
                                         @endif
-                                    </td>
-                                    <td class="text-end">
-                                        <a href="{{ route('productos.edit', $producto) }}"
-                                           class="btn btn-sm btn-link p-0 text-warning" title="Editar Variante">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
