@@ -72,7 +72,7 @@
                         <i class="bi bi-box me-1"></i> Ir a productos
                     </a>
 
-                    <a href="{{ route('variantes.index') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('productos.index') }}" class="btn btn-outline-primary">
                         <i class="bi bi-palette me-1"></i> Ir a variantes
                     </a>
                 </div>

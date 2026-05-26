@@ -1,38 +1,43 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-{{-- Bootstrap 5 --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('page_title', 'Dashboard') — Elite Moda</title>
 
-{{-- Bootstrap Icons --}}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    {{-- Bootstrap 5 --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-{{-- Elite Moda CSS --}}
-@vite(['resources/css/dashboard.css'])
+    {{-- Bootstrap Icons --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    {{-- Tom Select --}}
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+
+    {{-- Elite Moda CSS --}}
+    @vite(['resources/css/dashboard.css'])
+
+    {{-- CSS específico de cada vista --}}
+    @stack('styles')
 </head>
-
-
 <body>
 
-{{-- ── Mobile overlay ────────────────────────────────── --}}
+{{-- Mobile overlay --}}
 <div class="em-overlay" id="emOverlay"></div>
 
-{{-- ── Layout principal ───────────────────────────────── --}}
+{{-- Layout principal --}}
 <div class="em-layout" id="emLayout">
 
-    {{-- Sidebar --}}
     @include('layouts.sidebar')
 
-    {{-- Main wrapper --}}
     <div class="em-main-wrapper">
 
-        {{-- Navbar --}}
         @include('layouts.navbar')
 
-        {{-- Contenido principal --}}
         <main class="em-main">
 
-            {{-- Page header --}}
             @hasSection('page_title')
             <div class="em-page-header">
                 <h1 class="em-page-title">@yield('page_title')</h1>
@@ -42,14 +47,13 @@
             </div>
             @endif
 
-            {{-- Flash messages --}}
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible rounded-3 mb-4" role="alert">
                     <div class="d-flex align-items-center gap-2">
                         <i class="bi bi-check-circle-fill"></i>
                         {{ session('success') }}
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-em-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-em-dismiss="alert"></button>
                 </div>
             @endif
 
@@ -59,7 +63,7 @@
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         {{ session('error') }}
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-em-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-em-dismiss="alert"></button>
                 </div>
             @endif
 
@@ -73,7 +77,6 @@
                 </div>
             @endif
 
-            {{-- Errores de validación globales (si los hay) --}}
             @if($errors->any())
                 <div class="alert alert-danger rounded-3 mb-4">
                     <div class="d-flex align-items-center gap-2 mb-2">
@@ -88,14 +91,13 @@
                 </div>
             @endif
 
-            {{-- ── Contenido de cada vista ───────────────── --}}
             @yield('content')
 
         </main>
 
-    </div>{{-- /em-main-wrapper --}}
+    </div>
 
-</div>{{-- /em-layout --}}
+</div>
 
 {{-- Bootstrap 5 JS --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -103,6 +105,7 @@
 {{-- Elite Moda JS --}}
 @vite(['resources/js/dashboard.js'])
 
+{{-- JS específico de cada vista --}}
 @stack('scripts')
 
 </body>

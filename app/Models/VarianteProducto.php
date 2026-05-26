@@ -12,13 +12,22 @@ class VarianteProducto extends Model
     protected $table = 'variante_productos';
 
     protected $fillable = [
-        'codigo',
         'producto_id',
+        'codigo',
+        'codigo_barras',
         'descripcion',
-        'color',
-        'talla',
-        'material',
+        'costo',
         'precio_venta',
+        'descuento_maximo',
+        'es_default',
+        'estado',
+    ];
+
+    protected $casts = [
+        'es_default' => 'boolean',
+        'estado'     => 'boolean',
+        'costo'      => 'decimal:2',
+        'precio_venta' => 'decimal:2',
     ];
 
     public function producto()
@@ -34,5 +43,10 @@ class VarianteProducto extends Model
             'variante_producto_id',
             'atributo_valor_id'
         );
+    }
+
+    public function stock()
+    {
+        return $this->hasMany(\App\Models\Stock::class, 'variante_producto_id');
     }
 }

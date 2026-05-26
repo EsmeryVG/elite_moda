@@ -58,7 +58,7 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('atributos.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
