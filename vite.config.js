@@ -17,6 +17,8 @@ export default defineConfig({
                 'resources/js/productos.js',
                 'resources/js/sucursales.js',
                 'resources/js/almacenes.js',
+                'resources/js/proveedores.js',
+                'resources/js/clientes.js',
             ],
             refresh: true,
         }),
