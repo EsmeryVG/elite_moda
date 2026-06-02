@@ -15,6 +15,8 @@ export default defineConfig({
                 'resources/js/categorias.js',
                 'resources/js/atributos.js',
                 'resources/js/productos.js',
+                'resources/js/sucursales.js',
+                'resources/js/almacenes.js',
             ],
             refresh: true,
         }),

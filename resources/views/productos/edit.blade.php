@@ -350,18 +350,6 @@
                                             </form>
                                         @endif
 
-                                        {{-- Eliminar --}}
-                                        @if(!$variante->es_default)
-                                            <form action="{{ route('variantes.destroy', $variante) }}"
-                                                  method="POST" class="d-inline-block">
-                                                @csrf @method('DELETE')
-                                                <button class="btn btn-outline-danger btn-sm"
-                                                        title="Eliminar"
-                                                        onclick="return confirm('¿Eliminar esta variante permanentemente?')">
-                                                    <i class="bi bi-trash3"></i>
-                                                </button>
-                                            </form>
-                                        @endif
                                     </td>
                                 </tr>
 

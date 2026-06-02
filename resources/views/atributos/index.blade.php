@@ -1,7 +1,5 @@
 @extends('layouts.app')
 
-@section('page_title', 'Atributos')
-@section('page_subtitle', 'Gestiona los atributos y sus valores para las variantes de productos')
 
 @section('content')
 <div class="card page-card w-100">
