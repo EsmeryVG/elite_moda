@@ -9,6 +9,8 @@ use App\Http\Controllers\VarianteProductoController;
 use App\Http\Controllers\AtributoController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\AlmacenController;
+use App\Http\Controllers\ProveedorController;
+use App\Http\Controllers\ClienteController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -66,4 +68,17 @@ Route::patch('sucursales/{sucursal}/reactivar', [SucursalController::class, 'rea
 Route::resource('almacenes', AlmacenController::class);
 Route::patch('almacenes/{almacen}/reactivar', [AlmacenController::class, 'reactivar'])
     ->name('almacenes.reactivar');
-    
+
+// Proveedores
+Route::resource('proveedores', ProveedorController::class)->except(['show']);
+Route::get('proveedores/{proveedor}', [ProveedorController::class, 'show'])
+    ->name('proveedores.show');
+Route::patch('proveedores/{proveedor}/reactivar', [ProveedorController::class, 'reactivar'])
+    ->name('proveedores.reactivar');
+
+// Clientes
+Route::resource('clientes', ClienteController::class)->except(['show']);
+Route::get('clientes/{cliente}', [ClienteController::class, 'show'])
+    ->name('clientes.show');
+Route::patch('clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])
+    ->name('clientes.reactivar');

@@ -188,7 +188,7 @@
             <div class="em-nav-section__label">Clientes</div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('clientes.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                         <circle cx="9" cy="7" r="4"/>
@@ -250,7 +250,7 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('proveedores.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
