@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VarianteProductoController;
 use App\Http\Controllers\AtributoController;
+use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\AlmacenController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -54,3 +56,14 @@ Route::patch('variantes/{variante}/reactivar', [VarianteProductoController::clas
     ->name('variantes.reactivar');
 Route::get('variantes/{variante}/editar', [VarianteProductoController::class, 'editarForm'])
     ->name('variantes.editar.form');
+
+// Sucursales
+Route::resource('sucursales', SucursalController::class);
+Route::patch('sucursales/{sucursal}/reactivar', [SucursalController::class, 'reactivar'])
+    ->name('sucursales.reactivar');
+
+// Almacenes
+Route::resource('almacenes', AlmacenController::class);
+Route::patch('almacenes/{almacen}/reactivar', [AlmacenController::class, 'reactivar'])
+    ->name('almacenes.reactivar');
+    

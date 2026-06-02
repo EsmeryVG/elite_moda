@@ -1,8 +1,5 @@
 @extends('layouts.app')
 
-@section('page_title', 'Categorías')
-@section('page_subtitle', 'Gestiona las categorías del catálogo')
-
 @section('content')
 <div class="card page-card w-100">
     <div class="card-body p-4">

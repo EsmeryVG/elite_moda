@@ -69,25 +69,14 @@ class VarianteProductoController extends Controller
     public function destroy(VarianteProducto $variante)
     {
         $productoId = $variante->producto_id;
-        $variante->delete();
+        if ($variante->stock()->exists()) {
+            return redirect()->route('productos.edit', $productoId)
+                ->with('error', 'No puedes eliminar esta variante porque tiene stock registrado.');
+        }
 
-        return redirect()->route('productos.show', $productoId)
-            ->with('success', 'Variante eliminada correctamente.');
+        $variante->update(['estado' => false]);
+
+        return redirect()->route('productos.edit', $productoId)
+            ->with('success', 'Variante desactivada correctamente.');
     }
-
-    public function editarForm(VarianteProducto $variante)
-{
-    $variante->load('valores.atributo', 'producto');
-
-    $atributos = Atributo::activos()
-        ->with(['valores' => fn ($q) =>
-            $q->where('estado', true)->orderBy('orden')->orderBy('valor')
-        ])
-        ->orderBy('nombre')
-        ->get();
-
-    $valoresSeleccionados = $variante->valores->pluck('id')->toArray();
-
-    return view('variantes.edit', compact('variante', 'atributos', 'valoresSeleccionados'));
-}
 }
