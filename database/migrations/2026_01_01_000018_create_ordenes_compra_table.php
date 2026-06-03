@@ -52,7 +52,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('recepcion_id')->constrained('recepciones_mercancia')->cascadeOnDelete();
             $table->foreignId('detalle_orden_id')->constrained('detalle_ordenes_compra');
-            $table->foreignId('variante_producto_id')->constrained('variante_productos');
+            $table->foreignId('variante_producto_id')->nullable()->constrained('variante_productos')->nullOnDelete();
             $table->integer('cantidad_recibida');
             $table->integer('cantidad_aceptada');
             $table->enum('estado_calidad', ['conforme', 'no_conforme'])->default('conforme');

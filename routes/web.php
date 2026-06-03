@@ -11,6 +11,8 @@ use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\AlmacenController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\GrupoClienteController;
+use App\Http\Controllers\OrdenCompraController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -82,3 +84,16 @@ Route::get('clientes/{cliente}', [ClienteController::class, 'show'])
     ->name('clientes.show');
 Route::patch('clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])
     ->name('clientes.reactivar');
+
+// Grupos de clientes
+Route::resource('grupo_clientes', GrupoClienteController::class)
+    ->except(['show']);
+
+// Órdenes de compra
+Route::resource('ordenes_compra', OrdenCompraController::class)->except(['destroy']);
+Route::patch('ordenes_compra/{ordenes_compra}/enviar',  [OrdenCompraController::class, 'enviar'])
+    ->name('ordenes_compra.enviar');
+Route::patch('ordenes_compra/{ordenes_compra}/cancelar', [OrdenCompraController::class, 'cancelar'])
+    ->name('ordenes_compra.cancelar');
+Route::get('api/variantes/buscar', [OrdenCompraController::class, 'buscarVariantes'])
+    ->name('api.variantes.buscar');
