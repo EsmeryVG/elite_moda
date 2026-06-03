@@ -1,0 +1,308 @@
+/* =====================================================
+   Órdenes de Compra — Estilos del módulo
+   ===================================================== */
+
+/* ── Filtros ───────────────────────────────────────── */
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+/* ── Paginación ────────────────────────────────────── */
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Badges de estado ──────────────────────────────── */
+.badge-borrador {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-enviada {
+    background: rgba(33, 150, 243, 0.12);
+    color: #1565c0;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-parcial {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e65100;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-completada {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-cancelada {
+    background: rgba(211, 47, 47, 0.10);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ── Tarjetas de línea ─────────────────────────────── */
+.lineas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.linea-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    background: var(--bg-elevated);
+}
+
+.linea-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.linea-card-body {
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    gap: 12px;
+    align-items: end;
+}
+
+.linea-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.linea-subtotal-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.linea-subtotal-valor {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.btn-eliminar-linea {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12.5px;
+    font-family: var(--font-body);
+}
+
+.btn-eliminar-linea:hover {
+    background: rgba(211, 47, 47, 0.08);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ── Toggle tipo línea ─────────────────────────────── */
+.tipo-linea-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    width: fit-content;
+}
+
+.tipo-linea-btn {
+    padding: 5px 14px;
+    font-size: 12.5px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+}
+
+.tipo-linea-btn + .tipo-linea-btn {
+    border-left: 1px solid var(--border);
+}
+
+.tipo-linea-btn.active {
+    background: #1f2125;
+    color: #ffffff;
+}
+
+.tipo-linea-btn:hover:not(.active) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ── Totales ───────────────────────────────────────── */
+.totales-box {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    background: var(--bg-elevated);
+}
+
+.totales-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.totales-row:last-child {
+    border-bottom: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding-top: 10px;
+}
+
+/* ── Tabla de líneas en show ───────────────────────── */
+.tabla-lineas {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.tabla-lineas table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.tabla-lineas thead th {
+    background: var(--bg-elevated);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.tabla-lineas tbody td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.tabla-lineas tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ── Badge tipo línea ──────────────────────────────── */
+.badge-tipo-variante {
+    background: rgba(33, 150, 243, 0.10);
+    color: #1565c0;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-tipo-caracteristicas {
+    background: rgba(255, 152, 0, 0.10);
+    color: #e65100;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ── Fields readonly ───────────────────────────────── */
+.field-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.field-readonly {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: var(--text-primary);
+    min-height: 42px;
+}
