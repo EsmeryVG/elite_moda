@@ -41,15 +41,15 @@ class Cliente extends Model
         return $this->belongsTo(GrupoCliente::class, 'grupo_cliente_id');
     }
 
-    public function ventas()
-    {
-        return $this->hasMany(Venta::class, 'cliente_id');
-    }
+  //  public function ventas()
+   // {
+   //     return $this->hasMany(Venta::class, 'cliente_id');
+   // }
 
-    public function cuentasPorCobrar()
-    {
-        return $this->hasMany(CuentaPorCobrar::class, 'cliente_id');
-    }
+   // public function cuentasPorCobrar()
+   // {
+   //     return $this->hasMany(CuentaPorCobrar::class, 'cliente_id');
+   // }
 
     public function getNombreCompletoAttribute(): string
     {

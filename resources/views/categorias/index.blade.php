@@ -54,9 +54,22 @@
         </div>
 
         {{-- Contenedor de tabla (se reemplaza con AJAX) --}}
-        <div id="tablaContainer" data-url="{{ route('categorias.index') }}">
-         @include('categorias._tabla')
-        </div>
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th style="width:110px;">Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th style="width:100px;">Estado</th>
+                <th style="width:120px;" class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tablaContainer" data-url="{{ route('categorias.index') }}">
+            @include('categorias._tabla')
+        </tbody>
+    </table>
+</div>
 
     </div>
 </div>

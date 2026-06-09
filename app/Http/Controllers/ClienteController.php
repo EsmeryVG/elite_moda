@@ -69,7 +69,7 @@ class ClienteController extends Controller
 
     public function show(Cliente $cliente)
     {
-        $cliente->load('grupo', 'ventas', 'cuentasPorCobrar');
+        $cliente->load('grupo');
         return view('clientes.show', compact('cliente'));
     }
 
@@ -101,15 +101,15 @@ class ClienteController extends Controller
                 ->with('error', 'El cliente por defecto no puede ser desactivado.');
         }
 
-        if ($cliente->ventas()->exists()) {
-            return redirect()->route('clientes.index')
-                ->with('error', 'No puedes desactivar este cliente porque tiene ventas registradas.');
-        }
+        // if ($cliente->ventas()->exists()) {
+        //     return redirect()->route('clientes.index')
+        //         ->with('error', 'No puedes desactivar este cliente porque tiene ventas registradas.');
+        // }
 
-        if ($cliente->cuentasPorCobrar()->where('estado', '!=', 'pagada')->exists()) {
-            return redirect()->route('clientes.index')
-                ->with('error', 'No puedes desactivar este cliente porque tiene crédito pendiente.');
-        }
+        //if ($cliente->cuentasPorCobrar()->where('estado', '!=', 'pagada')->exists()) {
+        //    return redirect()->route('clientes.index')
+        //        ->with('error', 'No puedes desactivar este cliente porque tiene crédito pendiente.');
+        // }
 
         $cliente->update(['estado' => false]);
 

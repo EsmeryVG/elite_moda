@@ -13,6 +13,7 @@ use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\GrupoClienteController;
 use App\Http\Controllers\OrdenCompraController;
+use App\Http\Controllers\RecepcionMercanciaController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -79,15 +80,22 @@ Route::patch('proveedores/{proveedor}/reactivar', [ProveedorController::class, '
     ->name('proveedores.reactivar');
 
 // Clientes
-Route::resource('clientes', ClienteController::class)->except(['show']);
-Route::get('clientes/{cliente}', [ClienteController::class, 'show'])
-    ->name('clientes.show');
-Route::patch('clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])
-    ->name('clientes.reactivar');
+Route::get('clientes',                  [ClienteController::class, 'index'])->name('clientes.index');
+Route::get('clientes/create',           [ClienteController::class, 'create'])->name('clientes.create');
+Route::post('clientes',                 [ClienteController::class, 'store'])->name('clientes.store');
+Route::get('clientes/{cliente}',        [ClienteController::class, 'show'])->name('clientes.show');
+Route::get('clientes/{cliente}/edit',   [ClienteController::class, 'edit'])->name('clientes.edit');
+Route::put('clientes/{cliente}',        [ClienteController::class, 'update'])->name('clientes.update');
+Route::delete('clientes/{cliente}',     [ClienteController::class, 'destroy'])->name('clientes.destroy');
+Route::patch('clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])->name('clientes.reactivar');
 
 // Grupos de clientes
-Route::resource('grupo_clientes', GrupoClienteController::class)
-    ->except(['show']);
+Route::get('grupo_clientes',                        [GrupoClienteController::class, 'index'])->name('grupo_clientes.index');
+Route::get('grupo_clientes/create',                 [GrupoClienteController::class, 'create'])->name('grupo_clientes.create');
+Route::post('grupo_clientes',                       [GrupoClienteController::class, 'store'])->name('grupo_clientes.store');
+Route::get('grupo_clientes/{grupo_cliente}/edit',   [GrupoClienteController::class, 'edit'])->name('grupo_clientes.edit');
+Route::put('grupo_clientes/{grupo_cliente}',        [GrupoClienteController::class, 'update'])->name('grupo_clientes.update');
+Route::delete('grupo_clientes/{grupo_cliente}',     [GrupoClienteController::class, 'destroy'])->name('grupo_clientes.destroy');
 
 // Órdenes de compra
 Route::resource('ordenes_compra', OrdenCompraController::class)->except(['destroy']);
@@ -97,3 +105,13 @@ Route::patch('ordenes_compra/{ordenes_compra}/cancelar', [OrdenCompraController:
     ->name('ordenes_compra.cancelar');
 Route::get('api/variantes/buscar', [OrdenCompraController::class, 'buscarVariantes'])
     ->name('api.variantes.buscar');
+
+// Recepción de mercancía
+Route::get('recepciones',                [RecepcionMercanciaController::class, 'index'])
+    ->name('recepciones.index');
+Route::get('recepciones/create',         [RecepcionMercanciaController::class, 'create'])
+    ->name('recepciones.create');
+Route::post('recepciones',               [RecepcionMercanciaController::class, 'store'])
+    ->name('recepciones.store');
+Route::get('recepciones/{recepcion}',    [RecepcionMercanciaController::class, 'show'])
+    ->name('recepciones.show');

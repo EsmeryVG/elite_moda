@@ -35,4 +35,9 @@ class DetalleRecepcion extends Model
     {
         return $this->belongsTo(VarianteProducto::class, 'variante_producto_id');
     }
+
+    public function estaAsociada(): bool
+    {
+        return !is_null($this->variante_producto_id);
+    }
 }

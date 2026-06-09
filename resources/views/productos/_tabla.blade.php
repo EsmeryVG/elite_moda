@@ -44,36 +44,36 @@
         </td>
 
         <td class="text-end">
-            <div class="btn-group btn-group-sm" role="group">
-                <a href="{{ route('productos.show', $producto) }}"
-                   class="btn btn-outline-secondary border-0" title="Ver detalle">
-                    <i class="bi bi-eye"></i>
-                </a>
-                <a href="{{ route('productos.edit', $producto) }}"
-                   class="btn btn-outline-secondary border-0" title="Editar">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
-                @if($producto->estado)
-                    <form action="{{ route('productos.desactivar', $producto) }}"
-                          method="POST" class="d-inline">
-                        @csrf @method('PATCH')
-                        <button class="btn btn-outline-danger border-0" title="Desactivar"
-                                onclick="return confirm('¿Desactivar {{ $producto->nombre }}?')">
-                            <i class="bi bi-toggle-on"></i>
-                        </button>
-                    </form>
-                @else
-                    <form action="{{ route('productos.reactivar', $producto) }}"
-                          method="POST" class="d-inline">
-                        @csrf @method('PATCH')
-                        <button class="btn btn-outline-success border-0" title="Reactivar"
-                                onclick="return confirm('¿Reactivar {{ $producto->nombre }}?')">
-                            <i class="bi bi-toggle-off"></i>
-                        </button>
-                    </form>
-                @endif
-            </div>
-        </td>
+    <a href="{{ route('productos.show', $producto) }}"
+       class="btn btn-outline-info btn-sm" title="Ver detalle">
+        <i class="bi bi-eye"></i>
+    </a>
+    <a href="{{ route('productos.edit', $producto) }}"
+       class="btn btn-outline-warning btn-sm" title="Editar">
+        <i class="bi bi-pencil-square"></i>
+    </a>
+    @if($producto->estado)
+        <form action="{{ route('productos.desactivar', $producto) }}"
+              method="POST" class="d-inline-block">
+            @csrf @method('PATCH')
+            <button class="btn btn-outline-danger btn-sm"
+                    title="Desactivar"
+                    onclick="return confirm('¿Desactivar {{ $producto->nombre }}?')">
+                <i class="bi bi-toggle-on"></i>
+            </button>
+        </form>
+    @else
+        <form action="{{ route('productos.reactivar', $producto) }}"
+              method="POST" class="d-inline-block">
+            @csrf @method('PATCH')
+            <button class="btn btn-outline-success btn-sm"
+                    title="Reactivar"
+                    onclick="return confirm('¿Reactivar {{ $producto->nombre }}?')">
+                <i class="bi bi-toggle-off"></i>
+            </button>
+        </form>
+    @endif
+</td>
     </tr>
 
     {{-- Fila expandible de variantes corregida --}}

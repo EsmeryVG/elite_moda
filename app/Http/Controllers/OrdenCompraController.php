@@ -74,7 +74,7 @@ class OrdenCompraController extends Controller
             $orden = OrdenCompra::create([
                 'proveedor_id'   => $request->proveedor_id,
                 'almacen_id'     => $request->almacen_id,
-                'usuario_id'     => Auth::id(),
+                'usuario_id' => Auth::id() ?? 1,
                 'fecha'          => $request->fecha,
                 'fecha_esperada' => $request->fecha_esperada,
                 'observaciones'  => $request->observaciones,

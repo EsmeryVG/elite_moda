@@ -26,6 +26,11 @@ class DatabaseSeeder extends Seeder
             CategoriaSeeder::class,
             AtributoSeeder::class,  
             ProductoSeeder::class,
+            SucursalSeeder::class,
+            AlmacenSeeder::class,
+            GrupoClienteSeeder::class,
+            ClienteSeeder::class,
+            ProveedorSeeder::class,
         ]);
     }
 }
