@@ -138,35 +138,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($cliente->ventas as $venta)
-                                <tr>
-                                    <td style="font-family:monospace; font-size:12px;
-                                               color:var(--text-muted);">
-                                        {{ $venta->codigo }}
-                                    </td>
-                                    <td style="font-size:13px;">
-                                        {{ $venta->created_at->format('d/m/Y') }}
-                                    </td>
-                                    <td>
-                                        <span class="badge rounded-pill"
-                                              style="font-size:11px; padding:3px 10px;
-                                                     background:var(--bg-hover);
-                                                     color:var(--text-secondary);">
-                                            {{ ucfirst($venta->estado) }}
-                                        </span>
-                                    </td>
-                                    <td class="text-end" style="font-size:13px;">
-                                        RD$ {{ number_format($venta->total, 2) }}
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="text-center py-4"
-                                        style="color:var(--text-muted);">
-                                        No hay compras registradas.
-                                    </td>
-                                </tr>
-                            @endforelse
+                            {{-- Historial --}}
+                            <div class="col-lg-8">
+                                        <p class="text-center py-4" style="color:var(--text-muted); font-size:13px;">
+                                            <i class="bi bi-clock-history d-block mb-2" style="font-size:24px;"></i>
+                                            El historial de compras estará disponible cuando se implemente el módulo de ventas.
+                                        </p>
+                             </div>
+                            </div>
+                            
                         </tbody>
                     </table>
                 </div>
