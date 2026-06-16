@@ -16,6 +16,7 @@ use App\Http\Controllers\OrdenCompraController;
 use App\Http\Controllers\RecepcionMercanciaController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\EmpleadoController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -135,3 +136,12 @@ Route::get('usuarios/{usuario}/edit',       [UsuarioController::class, 'edit'])-
 Route::put('usuarios/{usuario}',            [UsuarioController::class, 'update'])->name('usuarios.update');
 Route::delete('usuarios/{usuario}',         [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 Route::patch('usuarios/{usuario}/reactivar',[UsuarioController::class, 'reactivar'])->name('usuarios.reactivar');
+
+// Empleados
+Route::get('empleados',                     [EmpleadoController::class, 'index'])->name('empleados.index');
+Route::get('empleados/create',              [EmpleadoController::class, 'create'])->name('empleados.create');
+Route::post('empleados',                    [EmpleadoController::class, 'store'])->name('empleados.store');
+Route::get('empleados/{empleado}/edit',     [EmpleadoController::class, 'edit'])->name('empleados.edit');
+Route::put('empleados/{empleado}',          [EmpleadoController::class, 'update'])->name('empleados.update');
+Route::delete('empleados/{empleado}',       [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
+Route::patch('empleados/{empleado}/reactivar', [EmpleadoController::class, 'reactivar'])->name('empleados.reactivar');

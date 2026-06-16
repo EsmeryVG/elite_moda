@@ -54,4 +54,9 @@ class User extends Authenticatable
     {
         return $this->rol?->nombre === 'Contable';
     }
+
+    public function empleado()
+    {
+        return $this->hasOne(Empleado::class, 'user_id');
+    }
 }

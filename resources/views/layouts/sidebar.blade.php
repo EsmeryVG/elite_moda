@@ -303,7 +303,7 @@
             <div class="em-nav-section__label">Personal</div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('empleados.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                         <circle cx="12" cy="7" r="4"/>
