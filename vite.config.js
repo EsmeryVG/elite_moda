@@ -20,7 +20,8 @@ export default defineConfig({
                 'resources/js/proveedores.js',
                 'resources/js/clientes.js',
                 'resources/js/ordenes_compra.js',
-                'resources/js/recepciones.js'
+                'resources/js/recepciones.js',
+                'resources/js/usuarios.js',
             ],
             refresh: true,
         }),

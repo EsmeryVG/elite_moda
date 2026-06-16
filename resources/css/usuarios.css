@@ -1,0 +1,112 @@
+/* =====================================================
+   Usuarios y Roles — Estilos del módulo
+   ===================================================== */
+
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Avatar de usuario ─────────────────────────────── */
+.user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #1f2125;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+/* ── Badge de rol ──────────────────────────────────── */
+.badge-rol-administrador {
+    background: rgba(211,47,47,0.10);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-rol-cajero {
+    background: rgba(33,150,243,0.10);
+    color: #1565c0;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-rol-contable {
+    background: rgba(76,175,80,0.10);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-rol-sin-rol {
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}

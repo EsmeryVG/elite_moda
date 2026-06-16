@@ -14,6 +14,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\GrupoClienteController;
 use App\Http\Controllers\OrdenCompraController;
 use App\Http\Controllers\RecepcionMercanciaController;
+use App\Http\Controllers\RolController;
+use App\Http\Controllers\UsuarioController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -115,3 +117,21 @@ Route::post('recepciones',               [RecepcionMercanciaController::class, '
     ->name('recepciones.store');
 Route::get('recepciones/{recepcion}',    [RecepcionMercanciaController::class, 'show'])
     ->name('recepciones.show');
+
+// Roles y usuarios
+// Roles
+Route::get('roles',                 [RolController::class, 'index'])->name('roles.index');
+Route::get('roles/create',          [RolController::class, 'create'])->name('roles.create');
+Route::post('roles',                [RolController::class, 'store'])->name('roles.store');
+Route::get('roles/{rol}/edit',      [RolController::class, 'edit'])->name('roles.edit');
+Route::put('roles/{rol}',           [RolController::class, 'update'])->name('roles.update');
+Route::delete('roles/{rol}',        [RolController::class, 'destroy'])->name('roles.destroy');
+
+// Usuarios
+Route::get('usuarios',                      [UsuarioController::class, 'index'])->name('usuarios.index');
+Route::get('usuarios/create',               [UsuarioController::class, 'create'])->name('usuarios.create');
+Route::post('usuarios',                     [UsuarioController::class, 'store'])->name('usuarios.store');
+Route::get('usuarios/{usuario}/edit',       [UsuarioController::class, 'edit'])->name('usuarios.edit');
+Route::put('usuarios/{usuario}',            [UsuarioController::class, 'update'])->name('usuarios.update');
+Route::delete('usuarios/{usuario}',         [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
+Route::patch('usuarios/{usuario}/reactivar',[UsuarioController::class, 'reactivar'])->name('usuarios.reactivar');

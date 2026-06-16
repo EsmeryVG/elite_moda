@@ -405,7 +405,7 @@
             <div class="em-nav-section__label">Configuración</div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('usuarios.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                         <circle cx="9" cy="7" r="4"/>
@@ -418,7 +418,7 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('roles.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <circle cx="12" cy="12" r="3"/>
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
