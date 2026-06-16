@@ -22,6 +22,7 @@ export default defineConfig({
                 'resources/js/ordenes_compra.js',
                 'resources/js/recepciones.js',
                 'resources/js/usuarios.js',
+                'resources/js/empleados.js',
             ],
             refresh: true,
         }),
