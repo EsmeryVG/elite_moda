@@ -31,6 +31,9 @@ class DatabaseSeeder extends Seeder
             GrupoClienteSeeder::class,
             ClienteSeeder::class,
             ProveedorSeeder::class,
+            RolSeeder::class,
+            UserSeeder::class,
+            EmpleadoSeeder::class,
         ]);
     }
 }
