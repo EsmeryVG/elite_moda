@@ -14,17 +14,19 @@ class DetalleOrdenCompra extends Model
     protected $fillable = [
         'orden_compra_id',
         'variante_producto_id',
-        'caracteristicas_solicitadas',
         'cantidad_solicitada',
         'cantidad_recibida',
         'precio_unitario',
+        'itbis_incluido',
+        'itbis_porcentaje',
         'subtotal',
     ];
 
     protected $casts = [
-        'caracteristicas_solicitadas' => 'array',
-        'precio_unitario'             => 'decimal:2',
-        'subtotal'                    => 'decimal:2',
+        'precio_unitario'  => 'decimal:2',
+        'itbis_incluido'   => 'boolean',
+        'itbis_porcentaje' => 'decimal:2',
+        'subtotal'         => 'decimal:2',
     ];
 
     public function orden()
@@ -37,31 +39,34 @@ class DetalleOrdenCompra extends Model
         return $this->belongsTo(VarianteProducto::class, 'variante_producto_id');
     }
 
-    public function detallesRecepcion()
+    public function recepciones()
     {
         return $this->hasMany(DetalleRecepcion::class, 'detalle_orden_id');
     }
 
-    public function esPorCaracteristicas(): bool
+    public function getPrecioBaseAttribute(): float
     {
-        return is_null($this->variante_producto_id);
+        if (!$this->itbis_incluido) {
+            return (float) $this->precio_unitario;
+        }
+        return round($this->precio_unitario / (1 + $this->itbis_porcentaje / 100), 2);
+    }
+
+    public function getItbisUnitarioAttribute(): float
+    {
+        if (!$this->itbis_incluido) {
+            return 0;
+        }
+        return round($this->precio_unitario - $this->precio_base, 2);
     }
 
     public function getDescripcionAttribute(): string
     {
-        if ($this->variante_producto_id && $this->variante) {
-            $combinacion = $this->variante->valores
-                ->map(fn($v) => $v->atributo?->nombre . ': ' . $v->valor)
-                ->join(' / ');
+        $producto = $this->variante?->producto?->nombre ?? '—';
+        $valores  = $this->variante?->valores->map(fn($v) =>
+            $v->atributo?->nombre . ': ' . $v->valor
+        )->join(', ');
 
-            return $this->variante->producto?->nombre
-                . ($combinacion ? ' — ' . $combinacion : '');
-        }
-
-        if ($this->caracteristicas_solicitadas) {
-            return $this->caracteristicas_solicitadas['descripcion'] ?? 'Sin descripción';
-        }
-
-        return '—';
+        return $valores ? "$producto — $valores" : $producto;
     }
 }

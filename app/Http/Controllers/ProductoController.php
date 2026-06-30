@@ -111,6 +111,7 @@ public function show(Producto $producto)
         'categoria',
         'variantes' => fn ($q) => $q->orderBy('es_default', 'desc')->orderBy('id'),
         'variantes.valores.atributo',
+        'variantes.stock.almacen',
     ]);
 
     return view('productos.show', compact('producto'));

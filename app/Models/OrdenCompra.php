@@ -16,6 +16,7 @@ class OrdenCompra extends Model
         'almacen_id',
         'usuario_id',
         'codigo',
+        'numero_factura',
         'fecha',
         'fecha_esperada',
         'subtotal',
@@ -60,25 +61,6 @@ class OrdenCompra extends Model
 
     public function esCancelable(): bool
     {
-        return !$this->recepciones()->exists()
-            && in_array($this->estado, ['borrador', 'enviada']);
-    }
-
-    public function esEditable(): bool
-    {
-        return $this->estado === 'borrador';
-    }
-
-    public function recalcularTotales(): void
-    {
-        $subtotal = $this->detalles()->sum('subtotal');
-        $impuesto = round($subtotal * 0.18, 2);
-        $total    = $subtotal + $impuesto;
-
-        $this->update([
-            'subtotal' => $subtotal,
-            'impuesto' => $impuesto,
-            'total'    => $total,
-        ]);
+        return !$this->recepciones()->exists();
     }
 }

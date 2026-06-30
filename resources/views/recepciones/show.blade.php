@@ -6,9 +6,8 @@
 @section('content')
 <div class="row g-4">
 
-    {{-- Info general --}}
     <div class="col-lg-4">
-        <div class="card page-card">
+        <div class="card page-card mb-4">
             <div class="card-body p-4">
 
                 <div class="d-flex justify-content-between align-items-start mb-4">
@@ -38,8 +37,7 @@
                     <span class="field-label">Orden de compra</span>
                     <div class="field-readonly">
                         <a href="{{ route('ordenes_compra.show', $recepcion->orden) }}"
-                           style="color:var(--text-primary); text-decoration:none;
-                                  font-family:monospace;">
+                           style="color:var(--text-primary); text-decoration:none; font-family:monospace;">
                             {{ $recepcion->orden?->codigo }}
                             <i class="bi bi-arrow-up-right-square ms-1"
                                style="font-size:11px; color:var(--text-muted);"></i>
@@ -91,12 +89,14 @@
                     </div>
                 @endif
 
-                <div class="mt-4">
-                    <a href="{{ route('recepciones.index') }}" class="btn btn-secondary w-100">
-                        Volver
-                    </a>
-                </div>
+            </div>
+        </div>
 
+        <div class="card page-card">
+            <div class="card-body p-4">
+                <a href="{{ route('recepciones.index') }}" class="btn btn-secondary w-100">
+                    Volver
+                </a>
             </div>
         </div>
     </div>
@@ -107,67 +107,32 @@
             <div class="card-body p-4">
                 <h6 class="fw-semibold mb-4">Líneas recibidas</h6>
 
-                @php
-                    $pendientes = $recepcion->detalles->filter(fn($d) => !$d->estaAsociada());
-                @endphp
-
-                @if($pendientes->count() > 0)
-                    <div class="alert alert-warning rounded-3 mb-4" style="font-size:13px;">
-                        <i class="bi bi-exclamation-triangle me-1"></i>
-                        <strong>{{ $pendientes->count() }}</strong>
-                        {{ $pendientes->count() === 1 ? 'línea pendiente' : 'líneas pendientes' }}
-                        de asociar a una variante. El stock de
-                        {{ $pendientes->count() === 1 ? 'esa línea' : 'esas líneas' }}
-                        no se ha actualizado aún.
-                    </div>
-                @endif
-
                 <div class="tabla-lineas">
                     <table>
                         <thead>
                             <tr>
-                                <th>Descripción</th>
+                                <th>Producto</th>
                                 <th style="text-align:center; width:90px;">Recibido</th>
                                 <th style="text-align:center; width:90px;">Aceptado</th>
                                 <th style="width:110px;">Calidad</th>
-                                <th style="width:110px;">Stock</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($recepcion->detalles as $detalle)
                                 <tr>
                                     <td>
-                                        @if($detalle->estaAsociada())
-                                            <span class="badge-tipo-variante"
-                                                  style="display:inline-block; margin-bottom:4px;">
-                                                Variante
-                                            </span>
-                                            <div style="font-size:13px; font-weight:500;">
-                                                {{ $detalle->variante?->producto?->nombre }}
-                                            </div>
-                                            <div style="font-size:12px; color:var(--text-muted);">
-                                                @foreach($detalle->variante?->valores ?? [] as $valor)
-                                                    {{ $valor->atributo?->nombre }}: {{ $valor->valor }}
-                                                    @if(!$loop->last) · @endif
-                                                @endforeach
-                                            </div>
-                                        @else
-                                            <span class="badge-tipo-caracteristicas"
-                                                  style="display:inline-block; margin-bottom:4px;">
-                                                Características
-                                            </span>
-                                            <div style="font-size:13px; font-weight:500;">
-                                                {{ $detalle->detalleOrden?->caracteristicas_solicitadas['descripcion'] ?? '—' }}
-                                            </div>
-                                            @if(!empty($detalle->detalleOrden?->caracteristicas_solicitadas['notas']))
-                                                <div style="font-size:12px; color:var(--text-muted);">
-                                                    {{ $detalle->detalleOrden->caracteristicas_solicitadas['notas'] }}
-                                                </div>
-                                            @endif
-                                        @endif
+                                        <div style="font-size:13px; font-weight:500;">
+                                            {{ $detalle->detalleOrden?->variante?->producto?->nombre }}
+                                        </div>
+                                        <div style="font-size:12px; color:var(--text-muted);">
+                                            @foreach($detalle->detalleOrden?->variante?->valores ?? [] as $valor)
+                                                {{ $valor->atributo?->nombre }}: {{ $valor->valor }}
+                                                @if(!$loop->last) · @endif
+                                            @endforeach
+                                        </div>
                                         @if($detalle->observacion)
                                             <div style="font-size:11px; color:var(--text-muted);
-                                                        margin-top:3px; font-style:italic;">
+                                                        font-style:italic; margin-top:3px;">
                                                 {{ $detalle->observacion }}
                                             </div>
                                         @endif
@@ -180,24 +145,9 @@
                                     </td>
                                     <td>
                                         @if($detalle->estado_calidad === 'conforme')
-                                            <span style="color:#2e7d32; font-size:12px;">
-                                                ● Conforme
-                                            </span>
+                                            <span style="color:#2e7d32; font-size:12px;">● Conforme</span>
                                         @else
-                                            <span style="color:var(--accent); font-size:12px;">
-                                                ● No conforme
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if($detalle->estaAsociada())
-                                            <span style="color:#2e7d32; font-size:12px;">
-                                                ● Actualizado
-                                            </span>
-                                        @else
-                                            <span style="color:#e65100; font-size:12px;">
-                                                ● Pendiente
-                                            </span>
+                                            <span style="color:var(--accent); font-size:12px;">● No conforme</span>
                                         @endif
                                     </td>
                                 </tr>

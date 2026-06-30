@@ -42,12 +42,11 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th style="width:110px;">Código</th>
-                        <th style="width:110px;">Orden</th>
+                        <th style="width:100px;">Código</th>
+                        <th style="width:100px;">Orden</th>
                         <th>Proveedor</th>
-                        <th>Almacén</th>
-                        <th style="width:110px;">Fecha</th>
-                        <th style="width:120px;">Tipo</th>
+                        <th style="width:100px;">Fecha</th>
+                        <th style="width:110px;">Tipo</th>
                         <th style="width:80px;" class="text-end">Acciones</th>
                     </tr>
                 </thead>

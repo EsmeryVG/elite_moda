@@ -1,16 +1,3 @@
-@php
-    function badgeEstado($estado) {
-        return match($estado) {
-            'borrador'   => 'badge-borrador',
-            'enviada'    => 'badge-enviada',
-            'parcial'    => 'badge-parcial',
-            'completada' => 'badge-completada',
-            'cancelada'  => 'badge-cancelada',
-            default      => 'badge-borrador',
-        };
-    }
-@endphp
-
 @forelse($ordenes as $orden)
     <tr>
         <td>
@@ -19,7 +6,9 @@
             </span>
         </td>
         <td>
-            <div class="fw-semibold">{{ $orden->proveedor?->nombre }}</div>
+            <div class="fw-semibold" style="font-size:13px;">
+                {{ $orden->proveedor?->nombre }}
+            </div>
         </td>
         <td style="font-size:13px; color:var(--text-muted);">
             {{ $orden->almacen?->nombre }}
@@ -28,12 +17,19 @@
             {{ $orden->fecha->format('d/m/Y') }}
         </td>
         <td>
-            <span class="{{ badgeEstado($orden->estado) }}">
+            @php
+                $badgeEstado = match($orden->estado) {
+                    'borrador'   => 'badge-borrador',
+                    'enviada'    => 'badge-enviada',
+                    'parcial'    => 'badge-parcial',
+                    'completada' => 'badge-completada',
+                    'cancelada'  => 'badge-cancelada',
+                    default      => 'badge-borrador',
+                };
+            @endphp
+            <span class="{{ $badgeEstado }}">
                 {{ ucfirst($orden->estado) }}
             </span>
-        </td>
-        <td class="text-end fw-semibold" style="font-size:13px;">
-            RD$ {{ number_format($orden->total, 2) }}
         </td>
         <td class="text-end">
             <a href="{{ route('ordenes_compra.show', $orden) }}"
@@ -50,7 +46,7 @@
     </tr>
 @empty
     <tr>
-        <td colspan="7" class="text-center py-5" style="color:var(--text-muted);">
+        <td colspan="6" class="text-center py-5" style="color:var(--text-muted);">
             @if(request('buscar') || request('estado') || request('proveedor'))
                 <i class="bi bi-search" style="font-size:28px; display:block; margin-bottom:8px;"></i>
                 No se encontraron órdenes con ese criterio.
@@ -68,7 +64,7 @@
 
 @if($ordenes->hasPages())
     <tr>
-        <td colspan="7">
+        <td colspan="6">
             <div class="d-flex justify-content-between align-items-center py-3 px-1">
                 <span style="font-size:13px; color:var(--text-muted);">
                     Mostrando {{ $ordenes->firstItem() }}–{{ $ordenes->lastItem() }}

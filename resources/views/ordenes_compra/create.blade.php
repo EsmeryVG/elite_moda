@@ -4,14 +4,14 @@
 @section('page_subtitle', 'Registra una nueva orden de compra')
 
 @section('content')
+<input type="hidden" id="itbisPorcentajeData" value="{{ $itbisPorcentaje }}">
+
 <form action="{{ route('ordenes_compra.store') }}" method="POST" id="formOrden">
 @csrf
 
 <div class="row g-4">
 
-    {{-- Columna izquierda --}}
     <div class="col-lg-4">
-
         <div class="card page-card mb-4">
             <div class="card-body p-4">
                 <p class="prod-section-title">Información general</p>
@@ -58,6 +58,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label">Número de cotización/factura</label>
+                    <input type="text" name="numero_factura"
+                           class="form-control"
+                           value="{{ old('numero_factura') }}"
+                           placeholder="Ej: COT-0234 (opcional en borrador)">
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">
                         Fecha <span style="color:var(--accent);">*</span>
                     </label>
@@ -79,13 +87,12 @@
                 <div class="mb-3">
                     <label class="form-label">Observaciones</label>
                     <textarea name="observaciones" class="form-control" rows="3"
-                              placeholder="Notas u observaciones opcionales">{{ old('observaciones') }}</textarea>
+                              placeholder="Notas u observaciones opcionales...">{{ old('observaciones') }}</textarea>
                 </div>
 
             </div>
         </div>
 
-        {{-- Totales --}}
         <div class="card page-card mb-4">
             <div class="card-body p-4">
                 <p class="prod-section-title">Resumen</p>
@@ -95,7 +102,7 @@
                         <span id="resumenSubtotal">RD$ 0.00</span>
                     </div>
                     <div class="totales-row">
-                        <span>ITBIS (18%)</span>
+                        <span>ITBIS ({{ $itbisPorcentaje }}%)</span>
                         <span id="resumenImpuesto">RD$ 0.00</span>
                     </div>
                     <div class="totales-row">
@@ -106,7 +113,6 @@
             </div>
         </div>
 
-        {{-- Acciones --}}
         <div class="card page-card">
             <div class="card-body p-4">
                 <div class="d-grid gap-2">
@@ -119,10 +125,8 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    {{-- Columna derecha: líneas --}}
     <div class="col-lg-8">
         <div class="card page-card">
             <div class="card-body p-4">
@@ -144,8 +148,8 @@
 
                 <p class="text-muted mt-3" style="font-size:12px;">
                     <i class="bi bi-info-circle me-1"></i>
-                    Para líneas por <strong>variante</strong> busca el producto ya registrado.
-                    Para líneas por <strong>características</strong> describe libremente lo que vas a comprar.
+                    El precio unitario es el de la cotización del proveedor.
+                    Marca "Precio incluye ITBIS" si la cotización ya lo trae incluido.
                 </p>
 
             </div>

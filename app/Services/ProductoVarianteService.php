@@ -2,15 +2,40 @@
 
 namespace App\Services;
 
+use App\Models\Almacen;
 use App\Models\Producto;
 use App\Models\AtributoValor;
+use App\Models\Stock;
 use App\Models\VarianteProducto;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ProductoVarianteService
 {
-    // ── Crear variante individual (edición posterior) ──
+    // ── Inicializar stock en todos los almacenes activos ─
+
+    private function inicializarStock(VarianteProducto $variante): void
+    {
+        $almacenes = Almacen::where('estado', true)->get();
+
+        foreach ($almacenes as $almacen) {
+            Stock::firstOrCreate(
+                [
+                    'variante_producto_id' => $variante->id,
+                    'almacen_id'           => $almacen->id,
+                ],
+                [
+                    'cantidad_disponible' => 0,
+                    'cantidad_vendida'    => 0,
+                    'cantidad_devuelta'   => 0,
+                    'cantidad_mermada'    => 0,
+                    'stock_minimo'        => 5,
+                ]
+            );
+        }
+    }
+
+    // ── Crear variante individual (edición posterior) ────
 
     public function crearVarianteDinamica(Producto $producto, array $data): VarianteProducto
     {
@@ -41,12 +66,13 @@ class ProductoVarianteService
 
             $variante->valores()->sync($atributoValorIds);
             $this->sincronizarAtributosProducto($producto, $atributoValorIds);
+            $this->inicializarStock($variante);
 
             return $variante;
         });
     }
 
-    // ── Crear producto simple (variante default) ────────
+    // ── Crear producto simple (variante default) ─────────
 
     public function crearVarianteDefault(Producto $producto, array $data): VarianteProducto
     {
@@ -63,11 +89,13 @@ class ProductoVarianteService
             $variante->codigo = 'VAR-' . str_pad($variante->id, 3, '0', STR_PAD_LEFT);
             $variante->save();
 
+            $this->inicializarStock($variante);
+
             return $variante;
         });
     }
 
-    // ── Crear múltiples variantes desde grilla ──────────
+    // ── Crear múltiples variantes desde grilla ───────────
 
     public function crearVariantesMasivo(Producto $producto, array $variantes): void
     {
@@ -82,13 +110,13 @@ class ProductoVarianteService
                 $this->validarCombinacionNoDuplicada($producto, $atributoValorIds);
 
                 $variante = VarianteProducto::create([
-                    'producto_id'      => $producto->id,
-                    'descripcion'      => $datos['descripcion'] ?? null,
-                    'costo'            => $datos['costo'] ?? null,
-                    'precio_venta'     => $datos['precio_venta'],
-                    'codigo_barras'    => !empty($datos['codigo_barras']) ? $datos['codigo_barras'] : null,
-                    'es_default'       => false,
-                    'estado'           => true,
+                    'producto_id'   => $producto->id,
+                    'descripcion'   => $datos['descripcion'] ?? null,
+                    'costo'         => $datos['costo'] ?? null,
+                    'precio_venta'  => $datos['precio_venta'],
+                    'codigo_barras' => !empty($datos['codigo_barras']) ? $datos['codigo_barras'] : null,
+                    'es_default'    => false,
+                    'estado'        => true,
                 ]);
 
                 $variante->codigo = 'VAR-' . str_pad($variante->id, 3, '0', STR_PAD_LEFT);
@@ -96,11 +124,12 @@ class ProductoVarianteService
 
                 $variante->valores()->sync($atributoValorIds);
                 $this->sincronizarAtributosProducto($producto, $atributoValorIds);
+                $this->inicializarStock($variante);
             }
         });
     }
 
-    // ── Actualizar variante individual ──────────────────
+    // ── Actualizar variante individual ───────────────────
 
     public function actualizarVarianteDinamica(VarianteProducto $variante, array $data): VarianteProducto
     {
@@ -120,10 +149,10 @@ class ProductoVarianteService
             }
 
             $variante->update([
-                'descripcion'      => $data['descripcion'] ?? null,
-                'costo'            => $data['costo'] ?? null,
-                'precio_venta'     => $data['precio_venta'],
-                'codigo_barras'    => $data['codigo_barras'] ?? null,
+                'descripcion'   => $data['descripcion'] ?? null,
+                'costo'         => $data['costo'] ?? null,
+                'precio_venta'  => $data['precio_venta'],
+                'codigo_barras' => $data['codigo_barras'] ?? null,
             ]);
 
             if (!$variante->es_default) {
@@ -131,11 +160,15 @@ class ProductoVarianteService
                 $this->sincronizarAtributosProducto($variante->producto, $atributoValorIds);
             }
 
+            // Al actualizar también asegurar que tiene stock en todos los almacenes
+            // por si se agregó un almacén nuevo después de crear la variante
+            $this->inicializarStock($variante);
+
             return $variante;
         });
     }
 
-    // ── Helpers privados ────────────────────────────────
+    // ── Helpers privados ─────────────────────────────────
 
     private function sincronizarAtributosProducto(Producto $producto, array $atributoValorIds): void
     {

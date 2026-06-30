@@ -14,7 +14,6 @@ class DetalleRecepcion extends Model
     protected $fillable = [
         'recepcion_id',
         'detalle_orden_id',
-        'variante_producto_id',
         'cantidad_recibida',
         'cantidad_aceptada',
         'estado_calidad',
@@ -33,11 +32,6 @@ class DetalleRecepcion extends Model
 
     public function variante()
     {
-        return $this->belongsTo(VarianteProducto::class, 'variante_producto_id');
-    }
-
-    public function estaAsociada(): bool
-    {
-        return !is_null($this->variante_producto_id);
+        return $this->detalleOrden?->variante;
     }
 }
