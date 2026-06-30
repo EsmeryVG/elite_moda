@@ -14,9 +14,6 @@
             {{ $recepcion->orden?->proveedor?->nombre ?? '—' }}
         </td>
         <td style="font-size:13px; color:var(--text-muted);">
-            {{ $recepcion->orden?->almacen?->nombre ?? '—' }}
-        </td>
-        <td style="font-size:13px; color:var(--text-muted);">
             {{ $recepcion->fecha->format('d/m/Y') }}
         </td>
         <td>
@@ -43,7 +40,7 @@
     </tr>
 @empty
     <tr>
-        <td colspan="7" class="text-center py-5" style="color:var(--text-muted);">
+        <td colspan="6" class="text-center py-5" style="color:var(--text-muted);">
             @if(request('buscar') || request('tipo'))
                 <i class="bi bi-search" style="font-size:28px; display:block; margin-bottom:8px;"></i>
                 No se encontraron recepciones con ese criterio.
@@ -61,7 +58,7 @@
 
 @if($recepciones->hasPages())
     <tr>
-        <td colspan="7">
+        <td colspan="6">
             <div class="d-flex justify-content-between align-items-center py-3 px-1">
                 <span style="font-size:13px; color:var(--text-muted);">
                     Mostrando {{ $recepciones->firstItem() }}–{{ $recepciones->lastItem() }}

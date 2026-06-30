@@ -44,8 +44,8 @@
                         data-estado="">Todas</button>
                 <button class="btn btn-sm em-filtro {{ request('estado') === 'borrador' ? 'active' : '' }}"
                         data-estado="borrador">Borrador</button>
-                <button class="btn btn-sm em-filtro {{ request('estado') === 'enviada' ? 'active' : '' }}"
-                        data-estado="enviada">Enviada</button>
+                <button class="btn btn-sm em-filtro {{ request('estado') === 'confirmada' ? 'active' : '' }}"
+                        data-estado="confirmada">Confirmada</button>
                 <button class="btn btn-sm em-filtro {{ request('estado') === 'parcial' ? 'active' : '' }}"
                         data-estado="parcial">Parcial</button>
                 <button class="btn btn-sm em-filtro {{ request('estado') === 'completada' ? 'active' : '' }}"
@@ -65,7 +65,6 @@
                         <th>Almacén</th>
                         <th style="width:110px;">Fecha</th>
                         <th style="width:110px;">Estado</th>
-                        <th style="width:130px;" class="text-end">Total</th>
                         <th style="width:100px;" class="text-end">Acciones</th>
                     </tr>
                 </thead>

@@ -4,12 +4,19 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: [
+           input: [
                 'resources/sass/app.scss',
                 'resources/css/dashboard.css',
                 'resources/css/categorias.css',
                 'resources/css/atributos.css',
                 'resources/css/productos.css',
+                'resources/css/sucursales.css',
+                'resources/css/almacenes.css',
+                'resources/css/proveedores.css',
+                'resources/css/clientes.css',
+                'resources/css/ordenes_compra.css',
+                'resources/css/usuarios.css',
+                'resources/css/inventario.css',
                 'resources/js/app.js',
                 'resources/js/dashboard.js',
                 'resources/js/categorias.js',
@@ -23,6 +30,8 @@ export default defineConfig({
                 'resources/js/recepciones.js',
                 'resources/js/usuarios.js',
                 'resources/js/empleados.js',
+                'resources/js/inventario.js',
+                'resources/js/movimientos.js'
             ],
             refresh: true,
         }),

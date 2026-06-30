@@ -17,6 +17,9 @@ use App\Http\Controllers\RecepcionMercanciaController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\MovimientoInventarioController;
+use App\Http\Controllers\AjusteInventarioController;
 
 Route::get('/', function () {
     return view('inicio');
@@ -102,12 +105,11 @@ Route::delete('grupo_clientes/{grupo_cliente}',     [GrupoClienteController::cla
 
 // Órdenes de compra
 Route::resource('ordenes_compra', OrdenCompraController::class)->except(['destroy']);
-Route::patch('ordenes_compra/{ordenes_compra}/enviar',  [OrdenCompraController::class, 'enviar'])
-    ->name('ordenes_compra.enviar');
-Route::patch('ordenes_compra/{ordenes_compra}/cancelar', [OrdenCompraController::class, 'cancelar'])
-    ->name('ordenes_compra.cancelar');
+Route::patch('ordenes_compra/{ordenes_compra}/confirmar', [OrdenCompraController::class, 'confirmar'])->name('ordenes_compra.confirmar');
+Route::patch('ordenes_compra/{ordenes_compra}/cancelar',  [OrdenCompraController::class, 'cancelar'])->name('ordenes_compra.cancelar');
 Route::get('api/variantes/buscar', [OrdenCompraController::class, 'buscarVariantes'])
     ->name('api.variantes.buscar');
+
 
 // Recepción de mercancía
 Route::get('recepciones',                [RecepcionMercanciaController::class, 'index'])
@@ -145,3 +147,17 @@ Route::get('empleados/{empleado}/edit',     [EmpleadoController::class, 'edit'])
 Route::put('empleados/{empleado}',          [EmpleadoController::class, 'update'])->name('empleados.update');
 Route::delete('empleados/{empleado}',       [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
 Route::patch('empleados/{empleado}/reactivar', [EmpleadoController::class, 'reactivar'])->name('empleados.reactivar');
+
+// Stock
+
+Route::get('inventario/stock', [StockController::class, 'index'])->name('stock.index');
+Route::get('inventario/movimientos', [MovimientoInventarioController::class, 'index'])->name('movimientos.index');
+
+// Ajustes de inventario
+Route::get('ajustes',                    [AjusteInventarioController::class, 'index'])->name('ajustes.index');
+Route::get('ajustes/create',             [AjusteInventarioController::class, 'create'])->name('ajustes.create');
+Route::post('ajustes',                   [AjusteInventarioController::class, 'store'])->name('ajustes.store');
+Route::get('ajustes/{ajuste}',           [AjusteInventarioController::class, 'show'])->name('ajustes.show');
+Route::patch('ajustes/{ajuste}/aprobar', [AjusteInventarioController::class, 'aprobar'])->name('ajustes.aprobar');
+Route::patch('ajustes/{ajuste}/rechazar',[AjusteInventarioController::class, 'rechazar'])->name('ajustes.rechazar');
+Route::get('api/stock/buscar',           [AjusteInventarioController::class, 'buscarStockVariante'])->name('api.stock.buscar');

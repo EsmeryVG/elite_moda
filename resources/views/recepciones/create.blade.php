@@ -92,7 +92,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Observaciones</label>
-                    <textarea name="observaciones" class="form-control" rows="3"
+                    <textarea name="observaciones" class="form-control" rows="2"
                               placeholder="Notas opcionales...">{{ old('observaciones') }}</textarea>
                 </div>
 
@@ -122,50 +122,27 @@
                 <h6 class="fw-semibold mb-4">Líneas de la orden</h6>
 
                 @foreach($orden->detalles as $i => $detalle)
-                    <div class="linea-card mb-3">
+                    <div class="linea-card mb-3 linea-recepcion-card">
 
                         <input type="hidden"
                                name="lineas[{{ $i }}][detalle_orden_id]"
                                value="{{ $detalle->id }}">
 
-                        {{-- Header de la línea --}}
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                @if($detalle->esPorCaracteristicas())
-                                    <span class="badge-tipo-caracteristicas mb-1"
-                                          style="display:inline-block;">
-                                        Características
-                                    </span>
-                                    <div class="fw-semibold" style="font-size:14px;">
-                                        {{ $detalle->caracteristicas_solicitadas['descripcion'] ?? '—' }}
-                                    </div>
-                                    @if(!empty($detalle->caracteristicas_solicitadas['notas']))
-                                        <div style="font-size:12px; color:var(--text-muted);">
-                                            {{ $detalle->caracteristicas_solicitadas['notas'] }}
-                                        </div>
-                                    @endif
-                                @else
-                                    <span class="badge-tipo-variante mb-1"
-                                          style="display:inline-block;">
-                                        Variante
-                                    </span>
-                                    <div class="fw-semibold" style="font-size:14px;">
-                                        {{ $detalle->variante?->producto?->nombre }}
-                                    </div>
-                                    <div style="font-size:12px; color:var(--text-muted);">
-                                        @foreach($detalle->variante?->valores ?? [] as $valor)
-                                            {{ $valor->atributo?->nombre }}: {{ $valor->valor }}
-                                            @if(!$loop->last) · @endif
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div class="fw-semibold" style="font-size:14px;">
+                                    {{ $detalle->variante?->producto?->nombre }}
+                                </div>
+                                <div style="font-size:12px; color:var(--text-muted);">
+                                    @foreach($detalle->variante?->valores ?? [] as $valor)
+                                        {{ $valor->atributo?->nombre }}: {{ $valor->valor }}
+                                        @if(!$loop->last) · @endif
+                                    @endforeach
+                                </div>
                             </div>
                             <div class="text-end">
-                                <div style="font-size:11px; color:var(--text-muted);">
-                                    Solicitado
-                                </div>
-                                <div style="font-size:18px; font-weight:700;
-                                            color:var(--text-primary);">
+                                <div style="font-size:11px; color:var(--text-muted);">Solicitado</div>
+                                <div style="font-size:18px; font-weight:700; color:var(--text-primary);">
                                     {{ $detalle->cantidad_solicitada }}
                                 </div>
                                 <div style="font-size:11px; color:var(--text-muted);">
@@ -174,36 +151,6 @@
                             </div>
                         </div>
 
-                        {{-- Si es por características: selector de variante --}}
-                        @if($detalle->esPorCaracteristicas())
-                            <div class="mb-3 p-3"
-                                 style="border:1px dashed var(--border);
-                                        border-radius:var(--radius-sm);
-                                        background:var(--bg-surface);">
-                                <label style="font-size:11px; font-weight:600;
-                                              text-transform:uppercase; letter-spacing:0.06em;
-                                              color:var(--text-muted); margin-bottom:8px;
-                                              display:block;">
-                                    Asociar a variante del sistema
-                                </label>
-                                <select id="varianteCaract-{{ $i }}"
-                                        name="lineas[{{ $i }}][variante_id]"
-                                        placeholder="Buscar variante o dejar sin asociar...">
-                                </select>
-                                <p style="font-size:11px; color:var(--text-muted);
-                                          margin-top:6px; margin-bottom:0;">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Si no asocias una variante, el stock quedará
-                                    <strong>pendiente de asociar</strong>.
-                                </p>
-                            </div>
-                        @else
-                            <input type="hidden"
-                                   name="lineas[{{ $i }}][variante_id]"
-                                   value="{{ $detalle->variante_producto_id }}">
-                        @endif
-
-                        {{-- Cantidades y calidad --}}
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label style="font-size:11px; font-weight:600;
@@ -244,8 +191,7 @@
                                               display:block;">
                                     Calidad *
                                 </label>
-                                <select name="lineas[{{ $i }}][estado_calidad]"
-                                        class="form-select">
+                                <select name="lineas[{{ $i }}][estado_calidad]" class="form-select">
                                     <option value="conforme"
                                             {{ old('lineas.'.$i.'.estado_calidad', 'conforme') === 'conforme' ? 'selected' : '' }}>
                                         Conforme

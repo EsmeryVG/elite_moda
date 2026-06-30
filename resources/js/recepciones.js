@@ -89,6 +89,64 @@ document.addEventListener('DOMContentLoaded', () => {
     tipoSelect?.addEventListener('change', toggleMotivo);
     toggleMotivo();
 
+    // ── Cálculo de totales ──────────────────────────
+    function calcularTotales() {
+        let subtotal = 0;
+        let impuesto = 0;
+
+        document.querySelectorAll('.linea-recepcion-card').forEach(card => {
+            const cantidad    = parseFloat(card.querySelector('.linea-cantidad-aceptada')?.value) || 0;
+            const precio      = parseFloat(card.querySelector('.linea-precio')?.value) || 0;
+            const itbisAplica = card.querySelector('.linea-itbis')?.checked ?? false;
+
+            const lineaSubtotal = cantidad * precio;
+            subtotal += lineaSubtotal;
+
+            if (itbisAplica) {
+                impuesto += lineaSubtotal * 0.18;
+            }
+
+            // Actualizar subtotal de la línea
+            const subtotalSpan = card.querySelector('.linea-subtotal');
+            if (subtotalSpan) {
+                subtotalSpan.textContent = 'RD$ ' + lineaSubtotal.toLocaleString('es-DO', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+            }
+        });
+
+        const total = subtotal + impuesto;
+        const fmt = val => 'RD$ ' + val.toLocaleString('es-DO', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+
+        const elSubtotal = document.getElementById('resumenSubtotal');
+        const elImpuesto = document.getElementById('resumenImpuesto');
+        const elTotal    = document.getElementById('resumenTotal');
+
+        if (elSubtotal) elSubtotal.textContent = fmt(subtotal);
+        if (elImpuesto) elImpuesto.textContent = fmt(impuesto);
+        if (elTotal)    elTotal.textContent    = fmt(total);
+    }
+
+    // Bind eventos de cálculo
+    document.addEventListener('input', function (e) {
+        if (e.target.classList.contains('linea-precio') ||
+            e.target.classList.contains('linea-cantidad-aceptada')) {
+            calcularTotales();
+        }
+    });
+
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('linea-itbis')) {
+            calcularTotales();
+        }
+    });
+
+    calcularTotales();
+
     // ── Tom Select para líneas por características ──
     document.querySelectorAll('[id^="varianteCaract-"]').forEach(el => {
         new TomSelect(el, {
