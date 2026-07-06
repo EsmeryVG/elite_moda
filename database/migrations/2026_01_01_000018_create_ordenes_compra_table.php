@@ -51,16 +51,17 @@ return new class extends Migration
         $table->timestamps();
     });
 
-Schema::create('detalle_recepciones', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('recepcion_id')->constrained('recepciones_mercancia')->cascadeOnDelete();
-    $table->foreignId('detalle_orden_id')->constrained('detalle_ordenes_compra');
-    $table->integer('cantidad_recibida');
-    $table->integer('cantidad_aceptada');
-    $table->enum('estado_calidad', ['conforme', 'no_conforme'])->default('conforme');
-    $table->string('observacion')->nullable();
-    $table->timestamps();
-});
+    Schema::create('detalle_recepciones', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('recepcion_id')->constrained('recepciones_mercancia')->cascadeOnDelete();
+        $table->foreignId('detalle_orden_id')->constrained('detalle_ordenes_compra');
+        $table->integer('cantidad_recibida');
+        $table->integer('cantidad_aceptada');
+        $table->enum('estado_calidad', ['conforme', 'no_conforme'])->default('conforme');
+        $table->string('observacion')->nullable();
+        $table->timestamps();
+    });
+    
     }
 
     public function down(): void

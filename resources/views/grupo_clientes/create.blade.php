@@ -30,32 +30,18 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Descuento base (%)</label>
-                        <div class="input-group">
-                            <input type="number" name="descuento_base"
-                                   class="form-control @error('descuento_base') is-invalid @enderror"
-                                   value="{{ old('descuento_base', 0) }}"
-                                   placeholder="0" step="0.01" min="0" max="100">
-                            <span class="input-group-text"
-                                  style="background:var(--bg-elevated);
-                                         border-color:var(--border);
-                                         color:var(--text-muted);">%</span>
-                        </div>
-                        @error('descuento_base')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <small class="text-muted">
-                            Descuento automático aplicado a todos los clientes del grupo.
-                        </small>
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Descripción</label>
                         <input type="text" name="descripcion"
                                class="form-control"
                                value="{{ old('descripcion') }}"
                                placeholder="Descripción opcional del grupo">
                     </div>
+
+                    <p class="text-muted mt-3" style="font-size:12px;">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Los descuentos para este grupo se configuran desde el módulo
+                        de <a href="{{ route('descuentos.index') }}">Descuentos</a>.
+                    </p>
 
                 </form>
             </div>

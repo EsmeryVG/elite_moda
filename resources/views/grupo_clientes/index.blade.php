@@ -22,7 +22,6 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>
-                        <th style="width:130px; text-align:center;">Descuento base</th>
                         <th style="width:100px; text-align:center;">Clientes</th>
                         <th style="width:100px;" class="text-end">Acciones</th>
                     </tr>
@@ -33,18 +32,6 @@
                             <td class="fw-semibold">{{ $grupo->nombre }}</td>
                             <td style="font-size:13px; color:var(--text-muted);">
                                 {{ $grupo->descripcion ?? '—' }}
-                            </td>
-                            <td class="text-center">
-                                @if($grupo->descuento_base > 0)
-                                    <span class="badge rounded-pill"
-                                          style="background:rgba(211,47,47,0.10);
-                                                 color:var(--accent); font-size:12px;
-                                                 padding:4px 10px;">
-                                        {{ $grupo->descuento_base }}%
-                                    </span>
-                                @else
-                                    <span style="color:var(--text-muted); font-size:13px;">—</span>
-                                @endif
                             </td>
                             <td class="text-center" style="font-size:13px; color:var(--text-muted);">
                                 {{ $grupo->clientes_count }}
@@ -69,7 +56,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center py-5"
+                            <td colspan="4" class="text-center py-5"
                                 style="color:var(--text-muted);">
                                 <i class="bi bi-inbox"
                                    style="font-size:28px; display:block; margin-bottom:8px;"></i>

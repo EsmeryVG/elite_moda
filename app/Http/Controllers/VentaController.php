@@ -1,0 +1,411 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Almacen;
+use App\Models\Cliente;
+use App\Models\Comision;
+use App\Models\ComprobanteFiscal;
+use App\Models\Configuracion;
+use App\Models\DetalleVenta;
+use App\Models\Empleado;
+use App\Models\MovimientoInventario;
+use App\Models\Pago;
+use App\Models\Stock;
+use App\Models\Sucursal;
+use App\Models\TipoPago;
+use App\Models\Venta;
+use App\Models\VarianteProducto;
+use App\Services\DescuentoService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+
+class VentaController extends Controller
+{
+    public function index(Request $request)
+    {
+        $query = Venta::with(['cliente', 'empleado', 'usuario'])
+                      ->orderBy('fecha', 'desc');
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('buscar')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('codigo', 'like', '%' . $request->buscar . '%')
+                  ->orWhere('ncf', 'like', '%' . $request->buscar . '%');
+            });
+        }
+
+        $ventas = $query->paginate(15)->withQueryString();
+
+        if ($request->ajax()) {
+            return view('ventas._tabla', compact('ventas'))->render();
+        }
+
+        return view('ventas.index', compact('ventas'));
+    }
+
+    public function create()
+    {
+        $clienteDefault = Cliente::where('es_default', true)->first();
+        $tiposPago      = TipoPago::activos()->orderBy('nombre')->get();
+
+        return view('ventas.create', compact('clienteDefault', 'tiposPago'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'cliente_id'                => 'required|exists:clientes,id',
+            'empleado_id'                => 'nullable|exists:empleados,id',
+            'itbis_global'                => 'nullable|boolean',
+            'observaciones'              => 'nullable|string',
+            'lineas'                     => 'required|array|min:1',
+            'lineas.*.variante_id'       => 'required|exists:variante_productos,id',
+            'lineas.*.cantidad'          => 'required|integer|min:1',
+            'pagos'                      => 'required|array|min:1',
+            'pagos.*.tipo_pago_id'       => 'required|exists:tipos_pago,id',
+            'pagos.*.monto'              => 'required|numeric|min:0.01',
+            'pagos.*.referencia'         => 'nullable|string',
+            'pagos.*.banco'              => 'nullable|string',
+        ], [
+            'cliente_id.required'  => 'El cliente es obligatorio.',
+            'lineas.required'      => 'Debes agregar al menos un producto.',
+            'pagos.required'       => 'Debes registrar al menos un método de pago.',
+        ]);
+
+        $itbisPorcentaje = (float) Configuracion::get('itbis_porcentaje', 18);
+        $cliente         = Cliente::findOrFail($request->cliente_id);
+        $almacenId       = $this->obtenerAlmacenVenta();
+
+        if (!$almacenId) {
+            throw ValidationException::withMessages([
+                'almacen' => 'No hay un almacén disponible para procesar la venta.',
+            ]);
+        }
+
+        // Validar disponibilidad de stock antes de iniciar la transacción
+        foreach ($request->lineas as $linea) {
+            $stock = Stock::where('variante_producto_id', $linea['variante_id'])
+                          ->where('almacen_id', $almacenId)
+                          ->first();
+
+            $disponible = $stock?->cantidad_disponible ?? 0;
+
+            if ($disponible < $linea['cantidad']) {
+                $variante = VarianteProducto::find($linea['variante_id']);
+                throw ValidationException::withMessages([
+                    'lineas' => "Stock insuficiente para {$variante?->producto?->nombre}. Disponible: {$disponible}.",
+                ]);
+            }
+        }
+
+        $venta = DB::transaction(function () use ($request, $itbisPorcentaje, $cliente, $almacenId) {
+
+            $descuentoService = new DescuentoService();
+            $itbisGlobal      = $request->boolean('itbis_global', true);
+
+            $subtotalVenta  = 0;
+            $impuestoVenta  = 0;
+            $descuentoVenta = 0;
+
+            // Determinar comprobante fiscal según si el cliente tiene RNC
+            $tipoComprobante = $cliente->rnc ? 'Crédito Fiscal' : 'Consumidor Final';
+            $comprobante = ComprobanteFiscal::activos()
+                ->where('tipo_comprobante', $tipoComprobante)
+                ->whereColumn('numero_actual', '<=', 'rango_fin')
+                ->where('fecha_vencimiento', '>=', now())
+                ->lockForUpdate()
+                ->first();
+
+            if (!$comprobante) {
+                throw ValidationException::withMessages([
+                    'ncf' => "No hay comprobantes fiscales disponibles del tipo {$tipoComprobante}.",
+                ]);
+            }
+
+            $ncf = $comprobante->siguienteNumero();
+            $comprobante->increment('numero_actual');
+
+            $venta = Venta::create([
+                'cliente_id'             => $cliente->id,
+                'empleado_id'            => $request->empleado_id,
+                'almacen_id'             => $almacenId,
+                'usuario_id'             => Auth::id() ?? 1,
+                'fecha'                  => now(),
+                'estado'                 => 'pendiente',
+                'ncf'                    => $ncf,
+                'comprobante_fiscal_id'  => $comprobante->id,
+                'observaciones'          => $request->observaciones,
+            ]);
+
+            $venta->codigo = 'VTA-' . str_pad($venta->id, 5, '0', STR_PAD_LEFT);
+            $venta->save();
+
+            foreach ($request->lineas as $linea) {
+                $variante       = VarianteProducto::findOrFail($linea['variante_id']);
+                $cantidad       = (int) $linea['cantidad'];
+                $precioUnitario = (float) $variante->precio_venta;
+
+                $totalLineaSinDescuento = $cantidad * $precioUnitario;
+
+                // Buscar el mejor descuento aplicable
+                $resultado          = $descuentoService->mejorDescuento($variante, $cliente, $precioUnitario);
+                $descuentoUnitario  = $resultado['monto'];
+                $descuentoLinea     = $descuentoUnitario * $cantidad;
+
+                $precioConDescuento = $totalLineaSinDescuento - $descuentoLinea;
+
+                // Calcular ITBIS sobre el precio ya con descuento (toggle global)
+                $itbisLinea = 0;
+                $baseLinea  = $precioConDescuento;
+
+                if ($itbisGlobal) {
+                    $baseLinea  = $precioConDescuento / (1 + $itbisPorcentaje / 100);
+                    $itbisLinea = $precioConDescuento - $baseLinea;
+                }
+
+                $subtotalVenta  += $baseLinea;
+                $impuestoVenta  += $itbisLinea;
+                $descuentoVenta += $descuentoLinea;
+
+                DetalleVenta::create([
+                    'venta_id'             => $venta->id,
+                    'variante_producto_id' => $variante->id,
+                    'cantidad'             => $cantidad,
+                    'precio_unitario'      => $precioUnitario,
+                    'descuento_aplicado'   => round($descuentoLinea, 2),
+                    'subtotal'             => round($precioConDescuento, 2),
+                    'itbis_aplicado'       => $itbisGlobal,
+                ]);
+
+                // Descontar stock
+                Stock::decrementar($variante->id, $almacenId, $cantidad);
+
+                // Registrar movimiento
+                MovimientoInventario::registrar(
+                    varianteId:     $variante->id,
+                    almacenId:      $almacenId,
+                    tipo:           'salida_venta',
+                    cantidad:       $cantidad,
+                    referenciaTipo: 'venta',
+                    referenciaId:   $venta->id,
+                    motivo:         'Venta — ' . $venta->codigo,
+                    usuarioId:      Auth::id() ?? 1
+                );
+            }
+
+            $totalVenta = $subtotalVenta + $impuestoVenta;
+
+            $venta->update([
+                'subtotal'        => round($subtotalVenta, 2),
+                'descuento_total' => round($descuentoVenta, 2),
+                'impuesto'        => round($impuestoVenta, 2),
+                'total'           => round($totalVenta, 2),
+                'estado'          => 'completada',
+            ]);
+
+            // Registrar pagos
+            foreach ($request->pagos as $pago) {
+                Pago::create([
+                    'venta_id'     => $venta->id,
+                    'tipo_pago_id' => $pago['tipo_pago_id'],
+                    'monto'        => $pago['monto'],
+                    'referencia'   => $pago['referencia'] ?? null,
+                    'banco'        => $pago['banco'] ?? null,
+                    'fecha'        => now(),
+                    'estado'       => 'confirmado',
+                ]);
+            }
+
+            // Calcular comisión del vendedor (no del cajero)
+            if ($request->empleado_id) {
+                $empleado = Empleado::find($request->empleado_id);
+
+                if ($empleado && $empleado->comision_porcentaje > 0) {
+                    $montoComision = round($totalVenta * ($empleado->comision_porcentaje / 100), 2);
+
+                    Comision::create([
+                        'empleado_id'         => $empleado->id,
+                        'venta_id'            => $venta->id,
+                        'monto_venta'         => round($totalVenta, 2),
+                        'porcentaje_comision' => $empleado->comision_porcentaje,
+                        'monto_comision'      => $montoComision,
+                        'estado'              => 'pendiente',
+                        'fecha'               => now(),
+                    ]);
+                }
+            }
+
+            return $venta;
+        });
+
+        return redirect()->route('ventas.show', $venta)
+            ->with('success', 'Venta registrada correctamente.');
+    }
+
+    public function show(Venta $venta)
+    {
+        $venta->load([
+            'cliente',
+            'empleado',
+            'usuario',
+            'comprobanteFiscal',
+            'detalles.variante.producto',
+            'detalles.variante.valores.atributo',
+            'pagos.tipoPago',
+        ]);
+
+        return view('ventas.show', compact('venta'));
+    }
+
+    public function anular(Venta $venta)
+    {
+        if (!$venta->esAnulable()) {
+            return redirect()->route('ventas.show', $venta)
+                ->with('error', 'Esta venta no puede ser anulada.');
+        }
+
+        DB::transaction(function () use ($venta) {
+            $venta->load('detalles');
+
+            foreach ($venta->detalles as $detalle) {
+                Stock::incrementar($detalle->variante_producto_id, $venta->almacen_id, $detalle->cantidad);
+
+                MovimientoInventario::registrar(
+                    varianteId:     $detalle->variante_producto_id,
+                    almacenId:      $venta->almacen_id,
+                    tipo:           'entrada_devolucion',
+                    cantidad:       $detalle->cantidad,
+                    referenciaTipo: 'venta_anulada',
+                    referenciaId:   $venta->id,
+                    motivo:         'Anulación de venta — ' . $venta->codigo,
+                    usuarioId:      Auth::id() ?? 1
+                );
+            }
+
+            $venta->update(['estado' => 'anulada']);
+
+            Comision::where('venta_id', $venta->id)->update(['estado' => 'anulada']);
+        });
+
+        return redirect()->route('ventas.show', $venta)
+            ->with('success', 'Venta anulada. El stock ha sido restaurado.');
+    }
+
+    public function buscarProductos(Request $request)
+    {
+        $q = $request->get('q', '');
+
+        if (strlen($q) < 1) {
+            return response()->json([]);
+        }
+
+        $almacenId = $this->obtenerAlmacenVenta();
+
+        $variantes = VarianteProducto::with(['producto', 'valores.atributo'])
+            ->whereHas('producto', fn($query) => $query->where('estado', true))
+            ->where('estado', true)
+            ->where(function ($query) use ($q) {
+                $query->where('codigo', 'like', "%{$q}%")
+                      ->orWhere('codigo_barras', $q)
+                      ->orWhereHas('producto', fn($pq) =>
+                          $pq->where('nombre', 'like', "%{$q}%")
+                      );
+            })
+            ->limit(15)
+            ->get()
+            ->map(function ($v) use ($almacenId) {
+                $stock = Stock::where('variante_producto_id', $v->id)
+                              ->where('almacen_id', $almacenId)
+                              ->first();
+
+                return [
+                    'id'         => $v->id,
+                    'texto'      => $v->producto?->nombre . ' — ' . $v->valores->map(fn($val) =>
+                        $val->atributo?->nombre . ': ' . $val->valor
+                    )->join(', '),
+                    'codigo'     => $v->codigo,
+                    'precio'     => $v->precio_venta,
+                    'disponible' => $stock?->cantidad_disponible ?? 0,
+                ];
+            });
+
+        return response()->json($variantes);
+    }
+
+    public function buscarEmpleados(Request $request)
+    {
+        $q = $request->get('q', '');
+
+        $empleados = Empleado::where('estado', true)
+            ->where(function ($query) use ($q) {
+                $query->where('nombre', 'like', "%{$q}%")
+                      ->orWhere('apellido', 'like', "%{$q}%")
+                      ->orWhere('codigo', 'like', "%{$q}%");
+            })
+            ->limit(10)
+            ->get()
+            ->map(fn($e) => [
+                'id'    => $e->id,
+                'texto' => $e->nombre_completo . ' (' . $e->codigo . ')',
+            ]);
+
+        return response()->json($empleados);
+    }
+
+    public function buscarClientes(Request $request)
+    {
+        $q = $request->get('q', '');
+
+        $clientes = Cliente::where('estado', true)
+            ->where('es_default', false)
+            ->where(function ($query) use ($q) {
+                $query->where('nombre', 'like', "%{$q}%")
+                      ->orWhere('apellido', 'like', "%{$q}%")
+                      ->orWhere('cedula', 'like', "%{$q}%")
+                      ->orWhere('rnc', 'like', "%{$q}%");
+            })
+            ->limit(10)
+            ->get()
+            ->map(fn($c) => [
+                'id'    => $c->id,
+                'texto' => trim($c->nombre . ' ' . $c->apellido) . ' — ' . ($c->cedula ?? $c->rnc ?? 'sin doc'),
+            ]);
+
+        return response()->json($clientes);
+    }
+
+    /**
+     * Determina el almacén desde el cual se descuenta el stock en una venta.
+     * Lógica temporal hasta implementar el módulo de Caja:
+     * 1. Almacén secundario de la sucursal principal
+     * 2. Si no existe, cualquier almacén secundario activo
+     * 3. Si no existe, cualquier almacén activo
+     */
+    private function obtenerAlmacenVenta(): ?int
+    {
+        $sucursalPrincipal = Sucursal::where('es_principal', true)->first();
+
+        if ($sucursalPrincipal) {
+            $almacen = Almacen::where('estado', true)
+                ->where('sucursal_id', $sucursalPrincipal->id)
+                ->where('tipo', 'secundario')
+                ->first();
+
+            if ($almacen) return $almacen->id;
+        }
+
+        $almacenSecundario = Almacen::where('estado', true)
+            ->where('tipo', 'secundario')
+            ->first();
+
+        if ($almacenSecundario) return $almacenSecundario->id;
+
+        return Almacen::where('estado', true)->first()?->id;
+    }
+}

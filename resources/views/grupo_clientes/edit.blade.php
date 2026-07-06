@@ -29,23 +29,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Descuento base (%)</label>
-                        <div class="input-group">
-                            <input type="number" name="descuento_base"
-                                   class="form-control @error('descuento_base') is-invalid @enderror"
-                                   value="{{ old('descuento_base', $grupo_cliente->descuento_base) }}"
-                                   placeholder="0" step="0.01" min="0" max="100">
-                            <span class="input-group-text"
-                                  style="background:var(--bg-elevated);
-                                         border-color:var(--border);
-                                         color:var(--text-muted);">%</span>
-                        </div>
-                        @error('descuento_base')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
                         <label class="form-label">Descripción</label>
                         <input type="text" name="descripcion"
                                class="form-control"
@@ -82,6 +65,21 @@
                 <p style="font-size:12px; color:var(--text-muted); margin:0;">
                     clientes asociados
                 </p>
+            </div>
+        </div>
+
+        <div class="card page-card">
+            <div class="card-body p-4">
+                <h6 class="fw-semibold mb-2">Descuentos activos</h6>
+                <p style="font-size:28px; font-weight:700; color:var(--text-primary); margin:0;">
+                    {{ $grupo_cliente->descuentos()->where('estado', true)->count() }}
+                </p>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 12px;">
+                    descuentos vigentes para este grupo
+                </p>
+                <a href="{{ route('descuentos.create') }}" class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-plus-circle me-1"></i> Crear descuento
+                </a>
             </div>
         </div>
 
