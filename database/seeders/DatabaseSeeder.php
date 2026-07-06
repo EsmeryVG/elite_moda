@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ProveedorSeeder::class,
             RolSeeder::class,
             UserSeeder::class,
+            TipoPagoSeeder::class,
+            ComprobanteFiscalSeeder::class,
             EmpleadoSeeder::class,
         ]);
     }

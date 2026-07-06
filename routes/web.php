@@ -20,6 +20,11 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\MovimientoInventarioController;
 use App\Http\Controllers\AjusteInventarioController;
+use App\Http\Controllers\TipoPagoController;
+use App\Http\Controllers\ComprobanteFiscalController;
+use App\Http\Controllers\DescuentoController;
+use App\Http\Controllers\VentaController;
+
 
 Route::get('/', function () {
     return view('inicio');
@@ -95,6 +100,7 @@ Route::put('clientes/{cliente}',        [ClienteController::class, 'update'])->n
 Route::delete('clientes/{cliente}',     [ClienteController::class, 'destroy'])->name('clientes.destroy');
 Route::patch('clientes/{cliente}/reactivar', [ClienteController::class, 'reactivar'])->name('clientes.reactivar');
 
+
 // Grupos de clientes
 Route::get('grupo_clientes',                        [GrupoClienteController::class, 'index'])->name('grupo_clientes.index');
 Route::get('grupo_clientes/create',                 [GrupoClienteController::class, 'create'])->name('grupo_clientes.create');
@@ -161,3 +167,42 @@ Route::get('ajustes/{ajuste}',           [AjusteInventarioController::class, 'sh
 Route::patch('ajustes/{ajuste}/aprobar', [AjusteInventarioController::class, 'aprobar'])->name('ajustes.aprobar');
 Route::patch('ajustes/{ajuste}/rechazar',[AjusteInventarioController::class, 'rechazar'])->name('ajustes.rechazar');
 Route::get('api/stock/buscar',           [AjusteInventarioController::class, 'buscarStockVariante'])->name('api.stock.buscar');
+
+// Comprobantes Fiscales
+Route::get('comprobantes',                      [ComprobanteFiscalController::class, 'index'])->name('comprobantes.index');
+Route::get('comprobantes/create',               [ComprobanteFiscalController::class, 'create'])->name('comprobantes.create');
+Route::post('comprobantes',                     [ComprobanteFiscalController::class, 'store'])->name('comprobantes.store');
+Route::get('comprobantes/{comprobante}',        [ComprobanteFiscalController::class, 'show'])->name('comprobantes.show');
+Route::patch('comprobantes/{comprobante}/desactivar', [ComprobanteFiscalController::class, 'desactivar'])->name('comprobantes.desactivar');
+Route::patch('comprobantes/{comprobante}/reactivar',  [ComprobanteFiscalController::class, 'reactivar'])->name('comprobantes.reactivar');
+
+// Tipos de Pago
+Route::get('tipos_pago',                       [TipoPagoController::class, 'index'])->name('tipos_pago.index');
+Route::get('tipos_pago/create',                [TipoPagoController::class, 'create'])->name('tipos_pago.create');
+Route::post('tipos_pago',                      [TipoPagoController::class, 'store'])->name('tipos_pago.store');
+Route::get('tipos_pago/{tipo_pago}/edit',      [TipoPagoController::class, 'edit'])->name('tipos_pago.edit');
+Route::put('tipos_pago/{tipo_pago}',           [TipoPagoController::class, 'update'])->name('tipos_pago.update');
+Route::delete('tipos_pago/{tipo_pago}',        [TipoPagoController::class, 'destroy'])->name('tipos_pago.destroy');
+Route::patch('tipos_pago/{tipo_pago}/reactivar', [TipoPagoController::class, 'reactivar'])->name('tipos_pago.reactivar');
+
+// Descuentos
+Route::get('descuentos',                      [DescuentoController::class, 'index'])->name('descuentos.index');
+Route::get('descuentos/create',               [DescuentoController::class, 'create'])->name('descuentos.create');
+Route::post('descuentos',                     [DescuentoController::class, 'store'])->name('descuentos.store');
+Route::get('descuentos/{descuento}',          [DescuentoController::class, 'show'])->name('descuentos.show');
+Route::get('descuentos/{descuento}/edit',     [DescuentoController::class, 'edit'])->name('descuentos.edit');
+Route::put('descuentos/{descuento}',          [DescuentoController::class, 'update'])->name('descuentos.update');
+Route::delete('descuentos/{descuento}',       [DescuentoController::class, 'destroy'])->name('descuentos.destroy');
+Route::patch('descuentos/{descuento}/reactivar', [DescuentoController::class, 'reactivar'])->name('descuentos.reactivar');
+Route::get('api/descuentos/calcular', [DescuentoController::class, 'calcular'])->name('api.descuentos.calcular');
+
+// Ventas
+Route::get('ventas',                [VentaController::class, 'index'])->name('ventas.index');
+Route::get('ventas/create',         [VentaController::class, 'create'])->name('ventas.create');
+Route::post('ventas',               [VentaController::class, 'store'])->name('ventas.store');
+Route::get('ventas/{venta}',        [VentaController::class, 'show'])->name('ventas.show');
+Route::patch('ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
+
+Route::get('api/productos/buscar', [VentaController::class, 'buscarProductos'])->name('api.productos.buscar');
+Route::get('api/empleados/buscar', [VentaController::class, 'buscarEmpleados'])->name('api.empleados.buscar');
+Route::get('api/clientes/buscar', [VentaController::class, 'buscarClientes'])->name('api.clientes.buscar');

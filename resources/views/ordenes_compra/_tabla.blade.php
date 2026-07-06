@@ -18,15 +18,15 @@
         </td>
         <td>
             @php
-                $badgeEstado = match($orden->estado) {
-                    'borrador'   => 'badge-borrador',
-                    'enviada'    => 'badge-enviada',
-                    'parcial'    => 'badge-parcial',
-                    'completada' => 'badge-completada',
-                    'cancelada'  => 'badge-cancelada',
-                    default      => 'badge-borrador',
-                };
-            @endphp
+            $badgeEstado = match($orden->estado) {
+                'borrador'   => 'badge-borrador',
+                'confirmada' => 'badge-enviada',
+                'parcial'    => 'badge-parcial',
+                'completada' => 'badge-completada',
+                'cancelada'  => 'badge-cancelada',
+                default      => 'badge-borrador',
+            };
+              @endphp
             <span class="{{ $badgeEstado }}">
                 {{ ucfirst($orden->estado) }}
             </span>

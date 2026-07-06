@@ -13,16 +13,21 @@ class GrupoCliente extends Model
 
     protected $fillable = [
         'nombre',
-        'descuento_base',
         'descripcion',
-    ];
-
-    protected $casts = [
-        'descuento_base' => 'decimal:2',
     ];
 
     public function clientes()
     {
         return $this->hasMany(Cliente::class, 'grupo_cliente_id');
+    }
+
+    public function descuentos()
+    {
+        return $this->belongsToMany(
+            Descuento::class,
+            'descuento_grupo_cliente',
+            'grupo_cliente_id',
+            'descuento_id'
+        );
     }
 }

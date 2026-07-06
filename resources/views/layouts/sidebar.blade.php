@@ -69,7 +69,7 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('descuentos.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
                         <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
@@ -134,7 +134,7 @@
             <div class="em-nav-section__label">Ventas</div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('ventas.create') }}" class="em-nav-link">  {{-- Nueva Venta (POS) --}}
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <rect x="2" y="3" width="20" height="14" rx="2"/>
                         <line x1="8" y1="21" x2="16" y2="21"/>
@@ -146,7 +146,7 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('ventas.index') }}" class="em-nav-link">   {{-- Historial Ventas --}}
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14 2 14 8 20 8"/>
@@ -439,8 +439,9 @@
                 <div class="em-tooltip">Sucursales</div>
             </div>
 
+
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('comprobantes.index') }}" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                     </svg>
@@ -448,7 +449,20 @@
                 </a>
                 <div class="em-tooltip">NCF</div>
             </div>
+
+            <div class="em-nav-item">
+                <a href="{{ route('tipos_pago.index') }}" class="em-nav-link">
+                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <line x1="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                    <span class="em-nav-label">Tipos de Pago</span>
+                </a>
+                <div class="em-tooltip">Tipos de Pago</div>
+            </div>
+
         </div>
+        
 
     </nav>
 

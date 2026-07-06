@@ -1,0 +1,96 @@
+/* =====================================================
+   Descuentos — Estilos del módulo
+   ===================================================== */
+
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Toggle de "Aplica a" ───────────────────────────── */
+.tipo-aplicacion-toggle {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.tipo-aplicacion-btn {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+    text-align: center;
+}
+
+.tipo-aplicacion-btn + .tipo-aplicacion-btn {
+    border-left: 1px solid var(--border);
+}
+
+.tipo-aplicacion-btn.active {
+    background: #1f2125;
+    color: #ffffff;
+}
+
+.tipo-aplicacion-btn:hover:not(.active) {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ── Badges ─────────────────────────────────────────── */
+.badge-aplica-producto {
+    background: rgba(33,150,243,0.10);
+    color: #1565c0;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-aplica-cliente {
+    background: rgba(211,47,47,0.10);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-aplica-grupo {
+    background: rgba(76,175,80,0.10);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}

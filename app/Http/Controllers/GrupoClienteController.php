@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GrupoCliente;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class GrupoClienteController extends Controller
 {
@@ -24,16 +25,14 @@ class GrupoClienteController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nombre'         => 'required|string|max:100|unique:grupo_clientes,nombre',
-            'descuento_base' => 'nullable|numeric|min:0|max:100',
-            'descripcion'    => 'nullable|string|max:255',
+            'nombre'      => 'required|string|max:100|unique:grupo_clientes,nombre',
+            'descripcion' => 'nullable|string|max:255',
         ], [
             'nombre.required' => 'El nombre del grupo es obligatorio.',
             'nombre.unique'   => 'Ya existe un grupo con ese nombre.',
         ]);
 
-        $data['nombre']         = ucfirst(strtolower(trim($data['nombre'])));
-        $data['descuento_base'] = $data['descuento_base'] ?? 0;
+        $data['nombre'] = ucfirst(strtolower(trim($data['nombre'])));
 
         GrupoCliente::create($data);
 
@@ -49,20 +48,17 @@ class GrupoClienteController extends Controller
     public function update(Request $request, GrupoCliente $grupo_cliente)
     {
         $data = $request->validate([
-            'nombre'         => [
+            'nombre'      => [
                 'required', 'string', 'max:100',
-                \Illuminate\Validation\Rule::unique('grupo_clientes', 'nombre')
-                    ->ignore($grupo_cliente->id),
+                Rule::unique('grupo_clientes', 'nombre')->ignore($grupo_cliente->id),
             ],
-            'descuento_base' => 'nullable|numeric|min:0|max:100',
-            'descripcion'    => 'nullable|string|max:255',
+            'descripcion' => 'nullable|string|max:255',
         ], [
             'nombre.required' => 'El nombre del grupo es obligatorio.',
             'nombre.unique'   => 'Ya existe un grupo con ese nombre.',
         ]);
 
-        $data['nombre']         = ucfirst(strtolower(trim($data['nombre'])));
-        $data['descuento_base'] = $data['descuento_base'] ?? 0;
+        $data['nombre'] = ucfirst(strtolower(trim($data['nombre'])));
 
         $grupo_cliente->update($data);
 

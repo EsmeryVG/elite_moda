@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('grupo_clientes', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');                        // VIP, Regular, Mayorista
-            $table->decimal('descuento_base', 5, 2)->default(0);  // % descuento del grupo
             $table->string('descripcion')->nullable();
             $table->timestamps();
         });
@@ -21,16 +20,16 @@ return new class extends Migration
             $table->foreignId('grupo_cliente_id')->nullable()->constrained('grupo_clientes')->nullOnDelete();
             $table->string('codigo')->unique()->nullable();
             $table->string('cedula')->unique()->nullable();
-            $table->string('rnc')->unique()->nullable();         // Para clientes empresa
+            $table->string('rnc')->unique()->nullable();
             $table->string('nombre');
             $table->string('apellido')->nullable();
             $table->string('telefono')->nullable();
             $table->string('email')->nullable();
             $table->string('direccion')->nullable();
             $table->decimal('limite_credito', 12, 2)->default(0);
-            $table->decimal('balance_credito', 12, 2)->default(0);  // Deuda actual
+            $table->decimal('balance_credito', 12, 2)->default(0);
             $table->boolean('credito_activo')->default(false);
-            $table->boolean('es_default')->default(false);  // Cliente genérico "Consumidor Final"
+            $table->boolean('es_default')->default(false);
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });
