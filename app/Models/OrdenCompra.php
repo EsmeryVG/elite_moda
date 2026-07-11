@@ -63,4 +63,18 @@ class OrdenCompra extends Model
     {
         return !$this->recepciones()->exists();
     }
+
+    public function getDiasRetrasoAttribute(): int
+{
+    if (!$this->fecha_esperada) return 0;
+    if (!in_array($this->estado, ['confirmada', 'parcial'])) return 0;
+    if ($this->fecha_esperada->isFuture()) return 0;
+
+    return (int) $this->fecha_esperada->diffInDays(now());
+}
+
+    public function getEstaRetrasadaAttribute(): bool
+    {
+        return $this->dias_retraso > 0;
+    }
 }

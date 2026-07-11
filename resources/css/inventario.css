@@ -58,19 +58,9 @@
     transition: opacity 0.2s ease;
 }
 
-/* ── Badges de nivel de stock ──────────────────────── */
-.badge-stock-ok {
-    background: rgba(76, 175, 80, 0.12);
-    color: #2e7d32;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-.badge-stock-bajo {
-    background: rgba(255, 152, 0, 0.12);
-    color: #e65100;
+.badge-stock-critico {
+    background: rgba(255, 193, 7, 0.15);
+    color: #b45309;
     font-size: 11px;
     padding: 3px 10px;
     border-radius: 20px;
@@ -78,8 +68,8 @@
 }
 
 .badge-stock-agotado {
-    background: rgba(211, 47, 47, 0.10);
-    color: var(--accent);
+    background: rgba(211, 47, 47, 0.1);
+    color: #c62828;
     font-size: 11px;
     padding: 3px 10px;
     border-radius: 20px;

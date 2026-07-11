@@ -10,7 +10,7 @@
         </td>
         <td>
             <div style="font-size:12px; color:var(--text-secondary);">
-                @foreach($stock->variante?->valores ?? [] as $valor)
+                @foreach ($stock->variante?->valores ?? [] as $valor)
                     <span style="margin-right:6px;">
                         <span style="color:var(--text-muted);">{{ $valor->atributo?->nombre }}:</span>
                         {{ $valor->valor }}
@@ -23,16 +23,20 @@
         </td>
         <td style="font-size:13px;">
             {{ $stock->almacen?->nombre }}
-            @if($stock->almacen?->sucursal)
+            @if ($stock->almacen?->sucursal)
                 <div style="font-size:11px; color:var(--text-muted);">
                     {{ $stock->almacen->sucursal->nombre }}
                 </div>
             @endif
         </td>
         <td class="text-center">
-            <span style="font-size:18px; font-weight:700;
-                         color:{{ $stock->cantidad_disponible <= 0 ? 'var(--accent)' :
-                                  ($stock->cantidad_disponible <= $stock->stock_minimo ? '#e65100' : 'var(--text-primary)') }};">
+            <span
+                style="font-size:18px; font-weight:700;
+                         color:{{ $stock->cantidad_disponible <= 0
+                             ? 'var(--accent)'
+                             : ($stock->cantidad_disponible <= $stock->stock_minimo
+                                 ? '#e65100'
+                                 : 'var(--text-primary)') }};">
                 {{ $stock->cantidad_disponible }}
             </span>
         </td>
@@ -40,25 +44,22 @@
             {{ $stock->stock_minimo }}
         </td>
         <td>
-            @if($stock->cantidad_disponible <= 0)
+            @if ($stock->cantidad_disponible <= 0)
                 <span class="badge-stock-agotado">
                     <i class="bi bi-x-circle me-1"></i> Agotado
                 </span>
             @elseif($stock->cantidad_disponible <= $stock->stock_minimo)
-                <span class="badge-stock-bajo">
-                    <i class="bi bi-exclamation-triangle me-1"></i> Bajo stock
-                </span>
-            @else
-                <span class="badge-stock-ok">
-                    <i class="bi bi-check-circle me-1"></i> Ok
+                <span class="badge-stock-critico">
+                    <i class="bi bi-exclamation-triangle me-1"></i> Crítico
                 </span>
             @endif
         </td>
     </tr>
 @empty
+    {{-- sin cambios --}}
     <tr>
         <td colspan="6" class="text-center py-5" style="color:var(--text-muted);">
-            @if(request('buscar') || request('almacen') || request('nivel'))
+            @if (request('buscar') || request('almacen') || request('nivel'))
                 <i class="bi bi-search" style="font-size:28px; display:block; margin-bottom:8px;"></i>
                 No se encontraron registros con ese criterio.
                 <br>
@@ -73,7 +74,8 @@
     </tr>
 @endforelse
 
-@if($stocks->hasPages())
+{{-- paginación sin cambios --}}
+@if ($stocks->hasPages())
     <tr>
         <td colspan="6">
             <div class="d-flex justify-content-between align-items-center py-3 px-1">
@@ -88,7 +90,7 @@
                                 <i class="bi bi-chevron-left"></i>
                             </a>
                         </li>
-                        @foreach($stocks->getUrlRange(1, $stocks->lastPage()) as $page => $url)
+                        @foreach ($stocks->getUrlRange(1, $stocks->lastPage()) as $page => $url)
                             <li class="page-item {{ $page == $stocks->currentPage() ? 'active' : '' }}">
                                 <a class="page-link ajax-page" href="{{ $url }}">{{ $page }}</a>
                             </li>

@@ -18,27 +18,31 @@
         </td>
         <td>
             @php
-            $badgeEstado = match($orden->estado) {
-                'borrador'   => 'badge-borrador',
-                'confirmada' => 'badge-enviada',
-                'parcial'    => 'badge-parcial',
-                'completada' => 'badge-completada',
-                'cancelada'  => 'badge-cancelada',
-                default      => 'badge-borrador',
-            };
-              @endphp
+                $badgeEstado = match ($orden->estado) {
+                    'borrador' => 'badge-borrador',
+                    'confirmada' => 'badge-enviada',
+                    'parcial' => 'badge-parcial',
+                    'completada' => 'badge-completada',
+                    'cancelada' => 'badge-cancelada',
+                    default => 'badge-borrador',
+                };
+            @endphp
             <span class="{{ $badgeEstado }}">
                 {{ ucfirst($orden->estado) }}
             </span>
+            @if ($orden->esta_retrasada)
+                <span class="badge-retrasada ms-1">
+                    <i class="bi bi-clock-history me-1"></i>{{ $orden->dias_retraso }}d
+                </span>
+            @endif
         </td>
         <td class="text-end">
-            <a href="{{ route('ordenes_compra.show', $orden) }}"
-               class="btn btn-outline-info btn-sm" title="Ver detalle">
+            <a href="{{ route('ordenes_compra.show', $orden) }}" class="btn btn-outline-info btn-sm" title="Ver detalle">
                 <i class="bi bi-eye"></i>
             </a>
-            @if($orden->estado === 'borrador')
-                <a href="{{ route('ordenes_compra.edit', $orden) }}"
-                   class="btn btn-outline-warning btn-sm" title="Editar">
+            @if ($orden->estado === 'borrador')
+                <a href="{{ route('ordenes_compra.edit', $orden) }}" class="btn btn-outline-warning btn-sm"
+                    title="Editar">
                     <i class="bi bi-pencil-square"></i>
                 </a>
             @endif
@@ -47,7 +51,7 @@
 @empty
     <tr>
         <td colspan="6" class="text-center py-5" style="color:var(--text-muted);">
-            @if(request('buscar') || request('estado') || request('proveedor'))
+            @if (request('buscar') || request('estado') || request('proveedor'))
                 <i class="bi bi-search" style="font-size:28px; display:block; margin-bottom:8px;"></i>
                 No se encontraron órdenes con ese criterio.
                 <br>
@@ -62,7 +66,7 @@
     </tr>
 @endforelse
 
-@if($ordenes->hasPages())
+@if ($ordenes->hasPages())
     <tr>
         <td colspan="6">
             <div class="d-flex justify-content-between align-items-center py-3 px-1">
@@ -77,7 +81,7 @@
                                 <i class="bi bi-chevron-left"></i>
                             </a>
                         </li>
-                        @foreach($ordenes->getUrlRange(1, $ordenes->lastPage()) as $page => $url)
+                        @foreach ($ordenes->getUrlRange(1, $ordenes->lastPage()) as $page => $url)
                             <li class="page-item {{ $page == $ordenes->currentPage() ? 'active' : '' }}">
                                 <a class="page-link ajax-page" href="{{ $url }}">{{ $page }}</a>
                             </li>
