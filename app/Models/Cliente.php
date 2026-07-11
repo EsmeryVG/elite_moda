@@ -65,4 +65,21 @@ class Cliente extends Model
     {
         return $query->where('es_default', false);
     }
+
+    public function cuentasPorCobrar()
+{
+    return $this->hasMany(CuentaPorCobrar::class, 'cliente_id');
+}
+
+public function tieneCredito(): bool
+{
+    return $this->credito_activo
+        && $this->limite_credito > 0
+        && ($this->balance_credito < $this->limite_credito);
+}
+
+public function getCreditoDisponibleAttribute(): float
+{
+    return max(0, (float) $this->limite_credito - (float) $this->balance_credito);
+}
 }

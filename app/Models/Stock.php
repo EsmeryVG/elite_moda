@@ -41,10 +41,16 @@ class Stock extends Model
         return $this->cantidad_disponible <= 0;
     }
 
-    public function getNivelAttribute(): string
+   public function getNivelAttribute(): string
     {
-        if ($this->estaAgotado())    return 'agotado';
-        if ($this->estaBajoMinimo()) return 'bajo';
+        if ($this->cantidad_disponible <= 0) {
+            return 'agotado';
+        }
+
+        if ($this->cantidad_disponible <= $this->stock_minimo) {
+            return 'critico';
+        }
+
         return 'ok';
     }
 

@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Comision;
 use App\Models\ComprobanteFiscal;
 use App\Models\Configuracion;
+use App\Models\CuentaPorCobrar;
 use App\Models\DetalleVenta;
 use App\Models\Empleado;
 use App\Models\MovimientoInventario;
@@ -209,18 +210,66 @@ class VentaController extends Controller
                 'estado'          => 'completada',
             ]);
 
-            // Registrar pagos
+           // Registrar pagos — separar crédito de los demás
+            $tipoPagoCredito = TipoPago::where('nombre', 'Crédito')->first();
+            $montoCredito    = 0;
+
             foreach ($request->pagos as $pago) {
+                $monto = (float) $pago['monto'];
+                if ($monto <= 0) continue;
+
+                // Si es pago con crédito, lo manejamos aparte
+                if ($tipoPagoCredito && $pago['tipo_pago_id'] == $tipoPagoCredito->id) {
+                    $montoCredito += $monto;
+                    continue;
+                }
+
                 Pago::create([
                     'venta_id'     => $venta->id,
                     'tipo_pago_id' => $pago['tipo_pago_id'],
-                    'monto'        => $pago['monto'],
+                    'monto'        => $monto,
                     'referencia'   => $pago['referencia'] ?? null,
                     'banco'        => $pago['banco'] ?? null,
                     'fecha'        => now(),
                     'estado'       => 'confirmado',
                 ]);
             }
+
+            // Si hubo pago con crédito, generar cuenta por cobrar
+            if ($montoCredito > 0) {
+                $clienteActualizado = Cliente::find($cliente->id);
+
+                if ($clienteActualizado->balance_credito + $montoCredito > $clienteActualizado->limite_credito) {
+                    throw ValidationException::withMessages([
+                        'credito' => 'El monto a crédito supera el límite disponible del cliente.',
+                    ]);
+                }
+
+                Pago::create([
+                    'venta_id'     => $venta->id,
+                    'tipo_pago_id' => $tipoPagoCredito->id,
+                    'monto'        => $montoCredito,
+                    'fecha'        => now(),
+                    'estado'       => 'confirmado',
+                ]);
+
+                $cuentaPorCobrar = CuentaPorCobrar::create([
+                    'venta_id'          => $venta->id,
+                    'cliente_id'        => $cliente->id,
+                    'monto_total'       => $montoCredito,
+                    'monto_pagado'      => 0,
+                    'monto_pendiente'   => $montoCredito,
+                    'fecha_emision'     => now(),
+                    'fecha_vencimiento' => now()->addDays(30),
+                    'estado'            => 'pendiente',
+                ]);
+
+                $cuentaPorCobrar->codigo = 'CPC-' . str_pad($cuentaPorCobrar->id, 5, '0', STR_PAD_LEFT);
+                $cuentaPorCobrar->save();
+
+                $clienteActualizado->increment('balance_credito', $montoCredito);
+            }
+            
 
             // Calcular comisión del vendedor (no del cajero)
             if ($request->empleado_id) {
@@ -245,7 +294,8 @@ class VentaController extends Controller
         });
 
         return redirect()->route('ventas.show', $venta)
-            ->with('success', 'Venta registrada correctamente.');
+        ->with('success', 'Venta registrada correctamente.')
+        ->with('abrir_factura', route('ventas.factura', $venta));
     }
 
     public function show(Venta $venta)
@@ -407,5 +457,84 @@ class VentaController extends Controller
         if ($almacenSecundario) return $almacenSecundario->id;
 
         return Almacen::where('estado', true)->first()?->id;
+    }
+
+        public function categorias()
+    {
+        $categorias = \App\Models\Categoria::activas()
+            ->orderBy('nombre')
+            ->get()
+            ->map(fn($c) => [
+                'id'     => $c->id,
+                'nombre' => $c->nombre,
+            ]);
+
+        return response()->json($categorias);
+    }
+
+    public function productosPorCategoria(Request $request)
+    {
+        $categoriaId = $request->get('categoria_id');
+        $almacenId   = $this->obtenerAlmacenVenta();
+
+        $variantes = VarianteProducto::with(['producto.categoria', 'valores.atributo'])
+            ->whereHas('producto', fn($q) =>
+                $q->where('estado', true)->where('categoria_id', $categoriaId)
+            )
+            ->where('estado', true)
+            ->get()
+            ->map(function ($v) use ($almacenId) {
+                $stock = Stock::where('variante_producto_id', $v->id)
+                            ->where('almacen_id', $almacenId)
+                            ->first();
+
+                $atributos = $v->valores->map(fn($val) =>
+                    $val->atributo?->nombre . ': ' . $val->valor
+                )->join(', ');
+
+                return [
+                    'id'         => $v->id,
+                    'texto'      => $v->producto?->nombre . ($atributos ? ' — ' . $atributos : ''),
+                    'codigo'     => $v->codigo,
+                    'precio'     => $v->precio_venta,
+                    'disponible' => $stock?->cantidad_disponible ?? 0,
+                ];
+            });
+
+        return response()->json($variantes);
+    }
+
+public function verificarCredito(Request $request)
+    {
+        $cliente = Cliente::find($request->get('cliente_id'));
+
+        if (!$cliente || !$cliente->credito_activo || $cliente->es_default) {
+            return response()->json(['tiene_credito' => false]);
+        }
+
+        return response()->json([
+            'tiene_credito'      => true,
+            'limite_credito'     => $cliente->limite_credito,
+            'balance_credito'    => $cliente->balance_credito,
+            'credito_disponible' => $cliente->credito_disponible,
+        ]);
+    }
+
+    public function factura(Venta $venta)
+    {
+        $venta->load([
+            'cliente',
+            'empleado',
+            'usuario',
+            'comprobanteFiscal',
+            'detalles.variante.producto',
+            'detalles.variante.valores.atributo',
+            'pagos.tipoPago',
+            'almacen.sucursal',
+        ]);
+
+        $config = \App\Models\Configuracion::all()->keyBy('clave');
+
+        return view('ventas.factura', compact('venta', 'config'));
     }
 }

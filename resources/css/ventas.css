@@ -72,7 +72,7 @@
 }
 
 .badge-venta-anulada {
-    background: rgba(211, 47, 47, 0.10);
+    background: rgba(211, 47, 47, 0.1);
     color: var(--accent);
     font-size: 11px;
     padding: 3px 10px;
@@ -307,7 +307,7 @@
 }
 
 .btn-eliminar-carrito:hover {
-    background: rgba(211,47,47,0.08);
+    background: rgba(211, 47, 47, 0.08);
     border-color: var(--accent);
     color: var(--accent);
 }
@@ -428,7 +428,7 @@
 }
 
 .btn-eliminar-pago:hover {
-    background: rgba(211,47,47,0.08);
+    background: rgba(211, 47, 47, 0.08);
     color: var(--accent);
 }
 
@@ -492,7 +492,7 @@
 }
 
 .btn-pago-exacto:hover {
-    background: rgba(76,175,80,0.08);
+    background: rgba(76, 175, 80, 0.08);
     border-color: #2e7d32;
     color: #2e7d32;
 }
@@ -516,8 +516,8 @@
 
 /* ── Cambio (vuelto) ────────────────────────────────── */
 .cambio-box {
-    background: rgba(76,175,80,0.10);
-    border: 1px solid rgba(76,175,80,0.3);
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
     border-radius: var(--radius-sm);
     padding: 8px 12px;
     text-align: center;
@@ -534,4 +534,355 @@
     font-size: 18px;
     font-weight: 700;
     color: #2e7d32;
+}
+
+/* ══════════════════════════════════════════════════════
+   Modal de cobro
+══════════════════════════════════════════════════════ */
+.cobro-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+}
+
+.cobro-modal {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.cobro-modal-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cobro-modal-body {
+    padding: 20px 24px;
+}
+
+.cobro-total-display {
+    background: #1f2125;
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.cobro-total-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+}
+
+.cobro-total-monto {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: var(--font-body);
+    letter-spacing: -0.02em;
+}
+
+.cobro-restante-display {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.cobro-restante-display strong {
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.cobro-restante-display.completo strong {
+    color: #2e7d32;
+}
+
+.cobro-metodos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.cobro-metodo-item {
+    display: grid;
+    grid-template-columns: 1fr 160px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-elevated);
+    transition: border-color 0.2s ease;
+}
+
+.cobro-metodo-item:focus-within {
+    border-color: #1f2125;
+}
+
+.cobro-metodo-nombre {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.cobro-metodo-monto-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cobro-metodo-prefix {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cobro-metodo-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    text-align: right;
+    width: 100%;
+}
+
+.cobro-metodo-input:focus {
+    outline: none;
+    border-color: #1f2125;
+}
+
+.cobro-cambio-box {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.cobro-cambio-label {
+    font-size: 11px;
+    color: #2e7d32;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.cobro-cambio-valor {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2e7d32;
+}
+
+.cobro-modal-footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+}
+
+.cobro-modal-footer .btn-confirmar {
+    flex: 1;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Botón cobrar en el TPV */
+.btn-cobrar {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+    background: #1f2125;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-cobrar:hover {
+    background: #2d3137;
+}
+
+.btn-cobrar:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ── Categorías y grid de productos ─────────────────── */
+.tpv-categorias-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+}
+
+.tpv-categorias-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tpv-categoria-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-body);
+    white-space: nowrap;
+}
+
+.tpv-categoria-btn:hover {
+    border-color: #c4c9d1;
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.tpv-categoria-btn.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.tpv-productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    overflow-y: auto;
+    flex: 1;
+    padding-right: 2px;
+    align-content: start;
+}
+
+.tpv-producto-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 10px;
+    background: var(--bg-elevated);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tpv-producto-card:hover {
+    border-color: #1f2125;
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.tpv-producto-card.agotado {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tpv-producto-card.agotado:hover {
+    transform: none;
+    border-color: var(--border);
+}
+
+.tpv-producto-nombre {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.tpv-producto-atributos {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tpv-producto-precio {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 2px;
+}
+
+.tpv-producto-stock {
+    font-size: 10.5px;
+    font-weight: 500;
+}
+
+.tpv-producto-stock.ok {
+    color: #2e7d32;
+}
+.tpv-producto-stock.bajo {
+    color: #e65100;
+}
+.tpv-producto-stock.agotado {
+    color: var(--accent);
+}
+
+.tpv-productos-vacio {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.tpv-productos-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.cobro-metodo-credito {
+    border-color: rgba(33, 150, 243, 0.3) !important;
+    background: rgba(33, 150, 243, 0.05) !important;
+}
+
+.cobro-metodo-credito .cobro-metodo-nombre {
+    color: #1565c0;
 }
