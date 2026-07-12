@@ -25,6 +25,7 @@ use App\Http\Controllers\TipoPagoController;
 use App\Http\Controllers\ComprobanteFiscalController;
 use App\Http\Controllers\DescuentoController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\DevolucionController;
 
 // ── Rutas públicas (sin auth) ────────────────────
 Route::get('login',   [LoginController::class, 'showLoginForm'])->name('login');
@@ -214,5 +215,15 @@ Route::middleware(['auth'])->group(function () {
     // Configuraciones
     Route::get('configuraciones',  [ConfiguracionController::class, 'index'])->name('configuraciones.index');
     Route::post('configuraciones', [ConfiguracionController::class, 'update'])->name('configuraciones.update');
+
+    // Devoluciones / Notas de crédito
+    Route::get('devoluciones',                [DevolucionController::class, 'index'])->name('devoluciones.index');
+    Route::get('devoluciones/tabla',           [DevolucionController::class, 'tabla'])->name('devoluciones.tabla');
+    Route::get('devoluciones/crear/{venta}',   [DevolucionController::class, 'create'])->name('devoluciones.create');
+    Route::post('devoluciones',                [DevolucionController::class, 'store'])->name('devoluciones.store');
+    Route::get('devoluciones/{devolucion}',    [DevolucionController::class, 'show'])->name('devoluciones.show');
+    Route::post('devoluciones/detalle/{detalleDevolucion}/inspeccionar', [DevolucionController::class, 'inspeccionar'])
+        ->name('devoluciones.inspeccionar');
+
 
 });

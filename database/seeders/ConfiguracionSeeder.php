@@ -35,6 +35,12 @@ class ConfiguracionSeeder extends Seeder
                 'valor'       => '¡Gracias por su compra!',
                 'descripcion' => 'Mensaje al pie de la factura',
             ],
+            [
+                'clave'       => 'devolucion_dias_limite',
+                'valor'       => '30',
+                'descripcion' => 'Días límite para devolución sin autorización de administrador ni pérdida de ITBIS',
+            ],
+            
         ];
 
         foreach ($configuraciones as $config) {

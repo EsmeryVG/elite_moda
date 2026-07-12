@@ -18,7 +18,7 @@
             <div class="em-nav-section__label">Principal</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('home') }}" class="em-nav-link">
+                <a href="{{ route('home') }}" class="em-nav-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -35,7 +35,8 @@
             <div class="em-nav-section__label">Catálogo</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('productos.index') }}" class="em-nav-link">
+                <a href="{{ route('productos.index') }}"
+                    class="em-nav-link {{ request()->routeIs('productos.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
@@ -47,7 +48,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('categorias.index') }}" class="em-nav-link">
+                <a href="{{ route('categorias.index') }}"
+                    class="em-nav-link {{ request()->routeIs('categorias.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <rect x="3" y="3" width="7" height="7" />
@@ -61,7 +63,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('atributos.index') }}" class="em-nav-link">
+                <a href="{{ route('atributos.index') }}"
+                    class="em-nav-link {{ request()->routeIs('atributos.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <circle cx="12" cy="12" r="3" />
@@ -74,7 +77,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('descuentos.index') }}" class="em-nav-link">
+                <a href="{{ route('descuentos.index') }}"
+                    class="em-nav-link {{ request()->routeIs('descuentos.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <circle cx="9" cy="21" r="1" />
@@ -92,7 +96,8 @@
             <div class="em-nav-section__label">Inventario</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('stock.index') }}" class="em-nav-link">
+                <a href="{{ route('stock.index') }}"
+                    class="em-nav-link {{ request()->routeIs('stock.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path
@@ -106,7 +111,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('ajustes.index') }}" class="em-nav-link">
+                <a href="{{ route('ajustes.index') }}"
+                    class="em-nav-link {{ request()->routeIs('ajustes.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -118,7 +124,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('movimientos.index') }}" class="em-nav-link">
+                <a href="{{ route('movimientos.index') }}"
+                    class="em-nav-link {{ request()->routeIs('movimientos.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -129,7 +136,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('almacenes.index') }}" class="em-nav-link">
+                <a href="{{ route('almacenes.index') }}"
+                    class="em-nav-link {{ request()->routeIs('almacenes.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <rect x="2" y="7" width="20" height="14" rx="2" />
@@ -146,7 +154,8 @@
             <div class="em-nav-section__label">Ventas</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('ventas.create') }}" class="em-nav-link"> {{-- Nueva Venta (POS) --}}
+                <a href="{{ route('ventas.create') }}"
+                    class="em-nav-link {{ request()->routeIs('ventas.create') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <rect x="2" y="3" width="20" height="14" rx="2" />
@@ -159,7 +168,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('ventas.index') }}" class="em-nav-link"> {{-- Historial Ventas --}}
+                <a href="{{ route('ventas.index') }}"
+                    class="em-nav-link {{ request()->routeIs('ventas.index') || request()->routeIs('ventas.show') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -174,7 +184,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('devoluciones.index') }}"
+                    class="em-nav-link {{ request()->routeIs('devoluciones.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -204,7 +215,8 @@
             <div class="em-nav-section__label">Clientes</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('clientes.index') }}" class="em-nav-link">
+                <a href="{{ route('clientes.index') }}"
+                    class="em-nav-link {{ request()->routeIs('clientes.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -230,7 +242,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('grupo_clientes.index') }}" class="em-nav-link">
+                <a href="{{ route('grupo_clientes.index') }}"
+                    class="em-nav-link {{ request()->routeIs('grupo_clientes.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -248,7 +261,8 @@
             <div class="em-nav-section__label">Compras</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('ordenes_compra.index') }}" class="em-nav-link">
+                <a href="{{ route('ordenes_compra.index') }}"
+                    class="em-nav-link {{ request()->routeIs('ordenes_compra.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
@@ -260,7 +274,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('recepciones.index') }}" class="em-nav-link">
+                <a href="{{ route('recepciones.index') }}"
+                    class="em-nav-link {{ request()->routeIs('recepciones.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M5 12h14" />
@@ -272,7 +287,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('proveedores.index') }}" class="em-nav-link">
+                <a href="{{ route('proveedores.index') }}"
+                    class="em-nav-link {{ request()->routeIs('proveedores.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
@@ -329,7 +345,8 @@
             <div class="em-nav-section__label">Personal</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('empleados.index') }}" class="em-nav-link">
+                <a href="{{ route('empleados.index') }}"
+                    class="em-nav-link {{ request()->routeIs('empleados.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -439,7 +456,8 @@
             <div class="em-nav-section__label">Configuración</div>
 
             <div class="em-nav-item">
-                <a href="{{ route('configuraciones.index') }}" class="em-nav-link">
+                <a href="{{ route('configuraciones.index') }}"
+                    class="em-nav-link {{ request()->routeIs('configuraciones.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path
@@ -456,7 +474,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('usuarios.index') }}" class="em-nav-link">
+                <a href="{{ route('usuarios.index') }}"
+                    class="em-nav-link {{ request()->routeIs('usuarios.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -470,7 +489,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('roles.index') }}" class="em-nav-link">
+                <a href="{{ route('roles.index') }}"
+                    class="em-nav-link {{ request()->routeIs('roles.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <circle cx="12" cy="12" r="3" />
@@ -482,7 +502,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('sucursales.index') }}" class="em-nav-link">
+                <a href="{{ route('sucursales.index') }}"
+                    class="em-nav-link {{ request()->routeIs('sucursales.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -493,9 +514,9 @@
                 <div class="em-tooltip">Sucursales</div>
             </div>
 
-
             <div class="em-nav-item">
-                <a href="{{ route('comprobantes.index') }}" class="em-nav-link">
+                <a href="{{ route('comprobantes.index') }}"
+                    class="em-nav-link {{ request()->routeIs('comprobantes.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path
@@ -507,7 +528,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="{{ route('tipos_pago.index') }}" class="em-nav-link">
+                <a href="{{ route('tipos_pago.index') }}"
+                    class="em-nav-link {{ request()->routeIs('tipos_pago.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -519,7 +541,6 @@
             </div>
 
         </div>
-
 
     </nav>
 

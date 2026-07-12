@@ -372,7 +372,7 @@ const VentasModule = (function () {
     }
 
     // ── Buscador de empleado ────────────────────────
-    function initBuscadorEmpleado() {
+    function initTomSelectEmpleado() {
         const el = document.getElementById("selectEmpleado");
         if (!el || typeof TomSelect === "undefined") return;
 
@@ -380,9 +380,9 @@ const VentasModule = (function () {
             valueField: "id",
             labelField: "texto",
             searchField: ["texto"],
-            placeholder: "Buscar vendedor...",
+            placeholder: "Buscar empleado...",
+            preload: "focus",
             load(query, callback) {
-                if (query.length < 1) return callback();
                 fetch(`/api/empleados/buscar?q=${encodeURIComponent(query)}`, {
                     headers: { "X-CSRF-TOKEN": csrfToken },
                 })
