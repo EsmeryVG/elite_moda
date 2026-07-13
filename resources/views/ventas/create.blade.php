@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div id="tpvRoot" class="tpv-fullscreen" data-itbis="{{ \App\Models\Configuracion::get('itbis_porcentaje', 18) }}">
+    <div id="tpvRoot" class="tpv-fullscreen" data-itbis="{{ \App\Models\Configuracion::get('itbis_porcentaje', 18) }}"
+        data-horario-cierre="{{ \App\Models\Configuracion::get('horario_cierre', '19:00') }}">
 
         <div class="tpv-fullscreen-header">
             <div>

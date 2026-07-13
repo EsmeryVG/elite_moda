@@ -1,0 +1,151 @@
+/* =====================================================
+   Devoluciones — Estilos del módulo
+   ===================================================== */
+
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Badges de estado de devolución ────────────────── */
+.badge-devolucion-pendiente {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e65100;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-devolucion-aprobada {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ── Badges de condición por línea ─────────────────── */
+.badge-condicion-pendiente {
+    background: rgba(158, 158, 158, 0.12);
+    color: #616161;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-condicion-conforme {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-condicion-no_conforme {
+    background: rgba(211, 47, 47, 0.1);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ── Nota de crédito ────────────────────────────────── */
+.nc-box {
+    background: rgba(76, 175, 80, 0.06);
+    border: 1px solid rgba(76, 175, 80, 0.2);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+}
+
+/* ── Tarjeta de línea seleccionable (create) ───────── */
+.linea-devolucion-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    background: var(--bg-elevated);
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.linea-devolucion-card.linea-activa {
+    border-color: var(--accent);
+}
+
+.linea-devolucion-body {
+    display: grid;
+    grid-template-columns: 1fr 100px 160px;
+    gap: 16px;
+    align-items: end;
+    margin-top: 10px;
+}
+
+.linea-devolucion-disponible {
+    font-size: 11.5px;
+    color: var(--text-muted);
+}
+
+/* ── Alerta de autorización requerida ──────────────── */
+.alerta-autorizacion {
+    background: rgba(211, 47, 47, 0.06);
+    border: 1px solid rgba(211, 47, 47, 0.25);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #b71c1c;
+}

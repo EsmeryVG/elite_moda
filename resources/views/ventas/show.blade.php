@@ -107,6 +107,13 @@
                                 </button>
                             </form>
                         @endif
+
+                        @if ($venta->estado === 'completada')
+                            <a href="{{ route('devoluciones.create', $venta) }}" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-arrow-return-left me-1"></i> Devolver productos
+                            </a>
+                        @endif
+
                         <a href="{{ route('ventas.index') }}" class="btn btn-secondary">
                             Volver
                         </a>

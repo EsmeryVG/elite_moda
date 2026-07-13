@@ -35,6 +35,27 @@ class ConfiguracionSeeder extends Seeder
                 'valor'       => '¡Gracias por su compra!',
                 'descripcion' => 'Mensaje al pie de la factura',
             ],
+            [
+                'clave'       => 'devolucion_dias_limite',
+                'valor'       => '30',
+                'descripcion' => 'Días límite para devolución sin autorización de administrador ni pérdida de ITBIS',
+            ],
+            [
+                'clave'       => 'caja_monto_minimo_apertura',
+                'valor'       => '500',
+                'descripcion' => 'Monto mínimo de fondo de caja requerido para abrir una sesión',
+            ],
+            [
+                'clave'       => 'horario_apertura',
+                'valor'       => '09:00',
+                'descripcion' => 'Hora de apertura de la tienda (informativo)',
+            ],
+            [
+                'clave'       => 'horario_cierre',
+                'valor'       => '19:00',
+                'descripcion' => 'Hora de cierre de la tienda (usada para recordatorio de cierre de caja en el TPV)',
+            ],
+
         ];
 
         foreach ($configuraciones as $config) {

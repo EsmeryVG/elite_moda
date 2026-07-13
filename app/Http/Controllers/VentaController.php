@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Almacen;
 use App\Models\Cliente;
 use App\Models\Comision;
 use App\Models\ComprobanteFiscal;
@@ -13,11 +12,13 @@ use App\Models\Empleado;
 use App\Models\MovimientoInventario;
 use App\Models\Pago;
 use App\Models\Stock;
-use App\Models\Sucursal;
 use App\Models\TipoPago;
+use App\Models\SesionCaja;
 use App\Models\Venta;
 use App\Models\VarianteProducto;
+
 use App\Services\DescuentoService;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -54,8 +55,9 @@ class VentaController extends Controller
     {
         $clienteDefault = Cliente::where('es_default', true)->first();
         $tiposPago      = TipoPago::activos()->orderBy('nombre')->get();
+        $horarioCierre  = Configuracion::get('horario_cierre', '19:00');
 
-        return view('ventas.create', compact('clienteDefault', 'tiposPago'));
+        return view('ventas.create', compact('clienteDefault', 'tiposPago', 'horarioCierre'));
     }
 
     public function store(Request $request)
@@ -81,7 +83,16 @@ class VentaController extends Controller
 
         $itbisPorcentaje = (float) Configuracion::get('itbis_porcentaje', 18);
         $cliente         = Cliente::findOrFail($request->cliente_id);
-        $almacenId       = $this->obtenerAlmacenVenta();
+
+        $sesionCaja = SesionCaja::abiertas()->orderBy('fecha_apertura')->first();
+
+        if (!$sesionCaja) {
+            throw ValidationException::withMessages([
+                'caja' => 'No hay ninguna sesión de caja abierta.',
+            ]);
+        }
+
+        $almacenId = $sesionCaja->caja->almacen_id;
 
         if (!$almacenId) {
             throw ValidationException::withMessages([
@@ -136,6 +147,7 @@ class VentaController extends Controller
                 'cliente_id'             => $cliente->id,
                 'empleado_id'            => $request->empleado_id,
                 'almacen_id'             => $almacenId,
+                 'sesion_caja_id'         => $sesionCaja->id,
                 'usuario_id'             => Auth::id() ?? 1,
                 'fecha'                  => now(),
                 'estado'                 => 'pendiente',
@@ -437,27 +449,12 @@ class VentaController extends Controller
      * 2. Si no existe, cualquier almacén secundario activo
      * 3. Si no existe, cualquier almacén activo
      */
-    private function obtenerAlmacenVenta(): ?int
-    {
-        $sucursalPrincipal = Sucursal::where('es_principal', true)->first();
+private function obtenerAlmacenVenta(): ?int
+{
+    $sesionCaja = SesionCaja::abiertas()->orderBy('fecha_apertura')->first();
 
-        if ($sucursalPrincipal) {
-            $almacen = Almacen::where('estado', true)
-                ->where('sucursal_id', $sucursalPrincipal->id)
-                ->where('tipo', 'secundario')
-                ->first();
-
-            if ($almacen) return $almacen->id;
-        }
-
-        $almacenSecundario = Almacen::where('estado', true)
-            ->where('tipo', 'secundario')
-            ->first();
-
-        if ($almacenSecundario) return $almacenSecundario->id;
-
-        return Almacen::where('estado', true)->first()?->id;
-    }
+    return $sesionCaja?->caja?->almacen_id;
+}
 
         public function categorias()
     {

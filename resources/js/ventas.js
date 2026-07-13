@@ -106,6 +106,7 @@ const VentasModule = (function () {
         if (!root) return;
 
         itbisPorcentaje = parseFloat(root.dataset.itbis ?? 18);
+        const horarioCierre = root.dataset.horarioCierre ?? null;
 
         // Cargar tipos de pago del template — ordenados por prioridad de uso
         const template = document.getElementById("tiposPagoTemplate");
@@ -130,12 +131,70 @@ const VentasModule = (function () {
 
         initBuscadorProductos();
         initBuscadorCliente();
-        initBuscadorEmpleado();
+        initTomSelectEmpleado();
         initToggleItbisGlobal();
         initCategorias();
         bindBtnCobrar();
         bindFormSubmit();
         renderCarrito();
+
+        if (horarioCierre) {
+            iniciarRecordatorioCierre(horarioCierre);
+        }
+    }
+
+    // ── Recordatorio de cierre de caja ──────────────
+    function iniciarRecordatorioCierre(horarioCierre) {
+        let yaAvisado = false;
+
+        function verificar() {
+            const ahoraTexto = new Date().toLocaleString("en-US", {
+                timeZone: "America/Santo_Domingo",
+            });
+            const fechaRD = new Date(ahoraTexto);
+            const [horaC, minC] = horarioCierre.split(":").map(Number);
+
+            const yaEsHoraDeCierre =
+                fechaRD.getHours() > horaC ||
+                (fechaRD.getHours() === horaC && fechaRD.getMinutes() >= minC);
+
+            if (yaEsHoraDeCierre && !yaAvisado) {
+                yaAvisado = true;
+                mostrarAvisoCierre();
+            }
+        }
+
+        verificar();
+        setInterval(verificar, 5 * 60 * 1000); // revisa cada 5 minutos
+    }
+
+    function mostrarAvisoCierre() {
+        if (document.getElementById("avisoCierreOverlay")) return;
+
+        const modal = document.createElement("div");
+        modal.className = "cobro-modal-overlay";
+        modal.id = "avisoCierreOverlay";
+        modal.innerHTML = `
+            <div class="cobro-modal" style="max-width:380px;">
+                <div class="cobro-modal-header">
+                    <h6 class="fw-semibold mb-0"><i class="bi bi-clock-history me-2"></i>Hora de cierre</h6>
+                </div>
+                <div class="cobro-modal-body">
+                    <p style="font-size:13.5px; color:var(--text-secondary);">
+                        Ya pasó la hora habitual de cierre de la tienda. Recuerda cerrar la sesión de caja al terminar.
+                    </p>
+                </div>
+                <div class="cobro-modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('avisoCierreOverlay').remove()">
+                        Seguir vendiendo
+                    </button>
+                    <a href="/sesiones-caja" class="btn btn-primary">
+                        Ir a cerrar caja
+                    </a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
     }
 
     // ── Toggle global de ITBIS ──────────────────────
@@ -372,7 +431,7 @@ const VentasModule = (function () {
     }
 
     // ── Buscador de empleado ────────────────────────
-    function initBuscadorEmpleado() {
+    function initTomSelectEmpleado() {
         const el = document.getElementById("selectEmpleado");
         if (!el || typeof TomSelect === "undefined") return;
 
@@ -380,9 +439,9 @@ const VentasModule = (function () {
             valueField: "id",
             labelField: "texto",
             searchField: ["texto"],
-            placeholder: "Buscar vendedor...",
+            placeholder: "Buscar empleado...",
+            preload: "focus",
             load(query, callback) {
-                if (query.length < 1) return callback();
                 fetch(`/api/empleados/buscar?q=${encodeURIComponent(query)}`, {
                     headers: { "X-CSRF-TOKEN": csrfToken },
                 })
@@ -415,6 +474,7 @@ const VentasModule = (function () {
 
         contenedor.innerHTML = carrito
             .map((linea, idx) => {
+                const subtotalOriginal = linea.precio * linea.cantidad;
                 const subtotalLinea =
                     (linea.precio - linea.descuentoUnitario) * linea.cantidad;
                 const tieneDescuento = linea.descuentoUnitario > 0;
@@ -440,7 +500,12 @@ const VentasModule = (function () {
                         <button type="button" class="carrito-cantidad-btn" onclick="VentasModule.cambiarCantidad(${idx}, 1)">+</button>
                     </div>
                     <div class="carrito-item-precio">
-                        RD$ ${subtotalLinea.toFixed(2)}
+                        ${
+                            tieneDescuento
+                                ? `<span class="carrito-item-precio-original">RD$ ${subtotalOriginal.toFixed(2)}</span>
+                                   <span class="carrito-item-precio-final">RD$ ${subtotalLinea.toFixed(2)}</span>`
+                                : `RD$ ${subtotalLinea.toFixed(2)}`
+                        }
                     </div>
                     <button type="button" class="btn-eliminar-carrito" onclick="VentasModule.eliminarLinea(${idx})">
                         <i class="bi bi-trash3"></i>
