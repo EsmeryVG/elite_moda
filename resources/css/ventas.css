@@ -291,6 +291,20 @@
     display: block;
 }
 
+.carrito-item-precio-original {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.carrito-item-precio-final {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
 .btn-eliminar-carrito {
     width: 26px;
     height: 26px;

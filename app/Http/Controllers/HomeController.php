@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OrdenCompra;
+use App\Models\SesionCaja;
 use App\Models\Stock;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
@@ -52,6 +53,8 @@ class HomeController extends Controller
             ->where('fecha_esperada', '<', today())
             ->count();
 
+        $diferenciasCajaPendientes = SesionCaja::pendientesRevision()->count();
+
         // ── Últimas ventas ───────────────────────────
         $ultimasVentas = Venta::with(['cliente', 'usuario'])
             ->where('estado', 'completada')
@@ -91,7 +94,7 @@ class HomeController extends Controller
         return view('home', compact(
             'ventasHoy', 'ingresosHoy', 'productosVendidosHoy',
             'ventasSemana', 'ventasMes', 'ticketPromedio',
-            'stockAgotado', 'stockCritico', 'ordenesRetrasadas',
+            'stockAgotado', 'stockCritico', 'ordenesRetrasadas', 'diferenciasCajaPendientes',
             'ultimasVentas', 'ventasUltimos7', 'topProductos'
         ));
     }

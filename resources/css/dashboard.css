@@ -1418,3 +1418,15 @@ body {
 .dash-ventas-table tr:hover td {
     background: var(--bg-hover);
 }
+.dash-alerta-card.diferencia {
+    background: rgba(211, 47, 47, 0.08);
+    border-color: rgba(211, 47, 47, 0.2);
+}
+
+.dash-alerta-card.diferencia .dash-alerta-icono {
+    color: #c62828;
+}
+
+.dash-alerta-card.diferencia .dash-alerta-numero {
+    color: #c62828;
+}

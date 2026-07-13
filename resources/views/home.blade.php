@@ -61,7 +61,7 @@
     {{-- ── Fila 3: Alertas ── --}}
     <div class="dash-section-title">Alertas operacionales</div>
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a href="{{ route('stock.index', ['nivel' => 'agotado']) }}"
                 class="dash-alerta-card {{ $stockAgotado > 0 ? 'agotado' : 'sin-alertas' }}">
                 <i class="bi bi-x-circle dash-alerta-icono"></i>
@@ -73,7 +73,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a href="{{ route('stock.index', ['nivel' => 'critico']) }}"
                 class="dash-alerta-card {{ $stockCritico > 0 ? 'critico' : 'sin-alertas' }}">
                 <i class="bi bi-exclamation-triangle dash-alerta-icono"></i>
@@ -85,7 +85,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <a href="{{ route('ordenes_compra.index', ['estado' => 'confirmada']) }}"
                 class="dash-alerta-card {{ $ordenesRetrasadas > 0 ? 'retrasada' : 'sin-alertas' }}">
                 <i class="bi bi-clock-history dash-alerta-icono"></i>
@@ -93,6 +93,18 @@
                     <div class="dash-alerta-numero">{{ $ordenesRetrasadas }}</div>
                     <div class="dash-alerta-texto">
                         {{ $ordenesRetrasadas === 1 ? 'orden retrasada' : 'órdenes retrasadas' }}
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ route('sesiones_caja.pendientes_revision') }}"
+                class="dash-alerta-card {{ $diferenciasCajaPendientes > 0 ? 'diferencia' : 'sin-alertas' }}">
+                <i class="bi bi-cash-stack dash-alerta-icono"></i>
+                <div>
+                    <div class="dash-alerta-numero">{{ $diferenciasCajaPendientes }}</div>
+                    <div class="dash-alerta-texto">
+                        {{ $diferenciasCajaPendientes === 1 ? 'diferencia de caja pendiente' : 'diferencias de caja pendientes' }}
                     </div>
                 </div>
             </a>

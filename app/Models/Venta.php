@@ -14,7 +14,7 @@ class Venta extends Model
     protected $fillable = [
         'cliente_id',
         'empleado_id',
-        'caja_id',
+        'sesion_caja_id', 
         'almacen_id',
         'usuario_id',
         'codigo',
@@ -80,5 +80,10 @@ class Venta extends Model
     public function esAnulable(): bool
     {
         return $this->estado === 'completada';
+    }
+
+    public function sesionCaja()
+    {
+        return $this->belongsTo(SesionCaja::class, 'sesion_caja_id');
     }
 }

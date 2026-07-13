@@ -301,19 +301,34 @@
         </div>
 
         {{-- Caja --}}
+        {{-- Caja --}}
         <div class="em-nav-section">
             <div class="em-nav-section__label">Caja</div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('cajas.index') }}"
+                    class="em-nav-link {{ request()->routeIs('cajas.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
-                        <rect x="2" y="5" width="20" height="14" rx="2" />
-                        <line x1="2" y1="10" x2="22" y2="10" />
+                        <path d="M3 10h18M5 6h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+                        <path d="M9 14h6" />
                     </svg>
-                    <span class="em-nav-label">Caja Principal</span>
+                    <span class="em-nav-label">Cajas</span>
                 </a>
-                <div class="em-tooltip">Caja</div>
+                <div class="em-tooltip">Cajas</div>
+            </div>
+
+            <div class="em-nav-item">
+                <a href="{{ route('sesiones_caja.index') }}"
+                    class="em-nav-link {{ request()->routeIs('sesiones_caja.*') ? 'active' : '' }}">
+                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    <span class="em-nav-label">Sesiones de Caja</span>
+                </a>
+                <div class="em-tooltip">Sesiones</div>
             </div>
 
             <div class="em-nav-item">
@@ -331,8 +346,8 @@
                 <a href="#" class="em-nav-link">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
-                        <path d="M9 11l3 3L22 4" />
-                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
                     </svg>
                     <span class="em-nav-label">Cuadre Diario</span>
                 </a>

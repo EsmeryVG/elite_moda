@@ -26,6 +26,8 @@ use App\Http\Controllers\ComprobanteFiscalController;
 use App\Http\Controllers\DescuentoController;
 use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DevolucionController;
+use App\Http\Controllers\SesionCajaController;
+use App\Http\Controllers\CajaController;
 
 // ── Rutas públicas (sin auth) ────────────────────
 Route::get('login',   [LoginController::class, 'showLoginForm'])->name('login');
@@ -198,9 +200,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('api/descuentos/calcular',            [DescuentoController::class, 'calcular'])->name('api.descuentos.calcular');
 
     // Ventas
+    Route::middleware('sesion.caja')->group(function () {
+        Route::get('ventas/create', [VentaController::class, 'create'])->name('ventas.create');
+        Route::post('ventas',       [VentaController::class, 'store'])->name('ventas.store');
+    });
+
     Route::get('ventas',                  [VentaController::class, 'index'])->name('ventas.index');
-    Route::get('ventas/create',           [VentaController::class, 'create'])->name('ventas.create');
-    Route::post('ventas',                 [VentaController::class, 'store'])->name('ventas.store');
     Route::get('ventas/{venta}',          [VentaController::class, 'show'])->name('ventas.show');
     Route::patch('ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
 
@@ -212,11 +217,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('api/clientes/credito', [VentaController::class, 'verificarCredito'])->name('api.clientes.credito');
     Route::get('ventas/{venta}/factura', [VentaController::class, 'factura'])->name('ventas.factura');
 
-    // Configuraciones
-    Route::get('configuraciones',  [ConfiguracionController::class, 'index'])->name('configuraciones.index');
-    Route::post('configuraciones', [ConfiguracionController::class, 'update'])->name('configuraciones.update');
-
-    // Devoluciones / Notas de crédito
+      // Devoluciones / Notas de crédito
     Route::get('devoluciones',                [DevolucionController::class, 'index'])->name('devoluciones.index');
     Route::get('devoluciones/tabla',           [DevolucionController::class, 'tabla'])->name('devoluciones.tabla');
     Route::get('devoluciones/crear/{venta}',   [DevolucionController::class, 'create'])->name('devoluciones.create');
@@ -224,6 +225,31 @@ Route::middleware(['auth'])->group(function () {
     Route::get('devoluciones/{devolucion}',    [DevolucionController::class, 'show'])->name('devoluciones.show');
     Route::post('devoluciones/detalle/{detalleDevolucion}/inspeccionar', [DevolucionController::class, 'inspeccionar'])
         ->name('devoluciones.inspeccionar');
+
+// Caja / Sesiones de caja
+    Route::get('sesiones-caja',                     [SesionCajaController::class, 'index'])->name('sesiones_caja.index');
+    Route::get('sesiones-caja/tabla',                [SesionCajaController::class, 'tabla'])->name('sesiones_caja.tabla');
+    Route::get('sesiones-caja/abrir',                [SesionCajaController::class, 'formularioAbrir'])->name('sesiones_caja.abrir');
+    Route::post('sesiones-caja/abrir',               [SesionCajaController::class, 'abrir'])->name('sesiones_caja.abrir.store');
+    Route::get('sesiones-caja/pendientes-revision',  [SesionCajaController::class, 'pendientesRevision'])->name('sesiones_caja.pendientes_revision');
+    Route::get('sesiones-caja/{sesionCaja}',         [SesionCajaController::class, 'show'])->name('sesiones_caja.show');
+    Route::get('sesiones-caja/{sesionCaja}/cerrar',  [SesionCajaController::class, 'formularioCerrar'])->name('sesiones_caja.cerrar');
+    Route::post('sesiones-caja/{sesionCaja}/cerrar', [SesionCajaController::class, 'cerrar'])->name('sesiones_caja.cerrar.store');
+    Route::patch('sesiones-caja/{sesionCaja}/marcar-revisada', [SesionCajaController::class, 'marcarRevisada'])->name('sesiones_caja.marcar_revisada');
+    
+    // Cajas (físicas)
+    Route::get('cajas',                  [CajaController::class, 'index'])->name('cajas.index');
+    Route::get('cajas/create',           [CajaController::class, 'create'])->name('cajas.create');
+    Route::post('cajas',                 [CajaController::class, 'store'])->name('cajas.store');
+    Route::get('cajas/{caja}/edit',      [CajaController::class, 'edit'])->name('cajas.edit');
+    Route::put('cajas/{caja}',           [CajaController::class, 'update'])->name('cajas.update');
+    Route::delete('cajas/{caja}',        [CajaController::class, 'destroy'])->name('cajas.destroy');
+    Route::patch('cajas/{caja}/reactivar', [CajaController::class, 'reactivar'])->name('cajas.reactivar');
+
+
+    // Configuraciones
+    Route::get('configuraciones',  [ConfiguracionController::class, 'index'])->name('configuraciones.index');
+    Route::post('configuraciones', [ConfiguracionController::class, 'update'])->name('configuraciones.update');
 
 
 });
