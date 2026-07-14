@@ -31,6 +31,7 @@ use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\CategoriaGastoController;
+use App\Http\Controllers\NotaCreditoController;
 
 
 // ── Rutas públicas (sin auth) ────────────────────
@@ -219,11 +220,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('api/tpv/categorias',          [VentaController::class, 'categorias'])->name('api.tpv.categorias');
     Route::get('api/tpv/productos-categoria', [VentaController::class, 'productosPorCategoria'])->name('api.tpv.productos.categoria');
     Route::get('api/clientes/credito', [VentaController::class, 'verificarCredito'])->name('api.clientes.credito');
+    Route::get('api/ventas/notas-credito-cliente', [VentaController::class, 'notasCreditoCliente'])->name('api.ventas.notas_credito_cliente');
     Route::get('ventas/{venta}/factura', [VentaController::class, 'factura'])->name('ventas.factura');
 
       // Devoluciones / Notas de crédito
     Route::get('devoluciones',                [DevolucionController::class, 'index'])->name('devoluciones.index');
     Route::get('devoluciones/tabla',           [DevolucionController::class, 'tabla'])->name('devoluciones.tabla');
+    Route::get('devoluciones/buscar',          [DevolucionController::class, 'buscarFactura'])->name('devoluciones.buscar');
+    Route::get('api/devoluciones/productos-cliente', [DevolucionController::class, 'buscarProductosCliente'])->name('api.devoluciones.productos_cliente');
     Route::get('devoluciones/crear/{venta}',   [DevolucionController::class, 'create'])->name('devoluciones.create');
     Route::post('devoluciones',                [DevolucionController::class, 'store'])->name('devoluciones.store');
     Route::get('devoluciones/{devolucion}',    [DevolucionController::class, 'show'])->name('devoluciones.show');
@@ -251,7 +255,6 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('cajas/{caja}/reactivar', [CajaController::class, 'reactivar'])->name('cajas.reactivar');
 
     // Caja Chica
-// Caja Chica
     Route::get('caja-chica', [CajaChicaController::class, 'show'])->name('caja_chica.show');
     Route::post('caja-chica/gasto', [CajaChicaController::class, 'registrarGasto'])->name('caja_chica.gasto');
     Route::post('caja-chica/reponer', [CajaChicaController::class, 'reponer'])->name('caja_chica.reponer');
@@ -269,6 +272,11 @@ Route::middleware(['auth'])->group(function () {
     // Configuraciones
     Route::get('configuraciones',  [ConfiguracionController::class, 'index'])->name('configuraciones.index');
     Route::post('configuraciones', [ConfiguracionController::class, 'update'])->name('configuraciones.update');
+
+    // Notas de crédito
+    Route::get('notas-credito',        [NotaCreditoController::class, 'index'])->name('notas_credito.index');
+    Route::get('notas-credito/tabla',  [NotaCreditoController::class, 'tabla'])->name('notas_credito.tabla');
+    Route::get('notas-credito/{notaCredito}', [NotaCreditoController::class, 'show'])->name('notas_credito.show');
 
 
 });

@@ -49,4 +49,9 @@ class VarianteProducto extends Model
     {
         return $this->hasMany(\App\Models\Stock::class, 'variante_producto_id');
     }
+
+    public function detalleVentas()
+    {
+        return $this->hasMany(DetalleVenta::class, 'variante_producto_id');
+    }
 }

@@ -115,7 +115,11 @@ const VentasModule = (function () {
             const orden = ["efectivo", "tarjeta", "transferencia", "cheque"];
             tiposPagoDisponibles = Array.from(opciones)
                 .map((o) => ({ id: o.value, nombre: o.textContent.trim() }))
-                .filter((t) => t.nombre.toLowerCase() !== "crédito")
+                .filter(
+                    (t) =>
+                        t.nombre.toLowerCase() !== "crédito" &&
+                        t.nombre.toLowerCase() !== "nota de crédito",
+                )
                 .sort((a, b) => {
                     const idxA = orden.findIndex((o) =>
                         a.nombre.toLowerCase().includes(o),
@@ -383,7 +387,7 @@ const VentasModule = (function () {
                     .catch(() => callback());
             },
             onChange(value) {
-                // Resetear crédito por defecto
+                // Resetear crédito y NC por defecto
                 clienteActual = value
                     ? {
                           id: value,
@@ -392,12 +396,12 @@ const VentasModule = (function () {
                           creditoDisponible: 0,
                           limiteCredito: 0,
                           balanceCredito: 0,
+                          notasCredito: [],
                       }
                     : null;
 
                 carrito.forEach((linea) => recalcularDescuento(linea));
 
-                // Verificar crédito solo si hay cliente seleccionado
                 if (value) {
                     fetch(`/api/clientes/credito?cliente_id=${value}`, {
                         headers: { "X-CSRF-TOKEN": csrfToken },
@@ -417,6 +421,22 @@ const VentasModule = (function () {
                                     data.balance_credito ?? 0,
                                 );
                             }
+                        });
+
+                    fetch(
+                        `/api/ventas/notas-credito-cliente?cliente_id=${value}`,
+                        {
+                            headers: { "X-CSRF-TOKEN": csrfToken },
+                        },
+                    )
+                        .then((r) => r.json())
+                        .then((data) => {
+                            if (clienteActual && clienteActual.id === value) {
+                                clienteActual.notasCredito = data;
+                            }
+                        })
+                        .catch(() => {
+                            if (clienteActual) clienteActual.notasCredito = [];
                         });
                 }
             },
@@ -466,7 +486,6 @@ const VentasModule = (function () {
             actualizarTotales();
             sincronizarInputsOcultos();
 
-            // Forzar actualización a 0 del contador cuando se vacíe el carrito
             const countEl = document.getElementById("carritoCount");
             if (countEl) countEl.style.display = "none";
             return;
@@ -517,7 +536,6 @@ const VentasModule = (function () {
         actualizarTotales();
         sincronizarInputsOcultos();
 
-        // Actualizar contador del tab carrito
         const count = carrito.reduce((sum, l) => sum + l.cantidad, 0);
         const countEl = document.getElementById("carritoCount");
         if (countEl) {
@@ -567,7 +585,6 @@ const VentasModule = (function () {
             fmt(impuestoTotal);
         document.getElementById("resumenTotal").textContent = fmt(total);
 
-        // Actualizar total en el botón cobrar
         const btnCobrar = document.getElementById("btnCobrar");
         if (btnCobrar) {
             btnCobrar.disabled = carrito.length === 0;
@@ -599,8 +616,12 @@ const VentasModule = (function () {
         const btn = document.getElementById("btnCobrar");
         if (!btn) return;
 
+        let procesando = false;
+
         btn.addEventListener("click", async function () {
             if (carrito.length === 0) return;
+            if (procesando) return;
+            procesando = true;
 
             btn.disabled = true;
 
@@ -626,6 +647,7 @@ const VentasModule = (function () {
                 if (clienteActual) clienteActual.tieneCredito = false;
             } finally {
                 btn.disabled = carrito.length === 0;
+                procesando = false;
             }
 
             abrirModalCobro();
@@ -656,11 +678,18 @@ const VentasModule = (function () {
     function abrirModalCobro() {
         if (carrito.length === 0) return;
 
+        // Blindaje: nunca abrir un segundo modal si ya hay uno
+        if (document.getElementById("cobroModalOverlay")) return;
+
         const total = calcularTotal();
 
         // Métodos de pago normales (sin Crédito)
         let metodosHTML = tiposPagoDisponibles
-            .filter((tipo) => tipo.nombre.toLowerCase() !== "crédito")
+            .filter(
+                (tipo) =>
+                    tipo.nombre.toLowerCase() !== "crédito" &&
+                    tipo.nombre.toLowerCase() !== "nota de crédito",
+            )
             .map(
                 (tipo) => `
             <div class="cobro-metodo-item">
@@ -716,6 +745,41 @@ const VentasModule = (function () {
                 </div>
             </div>
         `;
+        }
+
+        // Agregar Notas de Crédito disponibles, una por cada NC activa
+        if (clienteActual?.notasCredito?.length > 0) {
+            clienteActual.notasCredito.forEach((nc) => {
+                const disponibleNC = nc.monto_disponible.toLocaleString(
+                    "es-DO",
+                    {
+                        minimumFractionDigits: 2,
+                    },
+                );
+
+                metodosHTML += `
+                <div class="cobro-metodo-item cobro-metodo-nc">
+                    <div>
+                        <div class="cobro-metodo-nombre">
+                            NC ${nc.codigo}
+                        </div>
+                        <div style="font-size:11px; color:var(--text-muted);">
+                            Disponible: RD$ ${disponibleNC}
+                        </div>
+                    </div>
+                    <div class="cobro-metodo-monto-wrapper">
+                        <span class="cobro-metodo-prefix">RD$</span>
+                        <input type="number"
+                               class="cobro-metodo-input cobro-input-nc"
+                               data-nc-id="${nc.id}"
+                               placeholder="0.00" min="0" step="0.01"
+                               max="${nc.monto_disponible}"
+                               value=""
+                               oninput="VentasModule.validarMontoNC(this); VentasModule.actualizarCobro()">
+                    </div>
+                </div>
+            `;
+            });
         }
 
         const modal = document.createElement("div");
@@ -775,24 +839,33 @@ const VentasModule = (function () {
 
         const inputCredito = document.querySelector(".cobro-input-credito");
 
-        // Calcular lo pagado con métodos normales (sin crédito)
+        // Calcular lo pagado con métodos normales (sin crédito ni NC)
         let pagadoNormal = 0;
         inputs.forEach((input) => {
-            if (input !== inputCredito) {
+            if (
+                input !== inputCredito &&
+                !input.classList.contains("cobro-input-nc")
+            ) {
                 pagadoNormal += parseFloat(input.value) || 0;
             }
         });
 
-        // Autocompletar crédito con el saldo restante
+        // Sumar lo ya puesto manualmente en NC
+        let pagadoNC = 0;
+        document.querySelectorAll(".cobro-input-nc").forEach((input) => {
+            pagadoNC += parseFloat(input.value) || 0;
+        });
+
+        // Autocompletar crédito con el saldo restante (después de normal + NC)
         if (inputCredito) {
             const maxCredito = Math.min(
                 clienteActual?.creditoDisponible ?? 0,
-                Math.max(0, total - pagadoNormal),
+                Math.max(0, total - pagadoNormal - pagadoNC),
             );
             inputCredito.max = maxCredito.toFixed(2);
 
             const autoValor = Math.min(
-                Math.max(0, total - pagadoNormal),
+                Math.max(0, total - pagadoNormal - pagadoNC),
                 maxCredito,
             );
             inputCredito.value = autoValor > 0.001 ? autoValor.toFixed(2) : "";
@@ -836,6 +909,7 @@ const VentasModule = (function () {
             btnConfirmar.disabled = false;
         }
     }
+
     function confirmarCobro() {
         const pagoInputs = document.querySelectorAll(".cobro-metodo-input");
         const pagosContainer = document.getElementById("pagosHiddenContainer");
@@ -849,7 +923,6 @@ const VentasModule = (function () {
 
         const restante = total - pagadoTotal;
 
-        // Si hay saldo pendiente y el cliente tiene crédito, autocompletar
         if (restante > 0.01) {
             const inputCredito = document.querySelector(".cobro-input-credito");
             if (inputCredito && clienteActual?.tieneCredito) {
@@ -860,7 +933,6 @@ const VentasModule = (function () {
                 if (completar > 0.01) {
                     inputCredito.value = (montoActual + completar).toFixed(2);
                     actualizarCobro();
-                    // Volver a verificar si ya está completo
                     let nuevoPagado = 0;
                     pagoInputs.forEach((input) => {
                         nuevoPagado += parseFloat(input.value) || 0;
@@ -887,10 +959,20 @@ const VentasModule = (function () {
 
         pagosContainer.innerHTML = "";
         let idx = 0;
+        let idxNC = 0;
 
         pagoInputs.forEach((input) => {
             const monto = parseFloat(input.value) || 0;
             if (monto <= 0) return;
+
+            if (input.classList.contains("cobro-input-nc")) {
+                pagosContainer.innerHTML += `
+                <input type="hidden" name="notas_credito[${idxNC}][id]" value="${input.dataset.ncId}">
+                <input type="hidden" name="notas_credito[${idxNC}][monto]" value="${monto.toFixed(2)}">
+            `;
+                idxNC++;
+                return;
+            }
 
             pagosContainer.innerHTML += `
             <input type="hidden" name="pagos[${idx}][tipo_pago_id]" value="${input.dataset.tipoId}">
@@ -899,7 +981,7 @@ const VentasModule = (function () {
             idx++;
         });
 
-        if (idx === 0) {
+        if (idx === 0 && idxNC === 0) {
             alert("Ingresa al menos un monto de pago.");
             return;
         }
@@ -916,6 +998,18 @@ const VentasModule = (function () {
             alert(`El monto máximo a crédito es RD$ ${max.toFixed(2)}`);
         }
     }
+
+    function validarMontoNC(input) {
+        const max = parseFloat(input.max) || 0;
+        const val = parseFloat(input.value) || 0;
+        if (val > max) {
+            input.value = max.toFixed(2);
+            alert(
+                `El monto máximo de esta nota de crédito es RD$ ${max.toFixed(2)}`,
+            );
+        }
+    }
+
     // ── Submit del formulario ────────────────────────
     function bindFormSubmit() {
         document
@@ -1065,6 +1159,7 @@ const VentasModule = (function () {
         agregarDesdeGrid,
         mostrarTab,
         validarMontoCredito,
+        validarMontoNC,
     };
 })();
 
