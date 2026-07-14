@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
             TipoPagoSeeder::class,
             ComprobanteFiscalSeeder::class,
             EmpleadoSeeder::class,
+            CategoriaGastoSeeder::class,
         ]);
     }
 }

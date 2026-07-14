@@ -1,0 +1,146 @@
+/* =====================================================
+   Gastos / Caja Chica — Estilos del módulo
+   ===================================================== */
+
+.em-filtro {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.em-filtro:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-filtro.active {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    padding: 5px 11px;
+    transition: all 0.2s ease;
+}
+
+.em-pagination .page-link:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: #c4c9d1;
+}
+
+.em-pagination .page-item.active .page-link {
+    background: #1f2125;
+    border-color: #1f2125;
+    color: #ffffff;
+}
+
+.em-pagination .page-item.disabled .page-link {
+    color: var(--text-muted);
+    background: transparent;
+    border-color: var(--border);
+}
+
+#tablaContainer.loading {
+    opacity: 0.5;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* ── Badges de origen ───────────────────────────────── */
+.badge-origen-caja_chica {
+    background: rgba(3, 105, 161, 0.1);
+    color: #0369a1;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-origen-directo {
+    background: rgba(158, 158, 158, 0.12);
+    color: #616161;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-extraordinaria {
+    background: rgba(211, 47, 47, 0.1);
+    color: var(--accent);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ── Caja chica: saldo ──────────────────────────────── */
+.cajachica-saldo-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    text-align: center;
+}
+
+.cajachica-saldo-monto {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 8px 0;
+}
+
+.cajachica-saldo-monto.bajo {
+    color: var(--accent);
+}
+
+.cajachica-saldo-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.cajachica-saldo-base {
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+/* ── Movimientos recientes ─────────────────────────── */
+.cc-movimiento-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.cc-movimiento-item:last-child {
+    border-bottom: none;
+}
+
+.cc-movimiento-monto.ingreso {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.cc-movimiento-monto.egreso {
+    color: var(--accent);
+    font-weight: 600;
+}

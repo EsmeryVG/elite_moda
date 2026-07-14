@@ -55,6 +55,16 @@ class ConfiguracionSeeder extends Seeder
                 'valor'       => '19:00',
                 'descripcion' => 'Hora de cierre de la tienda (usada para recordatorio de cierre de caja en el TPV)',
             ],
+            [
+            'clave'       => 'caja_chica_monto_base',
+            'valor'       => '2000',
+            'descripcion' => 'Monto al que se repone la caja chica en una reposición normal',
+            ],
+          [
+            'clave'       => 'caja_chica_dias_reposicion',
+            'valor'       => '1',
+            'descripcion' => 'Cada cuántos días se permite una reposición normal de caja chica',
+            ],
 
         ];
 

@@ -28,6 +28,10 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\DevolucionController;
 use App\Http\Controllers\SesionCajaController;
 use App\Http\Controllers\CajaController;
+use App\Http\Controllers\CajaChicaController;
+use App\Http\Controllers\GastoController;
+use App\Http\Controllers\CategoriaGastoController;
+
 
 // ── Rutas públicas (sin auth) ────────────────────
 Route::get('login',   [LoginController::class, 'showLoginForm'])->name('login');
@@ -246,6 +250,21 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('cajas/{caja}',        [CajaController::class, 'destroy'])->name('cajas.destroy');
     Route::patch('cajas/{caja}/reactivar', [CajaController::class, 'reactivar'])->name('cajas.reactivar');
 
+    // Caja Chica
+// Caja Chica
+    Route::get('caja-chica', [CajaChicaController::class, 'show'])->name('caja_chica.show');
+    Route::post('caja-chica/gasto', [CajaChicaController::class, 'registrarGasto'])->name('caja_chica.gasto');
+    Route::post('caja-chica/reponer', [CajaChicaController::class, 'reponer'])->name('caja_chica.reponer');
+    Route::post('caja-chica/reponer-extraordinaria', [CajaChicaController::class, 'reponerExtraordinaria'])->name('caja_chica.reponer_extraordinaria');
+
+    // Gastos
+    Route::get('gastos',           [GastoController::class, 'index'])->name('gastos.index');
+    Route::get('gastos/tabla',     [GastoController::class, 'tabla'])->name('gastos.tabla');
+    Route::get('gastos/create',    [GastoController::class, 'create'])->name('gastos.create');
+    Route::post('gastos',          [GastoController::class, 'store'])->name('gastos.store');
+
+    // Categorías de gasto 
+    Route::post('categorias-gasto', [CategoriaGastoController::class, 'store'])->name('categorias_gasto.store');
 
     // Configuraciones
     Route::get('configuraciones',  [ConfiguracionController::class, 'index'])->name('configuraciones.index');
