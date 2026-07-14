@@ -300,7 +300,7 @@
             </div>
         </div>
 
-        {{-- Caja --}}
+
         {{-- Caja --}}
         <div class="em-nav-section">
             <div class="em-nav-section__label">Caja</div>
@@ -332,7 +332,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('caja_chica.show') }}"
+                    class="em-nav-link {{ request()->routeIs('caja_chica.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
@@ -352,6 +353,24 @@
                     <span class="em-nav-label">Cuadre Diario</span>
                 </a>
                 <div class="em-tooltip">Cuadre</div>
+            </div>
+        </div>
+
+        {{-- Gastos --}}
+        <div class="em-nav-section">
+            <div class="em-nav-section__label">Gastos</div>
+
+            <div class="em-nav-item">
+                <a href="{{ route('gastos.index') }}"
+                    class="em-nav-link {{ request()->routeIs('gastos.*') ? 'active' : '' }}">
+                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    <span class="em-nav-label">Gastos</span>
+                </a>
+                <div class="em-tooltip">Gastos</div>
             </div>
         </div>
 
