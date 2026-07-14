@@ -25,6 +25,9 @@ class ConfiguracionController extends Controller
             'caja_monto_minimo_apertura' => 'required|numeric|min:0',
             'horario_apertura'           => 'required|date_format:H:i',
             'horario_cierre'             => 'required|date_format:H:i',
+            'caja_chica_monto_base'      => 'required|numeric|min:0',
+            'caja_chica_dias_reposicion' => 'required|integer|min:1',
+            'credito_dias_vencimiento'   => 'required|integer|min:1',
         ], [
             'itbis_porcentaje.required' => 'El porcentaje de ITBIS es obligatorio.',
             'itbis_porcentaje.numeric'  => 'El porcentaje debe ser un número.',
@@ -34,6 +37,8 @@ class ConfiguracionController extends Controller
             'caja_monto_minimo_apertura.required' => 'El monto mínimo de apertura de caja es obligatorio.',
             'horario_apertura.date_format' => 'La hora de apertura debe tener formato HH:MM.',
             'horario_cierre.date_format'   => 'La hora de cierre debe tener formato HH:MM.',
+            'caja_chica_monto_base.required'      => 'El monto base de caja chica es obligatorio.',
+            'caja_chica_dias_reposicion.required' => 'Los días de reposición son obligatorios.',
         ]);
 
         $campos = [
@@ -46,6 +51,9 @@ class ConfiguracionController extends Controller
             'caja_monto_minimo_apertura',
             'horario_apertura',
             'horario_cierre',
+            'caja_chica_monto_base',
+            'caja_chica_dias_reposicion',
+            'credito_dias_vencimiento',
         ];
 
         foreach ($campos as $clave) {

@@ -65,6 +65,11 @@ class ConfiguracionSeeder extends Seeder
             'valor'       => '1',
             'descripcion' => 'Cada cuántos días se permite una reposición normal de caja chica',
             ],
+            [
+    'clave'       => 'credito_dias_vencimiento',
+    'valor'       => '30',
+    'descripcion' => 'Días de plazo por defecto para el vencimiento de cuentas por cobrar',
+],
 
         ];
 

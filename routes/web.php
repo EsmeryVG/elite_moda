@@ -32,6 +32,8 @@ use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\CategoriaGastoController;
 use App\Http\Controllers\NotaCreditoController;
+use App\Http\Controllers\CuadreDiarioController;
+use App\Http\Controllers\CuentaPorCobrarController;
 
 
 // ── Rutas públicas (sin auth) ────────────────────
@@ -244,6 +246,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('sesiones-caja/{sesionCaja}/cerrar',  [SesionCajaController::class, 'formularioCerrar'])->name('sesiones_caja.cerrar');
     Route::post('sesiones-caja/{sesionCaja}/cerrar', [SesionCajaController::class, 'cerrar'])->name('sesiones_caja.cerrar.store');
     Route::patch('sesiones-caja/{sesionCaja}/marcar-revisada', [SesionCajaController::class, 'marcarRevisada'])->name('sesiones_caja.marcar_revisada');
+
+    // Cuadre Diario
+    Route::get('cuadre-diario', [CuadreDiarioController::class, 'index'])->name('cuadre_diario.index');
     
     // Cajas (físicas)
     Route::get('cajas',                  [CajaController::class, 'index'])->name('cajas.index');
@@ -277,6 +282,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('notas-credito',        [NotaCreditoController::class, 'index'])->name('notas_credito.index');
     Route::get('notas-credito/tabla',  [NotaCreditoController::class, 'tabla'])->name('notas_credito.tabla');
     Route::get('notas-credito/{notaCredito}', [NotaCreditoController::class, 'show'])->name('notas_credito.show');
+
+    // Cuentas por cobrar
+    Route::get('cuentas-por-cobrar',        [CuentaPorCobrarController::class, 'index'])->name('cuentas_por_cobrar.index');
+    Route::get('cuentas-por-cobrar/tabla',  [CuentaPorCobrarController::class, 'tabla'])->name('cuentas_por_cobrar.tabla');
+    Route::get('cuentas-por-cobrar/{cuentaPorCobrar}', [CuentaPorCobrarController::class, 'show'])->name('cuentas_por_cobrar.show');
+    Route::post('cuentas-por-cobrar/{cuentaPorCobrar}/abono', [CuentaPorCobrarController::class, 'registrarAbono'])->name('cuentas_por_cobrar.abono');
 
 
 });

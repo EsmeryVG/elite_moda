@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="row mb-4">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{-- Impuestos --}}
                         <div class="card page-card mb-4 h-100">
                             <div class="card-body p-4">
@@ -109,7 +109,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{-- Devoluciones --}}
                         <div class="card page-card mb-4 h-100">
                             <div class="card-body p-4">
@@ -140,7 +140,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{-- Caja: fondo mínimo --}}
                         <div class="card page-card mb-4 h-100">
                             <div class="card-body p-4">
@@ -164,6 +164,36 @@
                                     @enderror
                                     <small class="text-muted">
                                         Exigido al admin al abrir una sesión de caja.
+                                    </small>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        {{-- Crédito --}}
+                        <div class="card page-card mb-4 h-100">
+                            <div class="card-body p-4">
+                                <p class="prod-section-title">Crédito</p>
+
+                                <div class="mb-0">
+                                    <label class="form-label">
+                                        Días de plazo <span style="color:var(--accent);">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" name="credito_dias_vencimiento"
+                                            class="form-control @error('credito_dias_vencimiento') is-invalid @enderror"
+                                            value="{{ old('credito_dias_vencimiento', $configs['credito_dias_vencimiento']?->valor ?? '30') }}"
+                                            min="1" step="1">
+                                        <span class="input-group-text"
+                                            style="background:var(--bg-elevated); border-color:var(--border); color:var(--text-muted);">días</span>
+                                    </div>
+                                    @error('credito_dias_vencimiento')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    <small class="text-muted">
+                                        Plazo por defecto para nuevas cuentas por cobrar.
                                     </small>
                                 </div>
 
@@ -204,6 +234,56 @@
                         <small class="text-muted">
                             El horario de cierre activa el recordatorio de cierre de caja en el punto de venta.
                         </small>
+
+                    </div>
+                </div>
+
+                {{-- Caja Chica --}}
+                <div class="card page-card mb-4">
+                    <div class="card-body p-4">
+                        <p class="prod-section-title">Caja Chica</p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Monto base <span style="color:var(--accent);">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"
+                                        style="background:var(--bg-elevated); border-color:var(--border); color:var(--text-muted);">RD$</span>
+                                    <input type="number" name="caja_chica_monto_base"
+                                        class="form-control @error('caja_chica_monto_base') is-invalid @enderror"
+                                        value="{{ old('caja_chica_monto_base', $configs['caja_chica_monto_base']?->valor ?? '2000') }}"
+                                        min="0" step="0.01">
+                                </div>
+                                @error('caja_chica_monto_base')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">
+                                    Nivel al que se repone la caja chica en una reposición normal.
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">
+                                    Días entre reposiciones <span style="color:var(--accent);">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" name="caja_chica_dias_reposicion"
+                                        class="form-control @error('caja_chica_dias_reposicion') is-invalid @enderror"
+                                        value="{{ old('caja_chica_dias_reposicion', $configs['caja_chica_dias_reposicion']?->valor ?? '1') }}"
+                                        min="1" step="1">
+                                    <span class="input-group-text"
+                                        style="background:var(--bg-elevated); border-color:var(--border); color:var(--text-muted);">días</span>
+                                </div>
+                                @error('caja_chica_dias_reposicion')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">
+                                    Cada cuántos días de calendario se permite una reposición normal.
+                                </small>
+                            </div>
+                        </div>
 
                     </div>
                 </div>

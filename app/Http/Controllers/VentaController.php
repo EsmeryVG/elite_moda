@@ -313,7 +313,7 @@ class VentaController extends Controller
                     'monto_pagado'      => 0,
                     'monto_pendiente'   => $montoCredito,
                     'fecha_emision'     => now(),
-                    'fecha_vencimiento' => now()->addDays(30),
+                    'fecha_vencimiento' => now()->addDays((int) Configuracion::get('credito_dias_vencimiento', 30)),
                     'estado'            => 'pendiente',
                 ]);
 
