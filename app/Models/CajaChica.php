@@ -35,14 +35,19 @@ class CajaChica extends Model
     }
 
     public function puedeReponerNormal(): bool
-    {
-        if ($this->monto_disponible >= $this->monto_base) {
-            return false;
-        }
-
-        $diasReposicion = (int) Configuracion::get('caja_chica_dias_reposicion', 1);
-
-        return $this->fecha_ultima_reposicion === null
-            || $this->fecha_ultima_reposicion->diffInDays(now()) >= $diasReposicion;
+{
+    if ($this->monto_disponible >= $this->monto_base) {
+        return false;
     }
+
+    if ($this->fecha_ultima_reposicion === null) {
+        return true;
+    }
+
+    $diasReposicion = (int) Configuracion::get('caja_chica_dias_reposicion', 1);
+
+    $diasTranscurridos = $this->fecha_ultima_reposicion->startOfDay()->diffInDays(now()->startOfDay());
+
+    return $diasTranscurridos >= $diasReposicion;
+}
 }

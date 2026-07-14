@@ -85,7 +85,15 @@
                                     {{ $sesionCaja->revisada_en->format('d/m/Y H:i') }}
                                 </span>
                             @else
-                                <span class="badge-condicion-no_conforme">Pendiente de revisión</span>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge-condicion-no_conforme">Pendiente de revisión</span>
+                                    @if (Auth::user()->esAdministrador())
+                                        <a href="{{ route('sesiones_caja.pendientes_revision') }}"
+                                            class="btn btn-outline-success btn-sm" title="Ir a revisar">
+                                            <i class="bi bi-arrow-right-circle"></i>
+                                        </a>
+                                    @endif
+                                </div>
                             @endif
                         </div>
                     @endif

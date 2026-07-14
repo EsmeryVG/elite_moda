@@ -115,11 +115,7 @@ const VentasModule = (function () {
             const orden = ["efectivo", "tarjeta", "transferencia", "cheque"];
             tiposPagoDisponibles = Array.from(opciones)
                 .map((o) => ({ id: o.value, nombre: o.textContent.trim() }))
-                .filter(
-                    (t) =>
-                        t.nombre.toLowerCase() !== "crédito" &&
-                        t.nombre.toLowerCase() !== "nota de crédito",
-                )
+                .filter((t) => t.nombre.toLowerCase() !== "nota de crédito")
                 .sort((a, b) => {
                     const idxA = orden.findIndex((o) =>
                         a.nombre.toLowerCase().includes(o),

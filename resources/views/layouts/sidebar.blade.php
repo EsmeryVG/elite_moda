@@ -231,7 +231,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('cuentas_por_cobrar.index') }}"
+                    class="em-nav-link {{ request()->routeIs('cuentas_por_cobrar.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
@@ -345,7 +346,8 @@
             </div>
 
             <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
+                <a href="{{ route('cuadre_diario.index') }}"
+                    class="em-nav-link {{ request()->routeIs('cuadre_diario.*') ? 'active' : '' }}">
                     <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor">
                         <circle cx="12" cy="12" r="10" />
@@ -409,82 +411,83 @@
         {{-- Reportes --}}
         <div class="em-nav-section">
             <div class="em-nav-section__label">Reportes</div>
+            @if (false)
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        <span class="em-nav-label">Ventas</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Ventas</div>
+                </div>
 
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <line x1="18" y1="20" x2="18" y2="10" />
-                        <line x1="12" y1="20" x2="12" y2="4" />
-                        <line x1="6" y1="20" x2="6" y2="14" />
-                    </svg>
-                    <span class="em-nav-label">Ventas</span>
-                </a>
-                <div class="em-tooltip">Reporte Ventas</div>
-            </div>
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M3 9h18M9 21V9" />
+                        </svg>
+                        <span class="em-nav-label">Inventario</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Inventario</div>
+                </div>
 
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <path d="M3 9h18M9 21V9" />
-                    </svg>
-                    <span class="em-nav-label">Inventario</span>
-                </a>
-                <div class="em-tooltip">Reporte Inventario</div>
-            </div>
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <span class="em-nav-label">Compras</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Compras</div>
+                </div>
 
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                    </svg>
-                    <span class="em-nav-label">Compras</span>
-                </a>
-                <div class="em-tooltip">Reporte Compras</div>
-            </div>
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        </svg>
+                        <span class="em-nav-label">Crédito y Cobros</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Crédito</div>
+                </div>
 
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                    </svg>
-                    <span class="em-nav-label">Crédito y Cobros</span>
-                </a>
-                <div class="em-tooltip">Reporte Crédito</div>
-            </div>
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                        <span class="em-nav-label">Fiscal (DGII)</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Fiscal</div>
+                </div>
 
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                    <span class="em-nav-label">Fiscal (DGII)</span>
-                </a>
-                <div class="em-tooltip">Reporte Fiscal</div>
-            </div>
-
-            <div class="em-nav-item">
-                <a href="#" class="em-nav-link">
-                    <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="12" y1="8" x2="12" y2="12" />
-                        <line x1="12" y1="16" x2="12.01" y2="16" />
-                    </svg>
-                    <span class="em-nav-label">Comisiones</span>
-                </a>
-                <div class="em-tooltip">Reporte Comisiones</div>
-            </div>
+                <div class="em-nav-item">
+                    <a href="#" class="em-nav-link">
+                        <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                        <span class="em-nav-label">Comisiones</span>
+                    </a>
+                    <div class="em-tooltip">Reporte Comisiones</div>
+                </div>
         </div>
+        @endif
 
         {{-- Configuración --}}
         <div class="em-nav-section">

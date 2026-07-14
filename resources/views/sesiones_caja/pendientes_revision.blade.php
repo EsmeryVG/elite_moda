@@ -45,8 +45,9 @@
                                     <form action="{{ route('sesiones_caja.marcar_revisada', $sesion) }}" method="POST">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="btn btn-outline-success btn-sm"
+                                            title="Marcar como revisada"
                                             onclick="return confirm('¿Marcar esta diferencia como revisada?')">
-                                            <i class="bi bi-check2"></i> Revisar
+                                            <i class="bi bi-check2"></i>
                                         </button>
                                     </form>
                                 </td>
