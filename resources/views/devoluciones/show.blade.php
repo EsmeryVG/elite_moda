@@ -119,12 +119,12 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Producto</th>
-                                    <th style="text-align:center; width:70px;">Cant.</th>
-                                    <th style="text-align:right; width:100px;">Subtotal</th>
-                                    <th style="width:140px;">Motivo</th>
+                                    <th style="width:220px;">Producto</th>
+                                    <th style="text-align:center; width:60px;">Cant.</th>
+                                    <th style="text-align:right; width:110px;">Subtotal</th>
+                                    <th style="width:160px; padding-left:20px;">Motivo</th>
                                     <th style="width:130px;">Condición</th>
-                                    <th style="width:200px;" class="text-end">Acción</th>
+                                    <th style="width:100px;" class="text-end">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,7 +141,7 @@
                                         <td class="text-end" style="font-size:13px;">
                                             RD$ {{ number_format($detalle->subtotal, 2) }}
                                         </td>
-                                        <td style="font-size:12px; color:var(--text-muted);">
+                                        <td style="font-size:12px; color:var(--text-muted); padding-left:20px;">
                                             {{ ucfirst(str_replace('_', ' ', $detalle->motivo)) }}
                                         </td>
                                         <td>
@@ -161,14 +161,16 @@
                                                 <button type="button"
                                                     class="btn btn-outline-success btn-sm btn-inspeccionar"
                                                     data-detalle-id="{{ $detalle->id }}" data-condicion="conforme"
-                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}">
-                                                    <i class="bi bi-check2"></i> Conforme
+                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}"
+                                                    title="Marcar como conforme">
+                                                    <i class="bi bi-check2"></i>
                                                 </button>
                                                 <button type="button"
                                                     class="btn btn-outline-danger btn-sm btn-inspeccionar"
                                                     data-detalle-id="{{ $detalle->id }}" data-condicion="no_conforme"
-                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}">
-                                                    <i class="bi bi-x"></i> No conforme
+                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}"
+                                                    title="Marcar como no conforme">
+                                                    <i class="bi bi-x"></i>
                                                 </button>
                                             @else
                                                 <span style="font-size:12px; color:var(--text-muted);">—</span>

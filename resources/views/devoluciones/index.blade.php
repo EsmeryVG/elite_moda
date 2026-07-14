@@ -11,6 +11,9 @@
                         Devoluciones y notas de crédito registradas
                     </p>
                 </div>
+                <a href="{{ route('devoluciones.buscar') }}" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Buscar factura sin recibo
+                </a>
             </div>
 
             <div class="d-flex justify-content-between align-items-center gap-3 mb-4 flex-wrap">

@@ -47,6 +47,7 @@ export default defineConfig({
                 "resources/js/devoluciones.js",
                 "resources/js/caja.js",
                 "resources/js/gastos.js",
+                "resources/js/notas_credito.js",
             ],
             refresh: true,
         }),

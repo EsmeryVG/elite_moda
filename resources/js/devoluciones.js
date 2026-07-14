@@ -133,6 +133,62 @@ const DevolucionesModule = (function () {
         });
     }
 
+    function initBusquedaFactura() {
+        const selectCliente = document.getElementById("selectClienteBusqueda");
+        const selectProducto = document.getElementById(
+            "selectProductoBusqueda",
+        );
+        if (
+            !selectCliente ||
+            !selectProducto ||
+            typeof TomSelect === "undefined"
+        )
+            return;
+
+        const tsCliente = new TomSelect(selectCliente, {
+            valueField: "id",
+            labelField: "texto",
+            searchField: ["texto"],
+            placeholder: "Buscar cliente...",
+            preload: "focus",
+            load(query, callback) {
+                fetch(`/api/clientes/buscar?q=${encodeURIComponent(query)}`, {
+                    headers: { "X-CSRF-TOKEN": csrfToken },
+                })
+                    .then((r) => r.json())
+                    .then((data) => callback(data))
+                    .catch(() => callback());
+            },
+        });
+
+        const tsProducto = new TomSelect(selectProducto, {
+            valueField: "id",
+            labelField: "texto",
+            searchField: ["texto"],
+            placeholder: "Primero selecciona un cliente...",
+            load(query, callback) {
+                const clienteId = tsCliente.getValue();
+                if (!clienteId) return callback();
+                fetch(
+                    `/api/devoluciones/productos-cliente?cliente_id=${clienteId}&q=${encodeURIComponent(query)}`,
+                    {
+                        headers: { "X-CSRF-TOKEN": csrfToken },
+                    },
+                )
+                    .then((r) => r.json())
+                    .then((data) => callback(data))
+                    .catch(() => callback());
+            },
+        });
+
+        tsCliente.on("change", function () {
+            tsProducto.clear();
+            tsProducto.clearOptions();
+            tsProducto.settings.placeholder = "Buscar producto...";
+            tsProducto.inputState();
+        });
+    }
+
     function initTomSelectEmpleado() {
         const el = document.getElementById("selectEmpleado");
         if (!el || typeof TomSelect === "undefined") return;
@@ -217,6 +273,7 @@ const DevolucionesModule = (function () {
         bindPaginacion();
         initFormulario();
         initInspeccion();
+        initBusquedaFactura();
     }
 
     return { init };

@@ -196,8 +196,8 @@ class DevolucionController extends Controller
             $devolucion->update(['total' => round($totalNC, 2)]);
 
             $comprobanteB04 = ComprobanteFiscal::activos()
-                ->where('tipo_comprobante', 'B04')
-                ->firstOrFail();
+    ->where('prefijo_ncf', 'B04')
+    ->firstOrFail();
 
             $ncf = $comprobanteB04->siguienteNumero();
             $comprobanteB04->increment('numero_actual');
@@ -302,5 +302,66 @@ class DevolucionController extends Controller
         if ($almacenSecundario) return $almacenSecundario->id;
 
         return Almacen::where('estado', true)->first()?->id;
+    }
+
+    public function buscarFactura(Request $request)
+    {
+        $clientes = \App\Models\Cliente::where('estado', true)->orderBy('nombre')->get();
+
+        $resultados = collect();
+
+        if ($request->filled('cliente_id') && $request->filled('variante_id')) {
+            $diasLimite = (int) Configuracion::get('devolucion_dias_limite', 30);
+            $fechaLimite = now()->subDays($diasLimite);
+
+            $ventas = Venta::with('detalles.variante.producto', 'cliente')
+                ->where('cliente_id', $request->cliente_id)
+                ->where('estado', 'completada')
+                ->where('fecha', '>=', $fechaLimite)
+                ->whereHas('detalles', fn ($q) => $q->where('variante_producto_id', $request->variante_id))
+                ->orderByDesc('fecha')
+                ->get();
+
+            foreach ($ventas as $venta) {
+                $detalle = $venta->detalles->firstWhere('variante_producto_id', $request->variante_id);
+                if (! $detalle) continue;
+
+                $yaDevuelto = DetalleDevolucion::where('detalle_venta_id', $detalle->id)->sum('cantidad');
+                $disponible = $detalle->cantidad - $yaDevuelto;
+
+                if ($disponible <= 0) continue;
+
+                $resultados->push([
+                    'venta' => $venta,
+                    'detalle' => $detalle,
+                    'cantidad_disponible' => $disponible,
+                ]);
+            }
+        }
+
+        return view('devoluciones.buscar', compact('clientes', 'resultados'));
+    }
+
+    public function buscarProductosCliente(Request $request)
+    {
+        $q = $request->get('q', '');
+        $clienteId = $request->get('cliente_id');
+
+        if (! $clienteId) {
+            return response()->json([]);
+        }
+
+        $variantes = \App\Models\VarianteProducto::with('producto')
+            ->whereHas('detalleVentas.venta', fn ($v) => $v->where('cliente_id', $clienteId)->where('estado', 'completada'))
+            ->whereHas('producto', fn ($p) => $p->where('nombre', 'like', "%{$q}%"))
+            ->distinct()
+            ->limit(15)
+            ->get()
+            ->map(fn ($v) => [
+                'id' => $v->id,
+                'texto' => $v->producto?->nombre . ' — ' . $v->descripcion,
+            ]);
+
+        return response()->json($variantes);
     }
 }

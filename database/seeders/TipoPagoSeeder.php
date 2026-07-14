@@ -9,10 +9,10 @@ class TipoPagoSeeder extends Seeder
 {
     public function run(): void
     {
-        $tipos = ['Efectivo', 'Tarjeta', 'Transferencia', 'Cheque', 'Crédito'];
+        $tipos = ['Efectivo', 'Tarjeta', 'Transferencia', 'Cheque', 'Crédito', 'Nota de Crédito'];
 
         foreach ($tipos as $nombre) {
-            TipoPago::create(['nombre' => $nombre, 'estado' => true]);
+            TipoPago::updateOrCreate(['nombre' => $nombre], ['estado' => true]);
         }
     }
 }

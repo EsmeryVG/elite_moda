@@ -75,6 +75,9 @@ class VentaController extends Controller
             'pagos.*.monto'              => 'required|numeric|min:0.01',
             'pagos.*.referencia'         => 'nullable|string',
             'pagos.*.banco'              => 'nullable|string',
+            'notas_credito'                => 'nullable|array',
+            'notas_credito.*.id'           => 'required_with:notas_credito|exists:notas_credito,id',
+            'notas_credito.*.monto'        => 'required_with:notas_credito|numeric|min:0.01',
         ], [
             'cliente_id.required'  => 'El cliente es obligatorio.',
             'lineas.required'      => 'Debes agregar al menos un producto.',
@@ -116,7 +119,7 @@ class VentaController extends Controller
             }
         }
 
-        $venta = DB::transaction(function () use ($request, $itbisPorcentaje, $cliente, $almacenId) {
+        $venta = DB::transaction(function () use ($request, $itbisPorcentaje, $cliente, $almacenId, $sesionCaja) {
 
             $descuentoService = new DescuentoService();
             $itbisGlobal      = $request->boolean('itbis_global', true);
@@ -245,6 +248,44 @@ class VentaController extends Controller
                     'fecha'        => now(),
                     'estado'       => 'confirmado',
                 ]);
+            }
+
+            // Registrar pagos con Nota de Crédito
+            if ($request->filled('notas_credito')) {
+                $tipoPagoNC = TipoPago::where('nombre', 'Nota de Crédito')->firstOrFail();
+
+                foreach ($request->notas_credito as $ncUsada) {
+                    $nota = \App\Models\NotaCredito::where('id', $ncUsada['id'])
+                        ->where('cliente_id', $cliente->id)
+                        ->where('estado', 'activa')
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (! $nota) {
+                        throw ValidationException::withMessages([
+                            'notas_credito' => 'Una de las notas de crédito seleccionadas ya no está disponible.',
+                        ]);
+                    }
+
+                    $monto = (float) $ncUsada['monto'];
+
+                    if ($monto > $nota->monto_disponible) {
+                        throw ValidationException::withMessages([
+                            'notas_credito' => "El monto usado de la nota {$nota->codigo} excede su saldo disponible.",
+                        ]);
+                    }
+
+                    Pago::create([
+                        'venta_id'     => $venta->id,
+                        'tipo_pago_id' => $tipoPagoNC->id,
+                        'monto'        => $monto,
+                        'referencia'   => $nota->codigo,
+                        'fecha'        => now(),
+                        'estado'       => 'confirmado',
+                    ]);
+
+                    $nota->aplicarMonto($monto);
+                }
             }
 
             // Si hubo pago con crédito, generar cuenta por cobrar
@@ -443,20 +484,18 @@ class VentaController extends Controller
     }
 
     /**
-     * Determina el almacén desde el cual se descuenta el stock en una venta.
-     * Lógica temporal hasta implementar el módulo de Caja:
-     * 1. Almacén secundario de la sucursal principal
-     * 2. Si no existe, cualquier almacén secundario activo
-     * 3. Si no existe, cualquier almacén activo
+     * Determina el almacén desde el cual se descuenta el stock en una venta,
+     * a partir de la sesión de caja abierta más antigua (cualquier empleado
+     * puede vender mientras exista una sesión abierta).
      */
-private function obtenerAlmacenVenta(): ?int
-{
-    $sesionCaja = SesionCaja::abiertas()->orderBy('fecha_apertura')->first();
+    private function obtenerAlmacenVenta(): ?int
+    {
+        $sesionCaja = SesionCaja::abiertas()->orderBy('fecha_apertura')->first();
 
-    return $sesionCaja?->caja?->almacen_id;
-}
+        return $sesionCaja?->caja?->almacen_id;
+    }
 
-        public function categorias()
+    public function categorias()
     {
         $categorias = \App\Models\Categoria::activas()
             ->orderBy('nombre')
@@ -501,7 +540,7 @@ private function obtenerAlmacenVenta(): ?int
         return response()->json($variantes);
     }
 
-public function verificarCredito(Request $request)
+    public function verificarCredito(Request $request)
     {
         $cliente = Cliente::find($request->get('cliente_id'));
 
@@ -515,6 +554,24 @@ public function verificarCredito(Request $request)
             'balance_credito'    => $cliente->balance_credito,
             'credito_disponible' => $cliente->credito_disponible,
         ]);
+    }
+
+    public function notasCreditoCliente(Request $request)
+    {
+        $clienteId = $request->get('cliente_id');
+
+        $notas = \App\Models\NotaCredito::where('cliente_id', $clienteId)
+            ->where('estado', 'activa')
+            ->where('monto_disponible', '>', 0)
+            ->orderBy('fecha')
+            ->get()
+            ->map(fn ($nc) => [
+                'id' => $nc->id,
+                'codigo' => $nc->codigo,
+                'monto_disponible' => (float) $nc->monto_disponible,
+            ]);
+
+        return response()->json($notas);
     }
 
     public function factura(Venta $venta)
