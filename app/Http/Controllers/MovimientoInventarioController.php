@@ -26,11 +26,13 @@ class MovimientoInventarioController extends Controller
         }
 
         if ($request->filled('buscar')) {
-            $query->whereHas('variante.producto', fn($q) =>
-                $q->where('nombre', 'like', '%' . $request->buscar . '%')
-            )->orWhereHas('variante', fn($q) =>
-                $q->where('codigo', 'like', '%' . $request->buscar . '%')
-            );
+            $b = $request->buscar;
+            $query->where(function ($q) use ($b) {
+                $q->whereHas('variante.producto', fn ($sub) => $sub->where('nombre', 'like', "%{$b}%"))
+                  ->orWhereHas('variante', fn ($sub) => $sub->where('codigo', 'like', "%{$b}%")
+                      ->orWhere('codigo_barras', 'like', "%{$b}%"))
+                  ->orWhere('motivo', 'like', "%{$b}%");
+            });
         }
 
         $movimientos = $query->paginate(15)->withQueryString();

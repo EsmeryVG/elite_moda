@@ -82,7 +82,7 @@ public function abrir(Request $request)
         ]);
     });
 
-    return redirect()->route('sesiones_caja.index')->with('success', 'Sesión de caja abierta correctamente.');
+    return redirect()->route('ventas.create')->with('success', 'Sesión de caja abierta correctamente.');
 }
 
     public function show(SesionCaja $sesionCaja)

@@ -13,7 +13,7 @@
             {{ $nota->cliente?->nombre }} {{ $nota->cliente?->apellido }}
         </td>
         <td style="font-size:12px; color:var(--text-muted); font-family:monospace;">
-            @if($nota->devolucion?->venta)
+            @if ($nota->devolucion?->venta)
                 <a href="{{ route('ventas.show', $nota->devolucion->venta) }}">
                     {{ $nota->devolucion->venta->codigo }}
                 </a>
@@ -29,10 +29,11 @@
         </td>
         <td>
             @php
-                $badge = match($nota->estado) {
-                    'activa'  => 'badge-devolucion-aprobada',
+                $badge = match ($nota->estado) {
+                    'activa' => 'badge-devolucion-aprobada',
                     'agotada' => 'badge-devolucion-pendiente',
-                    default   => 'badge-devolucion-pendiente',
+                    'vencida' => 'badge-devolucion-vencida',
+                    default => 'badge-devolucion-pendiente',
                 };
             @endphp
             <span class="{{ $badge }}">{{ ucfirst($nota->estado) }}</span>
@@ -52,7 +53,7 @@
     </tr>
 @endforelse
 
-@if($notas->hasPages())
+@if ($notas->hasPages())
     <tr>
         <td colspan="9">
             <div class="d-flex justify-content-between align-items-center py-3 px-1">
@@ -62,15 +63,17 @@
                 <nav>
                     <ul class="pagination pagination-sm mb-0 em-pagination">
                         <li class="page-item {{ $notas->onFirstPage() ? 'disabled' : '' }}">
-                            <a class="page-link ajax-page" href="{{ $notas->previousPageUrl() }}"><i class="bi bi-chevron-left"></i></a>
+                            <a class="page-link ajax-page" href="{{ $notas->previousPageUrl() }}"><i
+                                    class="bi bi-chevron-left"></i></a>
                         </li>
-                        @foreach($notas->getUrlRange(1, $notas->lastPage()) as $page => $url)
+                        @foreach ($notas->getUrlRange(1, $notas->lastPage()) as $page => $url)
                             <li class="page-item {{ $page == $notas->currentPage() ? 'active' : '' }}">
                                 <a class="page-link ajax-page" href="{{ $url }}">{{ $page }}</a>
                             </li>
                         @endforeach
                         <li class="page-item {{ !$notas->hasMorePages() ? 'disabled' : '' }}">
-                            <a class="page-link ajax-page" href="{{ $notas->nextPageUrl() }}"><i class="bi bi-chevron-right"></i></a>
+                            <a class="page-link ajax-page" href="{{ $notas->nextPageUrl() }}"><i
+                                    class="bi bi-chevron-right"></i></a>
                         </li>
                     </ul>
                 </nav>

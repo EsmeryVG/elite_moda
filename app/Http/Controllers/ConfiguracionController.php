@@ -28,6 +28,7 @@ class ConfiguracionController extends Controller
             'caja_chica_monto_base'      => 'required|numeric|min:0',
             'caja_chica_dias_reposicion' => 'required|integer|min:1',
             'credito_dias_vencimiento'   => 'required|integer|min:1',
+            'nota_credito_dias_vencimiento' => 'required|integer|min:1'
         ], [
             'itbis_porcentaje.required' => 'El porcentaje de ITBIS es obligatorio.',
             'itbis_porcentaje.numeric'  => 'El porcentaje debe ser un número.',
@@ -54,6 +55,7 @@ class ConfiguracionController extends Controller
             'caja_chica_monto_base',
             'caja_chica_dias_reposicion',
             'credito_dias_vencimiento',
+            'nota_credito_dias_vencimiento'
         ];
 
         foreach ($campos as $clave) {

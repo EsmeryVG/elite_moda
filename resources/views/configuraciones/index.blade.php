@@ -135,10 +135,31 @@
                                         Pasado este límite, requiere autorización de admin y no incluye ITBIS.
                                     </small>
                                 </div>
-
+                                <label class="form-label">
+                                </label>
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Vigencia de Nota de Crédito <span style="color:var(--accent);">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="number" name="nota_credito_dias_vencimiento"
+                                            class="form-control @error('nota_credito_dias_vencimiento') is-invalid @enderror"
+                                            value="{{ old('nota_credito_dias_vencimiento', $configs['nota_credito_dias_vencimiento']?->valor ?? '90') }}"
+                                            min="1" step="1">
+                                        <span class="input-group-text"
+                                            style="background:var(--bg-elevated); border-color:var(--border); color:var(--text-muted);">días</span>
+                                    </div>
+                                    @error('nota_credito_dias_vencimiento')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
                     </div>
+
+
+
+
 
                     <div class="col-md-3">
                         {{-- Caja: fondo mínimo --}}
@@ -201,6 +222,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 {{-- Horario --}}
                 <div class="card page-card mb-4">

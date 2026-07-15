@@ -563,6 +563,9 @@ class VentaController extends Controller
         $notas = \App\Models\NotaCredito::where('cliente_id', $clienteId)
             ->where('estado', 'activa')
             ->where('monto_disponible', '>', 0)
+            ->where(function ($q) {
+                $q->whereNull('fecha_vencimiento')->orWhere('fecha_vencimiento', '>=', now());
+            })
             ->orderBy('fecha')
             ->get()
             ->map(fn ($nc) => [
