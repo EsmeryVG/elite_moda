@@ -10,21 +10,30 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Ventas realizadas</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon ventas"><i class="bi bi-receipt"></i></div>
+                    <div class="dash-kpi-label">Ventas realizadas</div>
+                </div>
                 <div class="dash-kpi-valor">{{ $ventasHoy }}</div>
                 <div class="dash-kpi-sub">transacciones hoy</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Ingresos del día</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon ingresos"><i class="bi bi-cash-coin"></i></div>
+                    <div class="dash-kpi-label">Ingresos del día</div>
+                </div>
                 <div class="dash-kpi-valor">RD$ {{ number_format($ingresosHoy, 0, '.', ',') }}</div>
                 <div class="dash-kpi-sub">en ventas completadas</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Unidades vendidas</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon unidades"><i class="bi bi-box-seam"></i></div>
+                    <div class="dash-kpi-label">Unidades vendidas</div>
+                </div>
                 <div class="dash-kpi-valor">{{ $productosVendidosHoy }}</div>
                 <div class="dash-kpi-sub">productos hoy</div>
             </div>
@@ -36,7 +45,10 @@
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Ventas esta semana</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon semana"><i class="bi bi-calendar-week"></i></div>
+                    <div class="dash-kpi-label">Ventas esta semana</div>
+                </div>
                 <div class="dash-kpi-valor">RD$ {{ number_format($ventasSemana, 0, '.', ',') }}</div>
                 <div class="dash-kpi-sub">{{ now()->startOfWeek()->format('d/m') }} —
                     {{ now()->endOfWeek()->format('d/m') }}</div>
@@ -44,14 +56,20 @@
         </div>
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Ventas este mes</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon mes"><i class="bi bi-calendar3"></i></div>
+                    <div class="dash-kpi-label">Ventas este mes</div>
+                </div>
                 <div class="dash-kpi-valor">RD$ {{ number_format($ventasMes, 0, '.', ',') }}</div>
                 <div class="dash-kpi-sub">{{ now()->format('F Y') }}</div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="dash-kpi-card">
-                <div class="dash-kpi-label">Venta promedio</div>
+                <div class="dash-kpi-top">
+                    <div class="dash-kpi-icon promedio"><i class="bi bi-graph-up"></i></div>
+                    <div class="dash-kpi-label">Venta promedio</div>
+                </div>
                 <div class="dash-kpi-valor">RD$ {{ number_format($ticketPromedio, 0, '.', ',') }}</div>
                 <div class="dash-kpi-sub">por transacción este mes</div>
             </div>
@@ -61,7 +79,7 @@
     {{-- ── Fila 3: Alertas ── --}}
     <div class="dash-section-title">Alertas operacionales</div>
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col">
             <a href="{{ route('stock.index', ['nivel' => 'agotado']) }}"
                 class="dash-alerta-card {{ $stockAgotado > 0 ? 'agotado' : 'sin-alertas' }}">
                 <i class="bi bi-x-circle dash-alerta-icono"></i>
@@ -73,7 +91,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
+        <div class="col">
             <a href="{{ route('stock.index', ['nivel' => 'critico']) }}"
                 class="dash-alerta-card {{ $stockCritico > 0 ? 'critico' : 'sin-alertas' }}">
                 <i class="bi bi-exclamation-triangle dash-alerta-icono"></i>
@@ -85,7 +103,7 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
+        <div class="col">
             <a href="{{ route('ordenes_compra.index', ['estado' => 'confirmada']) }}"
                 class="dash-alerta-card {{ $ordenesRetrasadas > 0 ? 'retrasada' : 'sin-alertas' }}">
                 <i class="bi bi-clock-history dash-alerta-icono"></i>
@@ -97,10 +115,10 @@
                 </div>
             </a>
         </div>
-        <div class="col-md-3">
+        <div class="col">
             <a href="{{ route('sesiones_caja.pendientes_revision') }}"
                 class="dash-alerta-card {{ $diferenciasCajaPendientes > 0 ? 'diferencia' : 'sin-alertas' }}">
-                <i class="bi bi-cash-stack dash-alerta-icono"></i>
+                <i class="bi bi-calculator dash-alerta-icono"></i>
                 <div>
                     <div class="dash-alerta-numero">{{ $diferenciasCajaPendientes }}</div>
                     <div class="dash-alerta-texto">
@@ -109,23 +127,82 @@
                 </div>
             </a>
         </div>
+        <div class="col">
+            <a href="{{ route('caja_chica.show') }}"
+                class="dash-alerta-card {{ $cajaChicaAgotada ? 'agotado' : ($cajaChicaBaja ? 'critico' : 'sin-alertas') }}">
+                <i class="bi bi-cash-stack dash-alerta-icono"></i>
+                <div>
+                    <div class="dash-alerta-numero">RD$ {{ number_format($cajaChica?->monto_disponible ?? 0, 0) }}</div>
+                    <div class="dash-alerta-texto">
+                        @if ($cajaChicaAgotada)
+                            caja chica agotada
+                        @elseif($cajaChicaBaja)
+                            caja chica requiere reposición
+                        @else
+                            caja chica en buen nivel
+                        @endif
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
     {{-- ── Fila 4: Gráficos ── --}}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div class="dash-section-title mb-0">Análisis de ventas</div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button class="btn btn-sm em-filtro active" data-rango="7dias">Últimos 7 días</button>
+            <button class="btn btn-sm em-filtro" data-rango="hoy">Hoy</button>
+            <button class="btn btn-sm em-filtro" data-rango="mes">Este mes</button>
+            <button class="btn btn-sm em-filtro" data-rango="personalizado">Rango personalizado</button>
+            <div id="rangoPersonalizadoBox" style="display:none;" class="dash-rango-box">
+                <div class="dash-rango-input-wrap">
+                    <i class="bi bi-calendar3"></i>
+                    <input type="date" id="fechaDesde" class="dash-rango-input">
+                </div>
+                <span class="dash-rango-separador">→</span>
+                <div class="dash-rango-input-wrap">
+                    <i class="bi bi-calendar3"></i>
+                    <input type="date" id="fechaHasta" class="dash-rango-input">
+                </div>
+                <button class="btn btn-primary btn-sm" id="btnAplicarRango">
+                    <i class="bi bi-check2 me-1"></i>Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-lg-7">
             <div class="card page-card h-100">
                 <div class="card-body p-4">
-                    <div class="dash-section-title">Ventas últimos 7 días</div>
-                    <canvas id="chartVentas7Dias" height="200"></canvas>
+                    <div class="dash-section-title">Ventas en el período</div>
+                    <div style="position:relative;">
+                        <canvas id="chartVentas7Dias" height="220"></canvas>
+                        <div id="ventasTooltip" class="dash-chart-tooltip"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-5">
             <div class="card page-card h-100">
                 <div class="card-body p-4">
-                    <div class="dash-section-title">Top 5 productos del mes</div>
-                    <canvas id="chartTopProductos" height="200"></canvas>
+                    <div class="dash-section-title">Top 5 productos del período</div>
+                    <div class="dash-donut-wrap" id="donutWrap">
+                        <div class="dash-donut-canvas-wrap">
+                            <canvas id="chartTopProductos"></canvas>
+                            <div class="dash-donut-center">
+                                <div class="num" id="donutTotal">0</div>
+                                <div class="lbl">unidades</div>
+                            </div>
+                        </div>
+                        <div class="dash-donut-legend" id="donutLegend"></div>
+                    </div>
+
+                    <hr style="border-color:var(--border); margin:20px 0 16px;">
+
+                    <div class="dash-section-title" style="margin-bottom:12px;">Ventas por categoría</div>
+                    <div id="categoriaBars"></div>
                 </div>
             </div>
         </div>
@@ -184,10 +261,4 @@
 
 @push('scripts')
     @vite(['resources/js/dashboard.js'])
-    <script>
-        const ventasLabels = @json($ventasUltimos7->pluck('fecha'));
-        const ventasTotales = @json($ventasUltimos7->pluck('total'));
-        const topProductosLabels = @json($topProductos->pluck('nombre'));
-        const topProductosTotales = @json($topProductos->pluck('total'));
-    </script>
 @endpush

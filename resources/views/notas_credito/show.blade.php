@@ -16,6 +16,7 @@
                             $badge = match ($notaCredito->estado) {
                                 'activa' => 'badge-devolucion-aprobada',
                                 'agotada' => 'badge-devolucion-pendiente',
+                                'vencida' => 'badge-devolucion-vencida',
                                 default => 'badge-devolucion-pendiente',
                             };
                         @endphp

@@ -84,12 +84,22 @@ const GastosModule = (function () {
                     },
                     body: JSON.stringify({ nombre: input }),
                 })
-                    .then((res) => res.json())
-                    .then((data) => {
-                        if (!data.id) {
+                    .then((res) => {
+                        if (res.status === 403) {
                             alert(
-                                data.message ?? "Error al crear la categoría.",
+                                "No tienes permiso para crear categorías nuevas. Contacta a un administrador.",
                             );
+                            return null;
+                        }
+                        return res.json();
+                    })
+                    .then((data) => {
+                        if (!data || !data.id) {
+                            if (data)
+                                alert(
+                                    data.message ??
+                                        "Error al crear la categoría.",
+                                );
                             callback();
                             return;
                         }

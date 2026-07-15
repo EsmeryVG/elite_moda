@@ -66,10 +66,15 @@ class ConfiguracionSeeder extends Seeder
             'descripcion' => 'Cada cuántos días se permite una reposición normal de caja chica',
             ],
             [
-    'clave'       => 'credito_dias_vencimiento',
-    'valor'       => '30',
-    'descripcion' => 'Días de plazo por defecto para el vencimiento de cuentas por cobrar',
-],
+            'clave'       => 'credito_dias_vencimiento',
+            'valor'       => '30',
+            'descripcion' => 'Días de plazo por defecto para el vencimiento de cuentas por cobrar',
+            ],
+            [
+                'clave'       => 'nota_credito_dias_vencimiento',
+                'valor'       => '90',
+                'descripcion' => 'Días de validez de una nota de crédito antes de vencer',
+            ],
 
         ];
 

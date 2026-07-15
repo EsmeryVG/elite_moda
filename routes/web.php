@@ -96,6 +96,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('almacenes/{almacen}/reactivar', [AlmacenController::class, 'reactivar'])
         ->name('almacenes.reactivar');
 
+        Route::get('api/dashboard/grafico-datos', [HomeController::class, 'graficoDatos'])->name('api.dashboard.grafico_datos');
+
+
     // Proveedores
     Route::resource('proveedores', ProveedorController::class)->except(['show']);
     Route::get('proveedores/{proveedor}', [ProveedorController::class, 'show'])

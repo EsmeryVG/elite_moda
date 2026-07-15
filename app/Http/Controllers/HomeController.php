@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\OrdenCompra;
 use App\Models\SesionCaja;
 use App\Models\Stock;
 use App\Models\Venta;
 use App\Models\DetalleVenta;
+use App\Models\CajaChica;
 use Illuminate\Support\Facades\DB;
+
 
 class HomeController extends Controller
 {
@@ -55,6 +58,10 @@ class HomeController extends Controller
 
         $diferenciasCajaPendientes = SesionCaja::pendientesRevision()->count();
 
+        $cajaChica = CajaChica::activas()->first();
+        $cajaChicaBaja = $cajaChica && $cajaChica->monto_disponible < $cajaChica->monto_base;
+        $cajaChicaAgotada = $cajaChica && $cajaChica->monto_disponible <= 0;
+
         // ── Últimas ventas ───────────────────────────
         $ultimasVentas = Venta::with(['cliente', 'usuario'])
             ->where('estado', 'completada')
@@ -62,40 +69,80 @@ class HomeController extends Controller
             ->limit(5)
             ->get();
 
-        // ── Ventas últimos 7 días (gráfico) ──────────
-        $ventasUltimos7 = collect(range(6, 0))->map(function ($diasAtras) {
-            $fecha = now()->subDays($diasAtras);
+
+        return view('home', compact(
+            'ventasHoy', 'ingresosHoy', 'productosVendidosHoy',
+            'ventasSemana', 'ventasMes', 'ticketPromedio',
+            'stockAgotado', 'stockCritico', 'ordenesRetrasadas', 'diferenciasCajaPendientes',
+            'ultimasVentas', 'cajaChicaBaja', 'cajaChicaAgotada',
+            'cajaChica'
+        ));
+    }
+public function graficoDatos(Request $request)
+    {
+        [$desde, $hasta] = $this->resolverRango($request);
+
+        $ventasPorDia = collect();
+        $periodo = \Carbon\CarbonPeriod::create($desde->copy()->startOfDay(), $hasta->copy()->startOfDay());
+
+        foreach ($periodo as $fecha) {
             $total = Venta::where('estado', 'completada')
                 ->whereDate('fecha', $fecha)
                 ->sum('total');
-            return [
-                'fecha'  => $fecha->format('d/m'),
-                'total'  => round((float) $total, 2),
-            ];
-        });
 
-        // ── Top 5 productos del mes (gráfico) ────────
+            $ventasPorDia->push([
+                'fecha' => $fecha->format('d/m'),
+                'total' => round((float) $total, 2),
+            ]);
+        }
+
         $topProductos = DetalleVenta::select('variante_producto_id', DB::raw('SUM(cantidad) as total_vendido'))
-            ->whereHas('venta', fn($q) =>
-                $q->where('estado', 'completada')
-                  ->whereMonth('fecha', now()->month)
-                  ->whereYear('fecha', now()->year)
+            ->whereHas('venta', fn ($q) =>
+                $q->where('estado', 'completada')->whereBetween('fecha', [$desde, $hasta])
             )
             ->with('variante.producto')
             ->groupBy('variante_producto_id')
             ->orderByDesc('total_vendido')
             ->limit(5)
             ->get()
-            ->map(fn($d) => [
+            ->map(fn ($d) => [
                 'nombre' => $d->variante?->producto?->nombre ?? '—',
                 'total'  => (int) $d->total_vendido,
             ]);
 
-        return view('home', compact(
-            'ventasHoy', 'ingresosHoy', 'productosVendidosHoy',
-            'ventasSemana', 'ventasMes', 'ticketPromedio',
-            'stockAgotado', 'stockCritico', 'ordenesRetrasadas', 'diferenciasCajaPendientes',
-            'ultimasVentas', 'ventasUltimos7', 'topProductos'
-        ));
+        $ventasPorCategoria = DetalleVenta::whereHas('venta', fn ($q) =>
+                $q->where('estado', 'completada')->whereBetween('fecha', [$desde, $hasta])
+            )
+            ->with('variante.producto.categoria')
+            ->get()
+            ->groupBy(fn ($d) => $d->variante?->producto?->categoria?->nombre ?? 'Sin categoría')
+            ->map(fn ($grupo, $nombre) => [
+                'nombre' => $nombre,
+                'total'  => round((float) $grupo->sum('subtotal'), 2),
+            ])
+            ->sortByDesc('total')
+            ->values()
+            ->take(5);
+
+        return response()->json([
+            'ventas' => $ventasPorDia,
+            'topProductos' => $topProductos,
+            'ventasPorCategoria' => $ventasPorCategoria,
+        ]);
+    }
+
+    private function resolverRango(Request $request): array
+    {
+        $rango = $request->get('rango', '7dias');
+
+        return match ($rango) {
+            'hoy'   => [now()->startOfDay(), now()->endOfDay()],
+            'mes'   => [now()->startOfMonth(), now()->endOfDay()],
+            'personalizado' => [
+                \Carbon\Carbon::parse($request->get('desde', now()->subDays(6)))->startOfDay(),
+                \Carbon\Carbon::parse($request->get('hasta', now()))->endOfDay(),
+            ],
+            default => [now()->subDays(6)->startOfDay(), now()->endOfDay()], // 7dias
+        };
     }
 }

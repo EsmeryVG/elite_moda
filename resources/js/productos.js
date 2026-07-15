@@ -3,98 +3,131 @@
    ===================================================== */
 
 const ProductosModule = (function () {
+    const csrfToken = document.querySelector(
+        'meta[name="csrf-token"]',
+    )?.content;
 
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    let buscarTimeout   = null;
-    let estadoActual    = new URLSearchParams(window.location.search).get('estado')    ?? '';
-    let categoriaActual = new URLSearchParams(window.location.search).get('categoria') ?? '';
-    let buscarActual    = new URLSearchParams(window.location.search).get('buscar')    ?? '';
+    let buscarTimeout = null;
+    let estadoActual =
+        new URLSearchParams(window.location.search).get("estado") ?? "";
+    let categoriaActual =
+        new URLSearchParams(window.location.search).get("categoria") ?? "";
+    let buscarActual =
+        new URLSearchParams(window.location.search).get("buscar") ?? "";
 
     // ════════════════════════════════════════════════
     // ÍNDICE — AJAX
     // ════════════════════════════════════════════════
 
     function getBaseUrl() {
-        return document.getElementById('tablaContainer')?.dataset.url;
+        return document.getElementById("tablaContainer")?.dataset.url;
     }
 
     function cargarTabla(params = {}) {
-        const container = document.getElementById('tablaContainer');
-        const baseUrl   = getBaseUrl();
+        const container = document.getElementById("tablaContainer");
+        const baseUrl = getBaseUrl();
         if (!container || !baseUrl) return;
 
-        container.classList.add('loading');
+        container.classList.add("loading");
 
         const url = new URL(baseUrl);
-        if (params.buscar)    url.searchParams.set('buscar',    params.buscar);
-        if (params.estado)    url.searchParams.set('estado',    params.estado);
-        if (params.categoria) url.searchParams.set('categoria', params.categoria);
-        if (params.page)      url.searchParams.set('page',      params.page);
+        if (params.buscar) url.searchParams.set("buscar", params.buscar);
+        if (params.estado) url.searchParams.set("estado", params.estado);
+        if (params.categoria)
+            url.searchParams.set("categoria", params.categoria);
+        if (params.page) url.searchParams.set("page", params.page);
 
-        window.history.pushState({}, '', url.toString());
+        window.history.pushState({}, "", url.toString());
 
         fetch(url.toString(), {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': csrfToken,
-            }
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-TOKEN": csrfToken,
+            },
         })
-        .then(res => res.text())
-        .then(html => {
-            container.innerHTML = html;
-            container.classList.remove('loading');
-            bindPaginacion();
-            bindExpandirVariantes();
-        })
-        .catch(() => container.classList.remove('loading'));
+            .then((res) => res.text())
+            .then((html) => {
+                container.innerHTML = html;
+                container.classList.remove("loading");
+                bindPaginacion();
+                bindExpandirVariantes();
+            })
+            .catch(() => container.classList.remove("loading"));
     }
 
     function bindPaginacion() {
-        document.querySelectorAll('.ajax-page').forEach(link => {
-            link.addEventListener('click', function (e) {
+        document.querySelectorAll(".ajax-page").forEach((link) => {
+            link.addEventListener("click", function (e) {
                 e.preventDefault();
-                const page = new URL(this.href).searchParams.get('page') ?? 1;
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, categoria: categoriaActual, page });
+                const page = new URL(this.href).searchParams.get("page") ?? 1;
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    categoria: categoriaActual,
+                    page,
+                });
             });
         });
     }
 
     function bindFiltros() {
-        document.querySelectorAll('.em-filtro').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.em-filtro').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                estadoActual = this.dataset.estado ?? '';
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, categoria: categoriaActual });
+        document.querySelectorAll(".em-filtro").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                document
+                    .querySelectorAll(".em-filtro")
+                    .forEach((b) => b.classList.remove("active"));
+                this.classList.add("active");
+                estadoActual = this.dataset.estado ?? "";
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    categoria: categoriaActual,
+                });
             });
         });
 
-        document.getElementById('filtroCategoria')?.addEventListener('change', function () {
-            categoriaActual = this.value;
-            cargarTabla({ buscar: buscarActual, estado: estadoActual, categoria: categoriaActual });
-        });
+        document
+            .getElementById("filtroCategoria")
+            ?.addEventListener("change", function () {
+                categoriaActual = this.value;
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    categoria: categoriaActual,
+                });
+            });
     }
 
     function bindBuscador() {
-        document.getElementById('buscadorProductos')?.addEventListener('input', function () {
-            clearTimeout(buscarTimeout);
-            buscarActual = this.value.trim();
-            buscarTimeout = setTimeout(() => {
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, categoria: categoriaActual });
-            }, 400);
-        });
+        document
+            .getElementById("buscadorProductos")
+            ?.addEventListener("input", function () {
+                clearTimeout(buscarTimeout);
+                buscarActual = this.value.trim();
+                buscarTimeout = setTimeout(() => {
+                    cargarTabla({
+                        buscar: buscarActual,
+                        estado: estadoActual,
+                        categoria: categoriaActual,
+                    });
+                }, 400);
+            });
     }
 
     function bindExpandirVariantes() {
-        document.querySelectorAll('.producto-row').forEach(row => {
-            row.addEventListener('click', function (e) {
-                if (e.target.closest('a') || e.target.closest('button') || e.target.closest('form')) return;
-                const id  = this.dataset.productoId;
+        document.querySelectorAll(".producto-row").forEach((row) => {
+            row.addEventListener("click", function (e) {
+                if (
+                    e.target.closest("a") ||
+                    e.target.closest("button") ||
+                    e.target.closest("form")
+                )
+                    return;
+                const id = this.dataset.productoId;
                 const sub = document.getElementById(`variantes-${id}`);
                 if (!sub) return;
-                this.classList.toggle('open');
-                sub.classList.toggle('open');
+                this.classList.toggle("open");
+                sub.classList.toggle("open");
             });
         });
     }
@@ -106,36 +139,38 @@ const ProductosModule = (function () {
     function bindNuevoValor(input) {
         if (!input) return;
 
-        input.addEventListener('keydown', function (e) {
-            if (e.key !== 'Enter') return;
+        input.addEventListener("keydown", function (e) {
+            if (e.key !== "Enter") return;
             e.preventDefault();
 
-            const texto      = this.value.trim();
+            const texto = this.value.trim();
             const atributoId = this.dataset.atributoId;
             if (!texto || !atributoId) return;
 
             fetch(`/atributos/${atributoId}/valores`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken,
-                    'Accept': 'application/json',
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": csrfToken,
+                    Accept: "application/json",
                 },
                 body: JSON.stringify({ valor: texto, orden: 0 }),
             })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.id) {
-                    alert(data.message ?? 'Error al crear el valor.');
-                    return;
-                }
+                .then((res) => res.json())
+                .then((data) => {
+                    if (!data.id) {
+                        alert(data.message ?? "Error al crear el valor.");
+                        return;
+                    }
 
-                const checksContainer = document.getElementById(`checks-${atributoId}`);
-                const wrapper         = this.closest('.nuevo-valor-wrapper');
+                    const checksContainer = document.getElementById(
+                        `checks-${atributoId}`,
+                    );
+                    const wrapper = this.closest(".nuevo-valor-wrapper");
 
-                const div = document.createElement('div');
-                div.className = 'form-check';
-                div.innerHTML = `
+                    const div = document.createElement("div");
+                    div.className = "form-check";
+                    div.innerHTML = `
                     <input class="form-check-input" type="checkbox"
                            id="val_${data.id}" value="${data.id}"
                            data-valor="${data.valor}" checked>
@@ -144,16 +179,16 @@ const ProductosModule = (function () {
                     </label>
                 `;
 
-                checksContainer.insertBefore(div, wrapper);
-                this.value = '';
-                this.focus();
-            })
-            .catch(() => alert('Error de conexión al crear el valor.'));
+                    checksContainer.insertBefore(div, wrapper);
+                    this.value = "";
+                    this.focus();
+                })
+                .catch(() => alert("Error de conexión al crear el valor."));
         });
     }
 
     function bindTodosLosNuevosValores() {
-        document.querySelectorAll('.input-nuevo-valor').forEach(input => {
+        document.querySelectorAll(".input-nuevo-valor").forEach((input) => {
             bindNuevoValor(input);
         });
     }
@@ -163,27 +198,31 @@ const ProductosModule = (function () {
     // ════════════════════════════════════════════════
 
     function initCreate() {
-        if (!document.getElementById('formCrearProducto')) return;
+        if (!document.getElementById("formCrearProducto")) return;
 
-        document.getElementById('btnSimple')?.addEventListener('click',    () => setTipo('simple'));
-        document.getElementById('btnVariantes')?.addEventListener('click', () => setTipo('variantes'));
+        document
+            .getElementById("btnSimple")
+            ?.addEventListener("click", () => setTipo("simple"));
+        document
+            .getElementById("btnVariantes")
+            ?.addEventListener("click", () => setTipo("variantes"));
 
         function setTipo(tipo) {
-            const btnSimple    = document.getElementById('btnSimple');
-            const btnVariantes = document.getElementById('btnVariantes');
-            const secSimple    = document.getElementById('seccionSimple');
-            const secVariantes = document.getElementById('seccionVariantes');
+            const btnSimple = document.getElementById("btnSimple");
+            const btnVariantes = document.getElementById("btnVariantes");
+            const secSimple = document.getElementById("seccionSimple");
+            const secVariantes = document.getElementById("seccionVariantes");
 
-            if (tipo === 'simple') {
-                btnSimple.classList.add('active');
-                btnVariantes.classList.remove('active');
-                secSimple.style.display    = 'block';
-                secVariantes.style.display = 'none';
+            if (tipo === "simple") {
+                btnSimple.classList.add("active");
+                btnVariantes.classList.remove("active");
+                secSimple.style.display = "block";
+                secVariantes.style.display = "none";
             } else {
-                btnVariantes.classList.add('active');
-                btnSimple.classList.remove('active');
-                secVariantes.style.display = 'block';
-                secSimple.style.display    = 'none';
+                btnVariantes.classList.add("active");
+                btnSimple.classList.remove("active");
+                secVariantes.style.display = "block";
+                secSimple.style.display = "none";
                 initTomSelect();
             }
         }
@@ -193,38 +232,42 @@ const ProductosModule = (function () {
         function initTomSelect() {
             if (tomSelectInstance) return;
 
-            const el = document.getElementById('selectorAtributos');
-            if (!el || typeof TomSelect === 'undefined') return;
+            const el = document.getElementById("selectorAtributos");
+            if (!el || typeof TomSelect === "undefined") return;
 
             tomSelectInstance = new TomSelect(el, {
-                plugins: ['remove_button'],
-                placeholder: 'Busca o selecciona atributos...',
+                plugins: ["remove_button"],
+                placeholder: "Busca o selecciona atributos...",
                 create: function (input, callback) {
-                    fetch('/atributos', {
-                        method: 'POST',
+                    fetch("/atributos", {
+                        method: "POST",
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json',
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrfToken,
+                            Accept: "application/json",
                         },
                         body: JSON.stringify({ nombre: input }),
                     })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (!data.id) {
-                            alert(data.message ?? 'Error al crear el atributo.');
-                            callback();
-                            return;
-                        }
+                        .then((res) => res.json())
+                        .then((data) => {
+                            if (!data.id) {
+                                alert(
+                                    data.message ??
+                                        "Error al crear el atributo.",
+                                );
+                                callback();
+                                return;
+                            }
 
-                        // Crear bloque de valores para el nuevo atributo
-                        const contenedor = document.getElementById('contenedorValores');
-                        const bloque     = document.createElement('div');
-                        bloque.className          = 'atributo-grupo';
-                        bloque.id                 = `grupo-${data.id}`;
-                        bloque.dataset.nombre     = data.nombre;
-                        bloque.style.display      = 'block';
-                        bloque.innerHTML = `
+                            // Crear bloque de valores para el nuevo atributo
+                            const contenedor =
+                                document.getElementById("contenedorValores");
+                            const bloque = document.createElement("div");
+                            bloque.className = "atributo-grupo";
+                            bloque.id = `grupo-${data.id}`;
+                            bloque.dataset.nombre = data.nombre;
+                            bloque.style.display = "block";
+                            bloque.innerHTML = `
                             <div class="atributo-grupo-nombre">${data.nombre}</div>
                             <div class="atributo-checks" id="checks-${data.id}">
                                 <div class="nuevo-valor-wrapper">
@@ -236,30 +279,38 @@ const ProductosModule = (function () {
                                 </div>
                             </div>
                         `;
-                        contenedor.appendChild(bloque);
-                        bindNuevoValor(bloque.querySelector('.input-nuevo-valor'));
+                            contenedor.prepend(bloque);
+                            bindNuevoValor(
+                                bloque.querySelector(".input-nuevo-valor"),
+                            );
+                            bloque.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center",
+                            });
 
-                        callback({ value: data.id, text: data.nombre });
-                    })
-                    .catch(() => {
-                        alert('Error de conexión.');
-                        callback();
-                    });
+                            callback({ value: data.id, text: data.nombre });
+                        })
+                        .catch(() => {
+                            alert("Error de conexión.");
+                            callback();
+                        });
                 },
                 createFilter: function (input) {
                     return input.trim().length > 0;
                 },
                 onItemAdd(value) {
                     const grupo = document.getElementById(`grupo-${value}`);
-                    if (grupo) grupo.style.display = 'block';
+                    if (grupo) grupo.style.display = "block";
                 },
                 onItemRemove(value) {
                     const grupo = document.getElementById(`grupo-${value}`);
                     if (grupo) {
-                        grupo.style.display = 'none';
-                        grupo.querySelectorAll('.form-check-input').forEach(cb => {
-                            cb.checked = false;
-                        });
+                        grupo.style.display = "none";
+                        grupo
+                            .querySelectorAll(".form-check-input")
+                            .forEach((cb) => {
+                                cb.checked = false;
+                            });
                     }
                 },
                 render: {
@@ -273,7 +324,9 @@ const ProductosModule = (function () {
             });
         }
 
-        document.getElementById('btnGenerarGrilla')?.addEventListener('click', generarGrilla);
+        document
+            .getElementById("btnGenerarGrilla")
+            ?.addEventListener("click", generarGrilla);
         bindTodosLosNuevosValores();
     }
 
@@ -284,33 +337,46 @@ const ProductosModule = (function () {
     function generarGrilla() {
         const atributosSeleccionados = [];
 
-        document.querySelectorAll('.atributo-grupo').forEach(grupo => {
-            if (grupo.style.display === 'none') return;
+        document.querySelectorAll(".atributo-grupo").forEach((grupo) => {
+            if (grupo.style.display === "none") return;
 
-            const nombre  = grupo.dataset.nombre;
-            const checked = [...grupo.querySelectorAll('.form-check-input:checked')];
+            const nombre = grupo.dataset.nombre;
+            const checked = [
+                ...grupo.querySelectorAll(".form-check-input:checked"),
+            ];
             if (checked.length === 0) return;
 
             atributosSeleccionados.push({
                 nombre,
-                valores: checked.map(cb => ({
-                    id:    cb.value,
-                    texto: cb.dataset.valor ?? cb.closest('.form-check')?.querySelector('label')?.textContent.trim() ?? cb.value,
+                valores: checked.map((cb) => ({
+                    id: cb.value,
+                    texto:
+                        cb.dataset.valor ??
+                        cb
+                            .closest(".form-check")
+                            ?.querySelector("label")
+                            ?.textContent.trim() ??
+                        cb.value,
                 })),
             });
         });
 
         if (atributosSeleccionados.length === 0) {
-            alert('Selecciona al menos un atributo con valores.');
+            alert("Selecciona al menos un atributo con valores.");
             return;
         }
 
         const combinaciones = atributosSeleccionados.reduce((acc, atributo) => {
             if (acc.length === 0) {
-                return atributo.valores.map(v => [{ atributo: atributo.nombre, ...v }]);
+                return atributo.valores.map((v) => [
+                    { atributo: atributo.nombre, ...v },
+                ]);
             }
-            return acc.flatMap(combo =>
-                atributo.valores.map(v => [...combo, { atributo: atributo.nombre, ...v }])
+            return acc.flatMap((combo) =>
+                atributo.valores.map((v) => [
+                    ...combo,
+                    { atributo: atributo.nombre, ...v },
+                ]),
             );
         }, []);
 
@@ -318,15 +384,15 @@ const ProductosModule = (function () {
     }
 
     function renderGrilla(combinaciones) {
-        const contenedor = document.getElementById('contenedorGrilla');
+        const contenedor = document.getElementById("contenedorGrilla");
         if (!contenedor) return;
 
         if (combinaciones.length === 0) {
-            contenedor.innerHTML = '';
+            contenedor.innerHTML = "";
             return;
         }
 
-        const atributos = [...new Set(combinaciones[0].map(v => v.atributo))];
+        const atributos = [...new Set(combinaciones[0].map((v) => v.atributo))];
 
         let html = `
             <div class="grilla-variantes mt-3">
@@ -342,7 +408,7 @@ const ProductosModule = (function () {
                 <table>
                     <thead>
                         <tr>
-                            ${atributos.map(a => `<th>${a}</th>`).join('')}
+                            ${atributos.map((a) => `<th>${a}</th>`).join("")}
                             <th>Precio de venta *</th>
                             <th style="width:40px;"></th>
                         </tr>
@@ -352,7 +418,7 @@ const ProductosModule = (function () {
 
         combinaciones.forEach((combo, i) => {
             html += `<tr>`;
-            combo.forEach(v => {
+            combo.forEach((v) => {
                 html += `
                     <td>
                         ${v.texto}
@@ -382,85 +448,100 @@ const ProductosModule = (function () {
     }
 
     function reindexar() {
-        document.querySelectorAll('#grillaBody tr').forEach((tr, i) => {
-            tr.querySelectorAll('[name]').forEach(input => {
-                input.name = input.name.replace(/variantes\[\d+\]/, `variantes[${i}]`);
+        document.querySelectorAll("#grillaBody tr").forEach((tr, i) => {
+            tr.querySelectorAll("[name]").forEach((input) => {
+                input.name = input.name.replace(
+                    /variantes\[\d+\]/,
+                    `variantes[${i}]`,
+                );
             });
         });
     }
 
     function aplicarPrecio() {
-        const v = document.getElementById('precioUnicoInput')?.value;
-        if (v) document.querySelectorAll('.precio-variante').forEach(i => i.value = v);
+        const v = document.getElementById("precioUnicoInput")?.value;
+        if (v)
+            document
+                .querySelectorAll(".precio-variante")
+                .forEach((i) => (i.value = v));
     }
 
     // ════════════════════════════════════════════════
     // EDIT — agregar variante inline
     // ════════════════════════════════════════════════
 
-function initEdit() {
-    if (!document.getElementById('btnMostrarAgregarVariante')) return;
+    function initEdit() {
+        if (!document.getElementById("btnMostrarAgregarVariante")) return;
 
-    const btn         = document.getElementById('btnMostrarAgregarVariante');
-    const wrapper     = document.getElementById('wrapperAgregarVariante');
-    const btnCancelar = document.getElementById('btnCancelarAgregarVariante');
-    let   tomEdit     = null;
+        const btn = document.getElementById("btnMostrarAgregarVariante");
+        const wrapper = document.getElementById("wrapperAgregarVariante");
+        const btnCancelar = document.getElementById(
+            "btnCancelarAgregarVariante",
+        );
+        let tomEdit = null;
 
-    btn.addEventListener('click', () => {
-        wrapper.style.display = 'block';
-        btn.style.display     = 'none';
-        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        btn.addEventListener("click", () => {
+            wrapper.style.display = "block";
+            btn.style.display = "none";
+            wrapper.scrollIntoView({ behavior: "smooth", block: "start" });
 
-        // Inicializar Tom Select del edit
-        if (!tomEdit) {
-            const el = document.getElementById('selectorAtributosEdit');
-            if (el && typeof TomSelect !== 'undefined') {
-                tomEdit = new TomSelect(el, {
-                    plugins: ['remove_button'],
-                    placeholder: 'Busca o selecciona atributos...',
-                    create: false,
-                    onItemAdd(value) {
-                        const grupo = document.getElementById(`grupo-edit-${value}`);
-                        if (grupo) grupo.style.display = 'block';
-                    },
-                    onItemRemove(value) {
-                        const grupo = document.getElementById(`grupo-edit-${value}`);
-                        if (grupo) {
-                            grupo.style.display = 'none';
-                            grupo.querySelectorAll('.form-check-input')
-                                 .forEach(cb => cb.checked = false);
-                        }
-                    },
-                });
+            // Inicializar Tom Select del edit
+            if (!tomEdit) {
+                const el = document.getElementById("selectorAtributosEdit");
+                if (el && typeof TomSelect !== "undefined") {
+                    tomEdit = new TomSelect(el, {
+                        plugins: ["remove_button"],
+                        placeholder: "Busca o selecciona atributos...",
+                        create: false,
+                        onItemAdd(value) {
+                            const grupo = document.getElementById(
+                                `grupo-edit-${value}`,
+                            );
+                            if (grupo) grupo.style.display = "block";
+                        },
+                        onItemRemove(value) {
+                            const grupo = document.getElementById(
+                                `grupo-edit-${value}`,
+                            );
+                            if (grupo) {
+                                grupo.style.display = "none";
+                                grupo
+                                    .querySelectorAll(".form-check-input")
+                                    .forEach((cb) => (cb.checked = false));
+                            }
+                        },
+                    });
+                }
             }
-        }
-    });
+        });
 
-    btnCancelar?.addEventListener('click', () => {
-        wrapper.style.display = 'none';
-        btn.style.display     = 'inline-flex';
-    });
+        btnCancelar?.addEventListener("click", () => {
+            wrapper.style.display = "none";
+            btn.style.display = "inline-flex";
+        });
 
-    // Bind nuevo valor en formulario de agregar variante del edit
-    document.querySelectorAll('.input-nuevo-valor-edit').forEach(input => {
-        bindNuevoValor(input);
-    });
-}
+        // Bind nuevo valor en formulario de agregar variante del edit
+        document
+            .querySelectorAll(".input-nuevo-valor-edit")
+            .forEach((input) => {
+                bindNuevoValor(input);
+            });
+    }
 
     // ════════════════════════════════════════════════
     // TOGGLE NUEVA MARCA
     // ════════════════════════════════════════════════
 
     function initToggleMarca() {
-        const select = document.getElementById('marcaSelect');
-        const cont   = document.getElementById('nuevaMarcaWrapper');
+        const select = document.getElementById("marcaSelect");
+        const cont = document.getElementById("nuevaMarcaWrapper");
         if (!select || !cont) return;
 
         function toggle() {
-            cont.style.display = select.value === '__otra__' ? 'block' : 'none';
+            cont.style.display = select.value === "__otra__" ? "block" : "none";
         }
 
-        select.addEventListener('change', toggle);
+        select.addEventListener("change", toggle);
         toggle();
     }
 
@@ -479,8 +560,7 @@ function initEdit() {
     }
 
     return { init, aplicarPrecio, reindexar };
-
 })();
 
 window.ProductosModule = ProductosModule;
-document.addEventListener('DOMContentLoaded', () => ProductosModule.init());
+document.addEventListener("DOMContentLoaded", () => ProductosModule.init());

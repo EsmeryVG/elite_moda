@@ -160,3 +160,12 @@
 .btn-inspeccionar i {
     font-size: 12px;
 }
+
+.badge-devolucion-vencida {
+    background: rgba(211, 47, 47, 0.12);
+    color: #c62828;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}

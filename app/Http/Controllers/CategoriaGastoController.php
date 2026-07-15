@@ -4,19 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoriaGasto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoriaGastoController extends Controller
 {
     public function store(Request $request)
-    {
-        $request->validate(['nombre' => 'required|string|max:100|unique:categorias_gasto,nombre']);
+{
+    abort_unless(Auth::user()->esAdministrador(), 403, 'Solo un administrador puede crear categorías de gasto.');
 
-        $categoria = CategoriaGasto::create(['nombre' => $request->nombre, 'estado' => true]);
+    $request->validate(['nombre' => 'required|string|max:100|unique:categorias_gasto,nombre']);
 
-        if ($request->wantsJson()) {
-            return response()->json(['id' => $categoria->id, 'nombre' => $categoria->nombre]);
-        }
+    $categoria = CategoriaGasto::create(['nombre' => $request->nombre, 'estado' => true]);
 
-        return back()->with('success', 'Categoría creada correctamente.');
+    if ($request->wantsJson()) {
+        return response()->json(['id' => $categoria->id, 'nombre' => $categoria->nombre]);
     }
+
+    return back()->with('success', 'Categoría creada correctamente.');
+}
 }

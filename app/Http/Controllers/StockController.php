@@ -30,15 +30,15 @@ class StockController extends Controller
         }
 
         if ($request->filled('nivel')) {
-            $query->when($request->nivel === 'agotado', fn($q) =>
-                $q->where('cantidad_disponible', '<=', 0)
-            )->when($request->nivel === 'bajo', fn($q) =>
-                $q->whereColumn('cantidad_disponible', '<=', 'stock_minimo')
-                  ->where('cantidad_disponible', '>', 0)
-            )->when($request->nivel === 'ok', fn($q) =>
-                $q->whereColumn('cantidad_disponible', '>', 'stock_minimo')
-            );
-        }
+        $query->when($request->nivel === 'agotado', fn($q) =>
+            $q->where('cantidad_disponible', '<=', 0)
+        )->when($request->nivel === 'critico', fn($q) =>
+            $q->whereColumn('cantidad_disponible', '<=', 'stock_minimo')
+            ->where('cantidad_disponible', '>', 0)
+        )->when($request->nivel === 'ok', fn($q) =>
+            $q->whereColumn('cantidad_disponible', '>', 'stock_minimo')
+        );
+    }
 
         $stocks   = $query->orderBy('cantidad_disponible', 'asc')->paginate(15)->withQueryString();
         $almacenes = Almacen::where('estado', true)->orderBy('nombre')->get();

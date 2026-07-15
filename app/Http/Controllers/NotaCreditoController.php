@@ -8,11 +8,21 @@ use Illuminate\Http\Request;
 class NotaCreditoController extends Controller
 {
     public function index(Request $request)
-    {
-        $notas = $this->construirQuery($request)->paginate(15);
+{
+    $this->actualizarVencidas();
 
-        return view('notas_credito.index', compact('notas'));
-    }
+    $notas = $this->construirQuery($request)->paginate(15);
+
+    return view('notas_credito.index', compact('notas'));
+}
+
+private function actualizarVencidas(): void
+{
+    \App\Models\NotaCredito::where('estado', 'activa')
+        ->whereNotNull('fecha_vencimiento')
+        ->where('fecha_vencimiento', '<', now()->startOfDay())
+        ->update(['estado' => 'vencida']);
+}
 
     public function tabla(Request $request)
     {

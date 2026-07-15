@@ -210,7 +210,7 @@ class DevolucionController extends Controller
                 'monto_original' => $devolucion->total,
                 'monto_disponible' => $devolucion->total,
                 'fecha' => now(),
-                'fecha_vencimiento' => now()->addDays(90),
+                'fecha_vencimiento' => now()->addDays((int) Configuracion::get('nota_credito_dias_vencimiento', 90)),
                 'estado' => 'activa',
             ]);
 
