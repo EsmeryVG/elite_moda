@@ -8,11 +8,11 @@ class Gasto extends Model
 {
     protected $table = 'gastos';
 
-    protected $fillable = [
-        'categoria_gasto_id', 'origen', 'nombre', 'monto',
-        'usuario_id', 'fecha', 'metodo_pago', 'referencia',
-        'es_reposicion_extraordinaria', 'observaciones',
-    ];
+  protected $fillable = [
+    'categoria_gasto_id', 'gasto_fijo_id', 'origen', 'nombre', 'monto',
+    'usuario_id', 'fecha', 'periodo', 'metodo_pago', 'referencia',
+    'es_reposicion_extraordinaria', 'observaciones',
+];
 
     protected $casts = [
         'monto' => 'decimal:2',

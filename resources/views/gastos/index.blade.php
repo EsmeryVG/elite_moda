@@ -1,6 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="card page-card mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="prod-section-title mb-0">Gastos fijos de {{ now()->translatedFormat('F Y') }}</p>
+                @if (Auth::user()->esAdministrador())
+                    <a href="{{ route('gastos_fijos.index') }}" style="font-size:12px;">Gestionar gastos fijos</a>
+                @endif
+            </div>
+            @forelse($gastosFijos as $gf)
+                <form action="{{ route('gastos.fijos.registrar', $gf['id']) }}" method="POST"
+                    class="d-flex align-items-center gap-2 mb-2">
+                    @csrf
+                    <div style="flex:1; font-size:13px;">
+                        {{ $gf['nombre'] }}
+                        <span style="color:var(--text-muted); font-size:11.5px;">({{ $gf['categoria'] }})</span>
+                    </div>
+                    <input type="number" name="monto" step="0.01" class="form-control form-control-sm"
+                        style="width:120px;" value="{{ $gf['monto_sugerido'] }}" {{ $gf['pagado'] ? 'disabled' : '' }}>
+                    <button type="submit" class="btn btn-sm {{ $gf['pagado'] ? 'btn-outline-success' : 'btn-primary' }}"
+                        {{ $gf['pagado'] ? 'disabled' : '' }}>
+                        @if ($gf['pagado'])
+                            <i class="bi bi-check2"></i> Pagado {{ $gf['fecha_pago'] }}
+                        @else
+                            Registrar pago
+                        @endif
+                    </button>
+                </form>
+            @empty
+                <p class="text-muted" style="font-size:12.5px;">No hay gastos fijos configurados.</p>
+            @endforelse
+        </div>
+    </div>
     <div class="card page-card w-100">
         <div class="card-body p-4">
 

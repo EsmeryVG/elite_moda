@@ -29,7 +29,11 @@
                                 <td style="font-size:13px;">{{ $sesion->caja?->nombre }}</td>
                                 <td style="font-size:13px;">{{ $sesion->usuarioCierre?->name ?? '—' }}</td>
                                 <td style="font-size:12px; color:var(--text-muted);">
-                                    {{ $sesion->fecha_cierre?->format('d/m/Y H:i') }}
+                                    <a href="{{ route('cuadre_diario.index', ['fecha' => $sesion->fecha_cierre?->format('Y-m-d')]) }}"
+                                        title="Ver cuadre de este día">
+                                        {{ $sesion->fecha_cierre?->format('d/m/Y H:i') }}
+                                        <i class="bi bi-box-arrow-up-right ms-1" style="font-size:10px;"></i>
+                                    </a>
                                 </td>
                                 <td class="text-end">
                                     <span

@@ -20,10 +20,12 @@
 
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="dash-kpi-card">
+            <a href="{{ route('sesiones_caja.index', ['estado' => 'cerrada']) }}" class="dash-kpi-card"
+                style="text-decoration:none; display:block;">
                 <div class="dash-kpi-label">Sesiones cerradas</div>
                 <div class="dash-kpi-valor">{{ $sesiones->count() }}</div>
-            </div>
+                <div class="dash-kpi-sub">ver todas <i class="bi bi-arrow-right"></i></div>
+            </a>
         </div>
         <div class="col-md-3">
             <div class="dash-kpi-card">
@@ -53,6 +55,7 @@
             <i class="bi bi-exclamation-triangle me-1"></i>
             {{ $sesionesConDiferencia }} {{ $sesionesConDiferencia === 1 ? 'sesión tuvo' : 'sesiones tuvieron' }} descuadre
             este día.
+            <a href="{{ route('sesiones_caja.pendientes_revision') }}" class="ms-1">Ver pendientes de revisión</a>
         </div>
     @endif
 
@@ -71,12 +74,12 @@
                             <th class="text-end" style="width:110px;">Esperado</th>
                             <th class="text-end" style="width:110px;">Real</th>
                             <th class="text-end" style="width:110px;">Diferencia</th>
+                            <th style="width:60px;" class="text-end">Ver</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($sesiones as $sesion)
-                            <tr style="cursor:pointer;"
-                                onclick="window.location='{{ route('sesiones_caja.show', $sesion) }}'">
+                            <tr>
                                 <td style="font-size:13px; font-weight:500;">{{ $sesion->caja?->nombre }}</td>
                                 <td style="font-size:13px;">
                                     {{ $sesion->usuarioCierre?->name ?? ($sesion->usuarioApertura?->name ?? '—') }}</td>
@@ -95,10 +98,16 @@
                                         {{ number_format($sesion->diferencia, 2) }}
                                     </span>
                                 </td>
+                                <td class="text-end">
+                                    <a href="{{ route('sesiones_caja.show', $sesion) }}"
+                                        class="btn btn-outline-info btn-sm" title="Ver detalle">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5" style="color:var(--text-muted);">
+                                <td colspan="8" class="text-center py-5" style="color:var(--text-muted);">
                                     <i class="bi bi-inbox" style="font-size:28px; display:block; margin-bottom:8px;"></i>
                                     No hay sesiones cerradas en esta fecha.
                                 </td>

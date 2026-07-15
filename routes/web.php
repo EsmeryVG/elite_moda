@@ -30,6 +30,7 @@ use App\Http\Controllers\SesionCajaController;
 use App\Http\Controllers\CajaController;
 use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\GastoController;
+use App\Http\Controllers\GastoFijoController;
 use App\Http\Controllers\CategoriaGastoController;
 use App\Http\Controllers\NotaCreditoController;
 use App\Http\Controllers\CuadreDiarioController;
@@ -291,6 +292,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cuentas-por-cobrar/tabla',  [CuentaPorCobrarController::class, 'tabla'])->name('cuentas_por_cobrar.tabla');
     Route::get('cuentas-por-cobrar/{cuentaPorCobrar}', [CuentaPorCobrarController::class, 'show'])->name('cuentas_por_cobrar.show');
     Route::post('cuentas-por-cobrar/{cuentaPorCobrar}/abono', [CuentaPorCobrarController::class, 'registrarAbono'])->name('cuentas_por_cobrar.abono');
+
+    // Gastos fijos
+    Route::get('gastos-fijos', [GastoFijoController::class, 'index'])->name('gastos_fijos.index');
+    Route::post('gastos-fijos', [GastoFijoController::class, 'store'])->name('gastos_fijos.store');
+    Route::delete('gastos-fijos/{gastoFijo}', [GastoFijoController::class, 'destroy'])->name('gastos_fijos.destroy');
+    Route::post('gastos/fijos/{gastoFijo}/registrar', [GastoController::class, 'registrarGastoFijo'])->name('gastos.fijos.registrar');
 
 
 });
