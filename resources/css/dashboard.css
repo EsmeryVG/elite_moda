@@ -3,8 +3,6 @@
    Paleta: negro / gris / blanco / rojo acento
    ===================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap");
-
 /* ── Variables ─────────────────────────────────────── */
 :root {
     --bg-base: #f0f2f5;
@@ -1679,4 +1677,98 @@ body {
 #btnAplicarRango {
     border-radius: 18px;
     padding: 4px 14px;
+}
+
+.em-nav-action-wrap {
+    position: relative;
+}
+
+.em-nav-action__dot {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: var(--accent);
+    color: white;
+    font-size: 9px;
+    font-weight: 700;
+    min-width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+}
+
+.em-dropdown--alertas {
+    width: 280px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.em-dropdown__item--alerta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+}
+
+.em-dropdown__item--alerta.em-dropdown__item--danger i {
+    color: #c62828;
+}
+.em-dropdown__item--alerta.em-dropdown__item--warning i {
+    color: #e65100;
+}
+
+.em-dropdown__empty {
+    padding: 16px;
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+.em-dropdown__empty i {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: #2e7d32;
+}
+/* ── Modal genérico (usado en navbar y varios módulos) ── */
+.em-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.em-modal-overlay.open {
+    display: flex;
+}
+
+.em-modal {
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 24px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.em-modal__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 18px;
+    color: var(--text-primary);
+}
+
+.em-modal__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }

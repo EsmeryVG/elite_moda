@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Devolucion extends Model
 {
+    protected $table = 'devoluciones';
+
     protected $fillable = [
         'venta_id', 'cliente_id', 'usuario_id', 'empleado_id', 'codigo',
         'fecha', 'total', 'motivo', 'estado',

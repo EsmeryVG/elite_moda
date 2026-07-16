@@ -169,3 +169,9 @@
     border-radius: 20px;
     font-weight: 500;
 }
+
+.btn-accion-inline {
+    width: auto;
+    padding: 5px 12px;
+    display: inline-flex;
+}

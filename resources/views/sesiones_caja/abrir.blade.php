@@ -20,7 +20,8 @@
                         @enderror
 
                         @forelse($cajasDisponibles as $caja)
-                            <label class="caja-select-card d-flex align-items-start gap-2 mb-0">
+                            <label class="caja-select-card d-flex align-items-start gap-2 mb-0"
+                                data-sugerido="{{ $caja->monto_sugerido }}">
                                 <input type="radio" name="caja_id" value="{{ $caja->id }}" class="form-check-input"
                                     required {{ old('caja_id') == $caja->id ? 'checked' : '' }}>
                                 <div>
@@ -28,6 +29,12 @@
                                     <div style="font-size:12px; color:var(--text-muted);">
                                         {{ $caja->sucursal?->nombre ?? 'Sin sucursal asignada' }}
                                     </div>
+                                    @if ($caja->monto_sugerido !== null)
+                                        <div style="font-size:11.5px; color:#0369a1; margin-top:2px;">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Última caja registrada: RD$ {{ number_format($caja->monto_sugerido, 2) }}
+                                        </div>
+                                    @endif
                                 </div>
                             </label>
                         @empty
@@ -44,8 +51,8 @@
                             <label class="form-label">
                                 Fondo de caja inicial <span style="color:var(--accent);">*</span>
                             </label>
-                            <input type="number" name="monto_apertura" step="0.01" min="{{ $montoMinimo }}"
-                                class="form-control @error('monto_apertura') is-invalid @enderror"
+                            <input type="number" id="montoAperturaInput" name="monto_apertura" step="0.01"
+                                min="{{ $montoMinimo }}" class="form-control @error('monto_apertura') is-invalid @enderror"
                                 placeholder="Mínimo RD$ {{ number_format($montoMinimo, 2) }}"
                                 value="{{ old('monto_apertura') }}">
                             @error('monto_apertura')

@@ -75,6 +75,16 @@ class ConfiguracionSeeder extends Seeder
                 'valor'       => '90',
                 'descripcion' => 'Días de validez de una nota de crédito antes de vencer',
             ],
+            [
+    'clave'       => 'nomina_ciclo',
+    'valor'       => 'mensual',
+    'descripcion' => 'Ciclo de nómina: mensual o quincenal',
+],
+[
+    'clave'       => 'nomina_dias_pago',
+    'valor'       => '30',
+    'descripcion' => 'Días del mes en que se paga la nómina (ej: "30" o "15,30")',
+],
 
         ];
 

@@ -346,9 +346,12 @@ class VentaController extends Controller
             return $venta;
         });
 
-        return redirect()->route('ventas.show', $venta)
-        ->with('success', 'Venta registrada correctamente.')
-        ->with('abrir_factura', route('ventas.factura', $venta));
+        if ($request->wantsJson()) {
+    return response()->json(['venta_id' => $venta->id]);
+}
+
+return redirect()->route('ventas.show', $venta)
+    ->with('success', 'Venta registrada correctamente.');
     }
 
     public function show(Venta $venta)

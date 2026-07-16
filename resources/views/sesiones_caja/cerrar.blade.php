@@ -19,9 +19,26 @@
                             <span>Ventas del turno</span>
                             <span>{{ $totalVentas }} ({{ 'RD$ ' . number_format($totalVentasMonto, 2) }})</span>
                         </div>
+                    </div>
+
+                    @if ($desglosePagos->isNotEmpty())
+                        <div class="cierre-desglose-box mt-3">
+                            <p class="cierre-desglose-titulo">Desglose por método de pago</p>
+                            @foreach ($desglosePagos as $pago)
+                                <div class="cierre-desglose-item">
+                                    <span>{{ $pago['nombre'] }} <span
+                                            class="text-muted">({{ $pago['cantidad'] }})</span></span>
+                                    <span class="fw-semibold">RD$ {{ number_format($pago['total'], 2) }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="cierre-resumen-box mt-3">
                         <div class="totales-row">
                             <span>Efectivo esperado en caja</span>
-                            <span class="fw-semibold">RD$ {{ number_format($montoEsperado, 2) }}</span>
+                            <span class="fw-semibold" style="font-size:15px;">RD$
+                                {{ number_format($montoEsperado, 2) }}</span>
                         </div>
                     </div>
                 </div>

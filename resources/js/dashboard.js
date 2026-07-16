@@ -1,11 +1,95 @@
 /* =====================================================
-   Dashboard — Gráficos con filtro de rango
+   Dashboard — JS global del layout + gráficos
    ===================================================== */
 
 import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
 document.addEventListener("DOMContentLoaded", () => {
+    // ════════════════════════════════════════════════
+    // UI GLOBAL DEL LAYOUT
+    // ════════════════════════════════════════════════
+
+    // ── Toggle del sidebar (colapsar/expandir) ───────
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const emLayout = document.getElementById("emLayout");
+    const emOverlay = document.getElementById("emOverlay");
+
+    sidebarToggle?.addEventListener("click", function () {
+        emLayout?.classList.toggle("sidebar-collapsed");
+        emLayout?.classList.toggle("sidebar-mobile-open");
+    });
+
+    emOverlay?.addEventListener("click", function () {
+        emLayout?.classList.remove("sidebar-mobile-open");
+    });
+
+    // ── Dropdowns genéricos de la navbar (usuario, alertas) ──
+    document.querySelectorAll('[id$="Btn"]').forEach((btn) => {
+        const dropdownId = btn.id.replace("Btn", "Dropdown");
+        const dropdown = document.getElementById(dropdownId);
+        if (!dropdown) return;
+
+        btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const estaAbierto = dropdown.classList.contains("open");
+
+            document
+                .querySelectorAll(".em-dropdown.open")
+                .forEach((d) => d.classList.remove("open"));
+
+            if (!estaAbierto) {
+                dropdown.classList.add("open");
+                btn.setAttribute("aria-expanded", "true");
+            } else {
+                btn.setAttribute("aria-expanded", "false");
+            }
+        });
+    });
+
+    document.addEventListener("click", function (e) {
+        if (
+            !e.target.closest(".em-navbar-user") &&
+            !e.target.closest(".em-nav-action-wrap")
+        ) {
+            document
+                .querySelectorAll(".em-dropdown.open")
+                .forEach((d) => d.classList.remove("open"));
+        }
+    });
+
+    // ── Modales genéricos (data-open-modal / data-close-modal) ──
+    document.querySelectorAll("[data-open-modal]").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const modalId = this.dataset.openModal;
+            document.getElementById(modalId)?.classList.add("open");
+        });
+    });
+
+    document.querySelectorAll("[data-close-modal]").forEach((btn) => {
+        btn.addEventListener("click", function () {
+            const modalId = this.dataset.closeModal;
+            document.getElementById(modalId)?.classList.remove("open");
+        });
+    });
+
+    document.querySelectorAll(".em-modal-overlay").forEach((overlay) => {
+        overlay.addEventListener("click", function (e) {
+            if (e.target === this) this.classList.remove("open");
+        });
+    });
+
+    // ── Cerrar alerts (success/error/warning) ────────
+    document.querySelectorAll('[data-em-dismiss="alert"]').forEach((btn) => {
+        btn.addEventListener("click", function () {
+            this.closest(".alert")?.remove();
+        });
+    });
+
+    // ════════════════════════════════════════════════
+    // GRÁFICOS DEL DASHBOARD (solo si existen en la página)
+    // ════════════════════════════════════════════════
+
     const csrfToken = document.querySelector(
         'meta[name="csrf-token"]',
     )?.content;
@@ -36,11 +120,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     data.topProductos.map((p) => p.nombre),
                     data.topProductos.map((p) => p.total),
                 );
-                renderCategorias(data.ventasPorCategoria);
+                renderCategorias(data.ventasPorCategoria ?? []);
             });
     }
 
-    // Plugin: línea vertical al pasar el mouse
     const crosshairPlugin = {
         id: "crosshair",
         afterDraw(chart) {
@@ -104,11 +187,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         external(context) {
                             const { chart, tooltip } = context;
                             if (!tooltip.opacity) {
-                                tooltipEl.style.opacity = 0;
+                                if (tooltipEl) tooltipEl.style.opacity = 0;
                                 return;
                             }
                             const point = tooltip.dataPoints?.[0];
-                            if (!point) return;
+                            if (!point || !tooltipEl) return;
 
                             tooltipEl.innerHTML = `
                                 <div class="tt-title">${point.label}</div>
@@ -151,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!canvas) return;
 
         const total = totales.reduce((a, b) => a + b, 0);
-        totalEl.textContent = total;
+        if (totalEl) totalEl.textContent = total;
 
         const colores = totales.map((_, i) => paleta[i % paleta.length]);
 
@@ -186,19 +269,21 @@ document.addEventListener("DOMContentLoaded", () => {
             },
         });
 
-        legendEl.innerHTML = labels
-            .map((nombre, i) => {
-                const pct =
-                    total > 0 ? Math.round((totales[i] / total) * 100) : 0;
-                return `
-                <div class="dash-donut-legend-item">
-                    <span class="dash-donut-dot" style="background:${colores[i]}"></span>
-                    <span class="nombre">${nombre}</span>
-                    <span class="valor">${pct}%</span>
-                </div>
-            `;
-            })
-            .join("");
+        if (legendEl) {
+            legendEl.innerHTML = labels
+                .map((nombre, i) => {
+                    const pct =
+                        total > 0 ? Math.round((totales[i] / total) * 100) : 0;
+                    return `
+                    <div class="dash-donut-legend-item">
+                        <span class="dash-donut-dot" style="background:${colores[i]}"></span>
+                        <span class="nombre">${nombre}</span>
+                        <span class="valor">${pct}%</span>
+                    </div>
+                `;
+                })
+                .join("");
+        }
     }
 
     function renderCategorias(categorias) {
@@ -243,10 +328,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const box = document.getElementById("rangoPersonalizadoBox");
                 if (rango === "personalizado") {
-                    box.style.display = "flex";
+                    if (box) box.style.display = "flex";
                     return;
                 }
-                box.style.display = "none";
+                if (box) box.style.display = "none";
                 rangoActual = rango;
                 cargarDatos({ rango });
             });

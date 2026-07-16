@@ -18,9 +18,16 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
-    {
-        // Pluralizaciones personalizadas en español
-        Pluralizer::useLanguage('spanish');
-    }
+   public function boot(): void
+{
+    \Illuminate\Support\Facades\View::composer('layouts.navbar', function ($view) {
+        $alertas = [];
+
+        if (auth()->check()) {
+            $alertas = \App\Http\Controllers\HomeController::obtenerAlertas();
+        }
+
+        $view->with('alertasNavbar', $alertas);
+    });
+}
 }

@@ -138,6 +138,7 @@ const GastosModule = (function () {
         bindPaginacion();
         bindFiltrosFecha();
         initSelectorCategoria("selectCategoriaGasto");
+        initSelectorCategoria("selectCategoriaGastoFijo");
         initSelectorCategoria("selectCategoriaGastoCC"); // si aplica en caja_chica
     }
     return { init };

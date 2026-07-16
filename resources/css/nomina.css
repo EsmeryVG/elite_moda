@@ -1,0 +1,41 @@
+/* =====================================================
+   Nómina — Estilos del módulo
+   ===================================================== */
+
+.badge-nomina-pendiente {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e65100;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.badge-nomina-pagada {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.nomina-resumen-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+}
+
+.nomina-comision-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.nomina-comision-item:last-child {
+    border-bottom: none;
+}

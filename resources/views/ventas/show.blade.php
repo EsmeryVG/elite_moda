@@ -97,29 +97,32 @@
 
             <div class="card page-card">
                 <div class="card-body p-4">
-                    <div class="d-grid gap-2">
+                    <p class="prod-section-title mb-3">Acciones</p>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="{{ route('ventas.factura', $venta) }}" target="_blank"
+                            class="btn-accion btn-accion-neutro justify-content-center">
+                            <i class="bi bi-printer"></i> Reimprimir factura
+                        </a>
+
+                        @if ($venta->estado === 'completada')
+                            <a href="{{ route('devoluciones.create', $venta) }}"
+                                class="btn-accion btn-accion-warning justify-content-center">
+                                <i class="bi bi-arrow-return-left"></i> Devolver productos
+                            </a>
+                        @endif
+
                         @if ($venta->esAnulable())
                             <form action="{{ route('ventas.anular', $venta) }}" method="POST">
                                 @csrf @method('PATCH')
-                                <button type="submit" class="btn btn-outline-danger w-100"
+                                <button type="submit" class="btn-accion btn-accion-danger justify-content-center w-100"
                                     onclick="return confirm('¿Anular esta venta? El stock será restaurado.')">
-                                    <i class="bi bi-x-circle me-1"></i> Anular venta
+                                    <i class="bi bi-x-circle"></i> Anular venta
                                 </button>
                             </form>
                         @endif
 
-                        @if ($venta->estado === 'completada')
-                            <a href="{{ route('devoluciones.create', $venta) }}" class="btn btn-outline-warning w-100">
-                                <i class="bi bi-arrow-return-left me-1"></i> Devolver productos
-                            </a>
-                        @endif
-
-                        <a href="{{ route('ventas.index') }}" class="btn btn-secondary">
-                            Volver
-                        </a>
-                        <a href="{{ route('ventas.factura', $venta) }}" target="_blank"
-                            class="btn btn-outline-secondary w-100">
-                            <i class="bi bi-printer me-1"></i> Reimprimir factura
+                        <a href="{{ route('ventas.index') }}" class="btn-accion btn-accion-neutro justify-content-center">
+                            <i class="bi bi-arrow-left"></i> Volver
                         </a>
                     </div>
                 </div>

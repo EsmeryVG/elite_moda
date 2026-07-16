@@ -44,7 +44,17 @@ class SesionCajaController extends Controller
 {
     abort_unless(Auth::user()->esAdministrador(), 403, 'Solo un administrador puede abrir una sesión de caja.');
 
-    $cajasDisponibles = Caja::disponibles()->orderBy('nombre')->get();
+    $cajasDisponibles = Caja::disponibles()->orderBy('nombre')->get()->map(function ($caja) {
+        $ultimaSesion = SesionCaja::where('caja_id', $caja->id)
+            ->where('estado', 'cerrada')
+            ->orderByDesc('fecha_cierre')
+            ->first();
+
+        $caja->monto_sugerido = $ultimaSesion?->monto_cierre_real;
+
+        return $caja;
+    });
+
     $montoMinimo = (float) Configuracion::get('caja_monto_minimo_apertura', 500);
 
     return view('sesiones_caja.abrir', compact('cajasDisponibles', 'montoMinimo'));
@@ -87,12 +97,12 @@ public function abrir(Request $request)
 
     public function show(SesionCaja $sesionCaja)
     {
-        $sesionCaja->load('caja', 'usuarioApertura', 'usuarioCierre', 'ventas.cliente');
+       $sesionCaja->load('caja', 'usuarioApertura', 'usuarioCierre', 'ventas.cliente', 'ventas.pagos.tipoPago');
 
         return view('sesiones_caja.show', compact('sesionCaja'));
     }
 
-    public function formularioCerrar(SesionCaja $sesionCaja)
+public function formularioCerrar(SesionCaja $sesionCaja)
 {
     abort_unless($sesionCaja->estado === 'abierta', 404);
 
@@ -100,7 +110,20 @@ public function abrir(Request $request)
     $totalVentas = $sesionCaja->ventas()->count();
     $totalVentasMonto = $sesionCaja->ventas()->sum('total');
 
-    return view('sesiones_caja.cerrar', compact('sesionCaja', 'montoEsperado', 'totalVentas', 'totalVentasMonto'));
+    $desglosePagos = \App\Models\Pago::whereIn('venta_id', $sesionCaja->ventas()->pluck('id'))
+        ->where('estado', 'confirmado')
+        ->with('tipoPago')
+        ->get()
+        ->groupBy(fn ($p) => $p->tipoPago?->nombre ?? 'Sin tipo')
+        ->map(fn ($grupo, $nombre) => [
+            'nombre' => $nombre,
+            'total' => (float) $grupo->sum('monto'),
+            'cantidad' => $grupo->count(),
+        ])
+        ->sortByDesc('total')
+        ->values();
+
+    return view('sesiones_caja.cerrar', compact('sesionCaja', 'montoEsperado', 'totalVentas', 'totalVentasMonto', 'desglosePagos'));
 }
 
 public function cerrar(Request $request, SesionCaja $sesionCaja)

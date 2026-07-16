@@ -159,18 +159,16 @@
                                         <td class="text-end">
                                             @if ($detalle->condicion_inspeccion === 'pendiente')
                                                 <button type="button"
-                                                    class="btn btn-outline-success btn-sm btn-inspeccionar"
+                                                    class="btn-accion btn-accion-success btn-accion-inline"
                                                     data-detalle-id="{{ $detalle->id }}" data-condicion="conforme"
-                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}"
-                                                    title="Marcar como conforme">
-                                                    <i class="bi bi-check2"></i>
+                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}">
+                                                    <i class="bi bi-check2"></i> Conforme
                                                 </button>
                                                 <button type="button"
-                                                    class="btn btn-outline-danger btn-sm btn-inspeccionar"
+                                                    class="btn-accion btn-accion-danger btn-accion-inline btn-inspeccionar"
                                                     data-detalle-id="{{ $detalle->id }}" data-condicion="no_conforme"
-                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}"
-                                                    title="Marcar como no conforme">
-                                                    <i class="bi bi-x"></i>
+                                                    data-url="{{ route('devoluciones.inspeccionar', $detalle) }}">
+                                                    <i class="bi bi-x"></i> No conforme
                                                 </button>
                                             @else
                                                 <span style="font-size:12px; color:var(--text-muted);">—</span>

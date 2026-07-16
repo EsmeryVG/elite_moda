@@ -80,6 +80,13 @@ const CajaModule = (function () {
                     .querySelectorAll(".caja-select-card")
                     .forEach((c) => c.classList.remove("seleccionada"));
                 this.classList.add("seleccionada");
+
+                const sugerido = this.dataset.sugerido;
+                const inputMonto =
+                    document.getElementById("montoAperturaInput");
+                if (inputMonto && sugerido && sugerido !== "") {
+                    inputMonto.value = parseFloat(sugerido).toFixed(2);
+                }
             });
         });
     }
