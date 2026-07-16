@@ -36,15 +36,6 @@ class AtributoController extends Controller
         return view('atributos.index', compact('atributos'));
     }
 
-    public function show(Atributo $atributo)
-    {
-        $atributo->load(['valores' => function ($q) {
-            $q->orderBy('orden')->orderBy('valor');
-        }]);
-
-        return view('atributos.show', compact('atributo'));
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -89,7 +80,7 @@ class AtributoController extends Controller
             'nombre' => ucfirst(strtolower(trim($request->nombre))),
         ]);
 
-        return redirect()->route('atributos.show', $atributo)
+        return redirect()->route('atributos.index')
             ->with('success', 'Atributo actualizado correctamente.');
     }
 
@@ -118,18 +109,18 @@ class AtributoController extends Controller
                 \Illuminate\Validation\Rule::unique('atributo_valores', 'valor')
                     ->where('atributo_id', $atributo->id),
             ],
-            'orden' => 'nullable|integer|min:0',
         ], [
             'valor.required' => 'El valor es obligatorio.',
             'valor.unique'   => 'Ya existe ese valor para este atributo.',
         ]);
 
+        $siguienteOrden = $atributo->valores()->max('orden') + 1;
+
         $valor = $atributo->valores()->create([
             'valor'  => ucfirst(strtolower(trim($request->valor))),
-            'orden'  => $request->orden ?? 0,
+            'orden'  => $siguienteOrden,
             'estado' => true,
         ]);
-
         if ($request->expectsJson()) {
             return response()->json([
                 'id'    => $valor->id,
@@ -137,7 +128,7 @@ class AtributoController extends Controller
             ]);
         }
 
-        return redirect()->route('atributos.show', $atributo)
+        return redirect()->route('atributos.index')
             ->with('success', 'Valor agregado correctamente.');
     }
 
@@ -161,7 +152,7 @@ class AtributoController extends Controller
             'orden' => $request->orden ?? $valor->orden,
         ]);
 
-        return redirect()->route('atributos.show', $atributo)
+        return redirect()->route('atributos.index')
             ->with('success', 'Valor actualizado correctamente.');
     }
 
@@ -169,7 +160,7 @@ class AtributoController extends Controller
     {
         $valor->update(['estado' => false]);
 
-        return redirect()->route('atributos.show', $atributo)
+        return redirect()->route('atributos.index')
             ->with('success', 'Valor desactivado correctamente.');
     }
 
@@ -177,7 +168,7 @@ class AtributoController extends Controller
     {
         $valor->update(['estado' => true]);
 
-        return redirect()->route('atributos.show', $atributo)
+        return redirect()->route('atributos.index')
             ->with('success', 'Valor reactivado correctamente.');
     }
 }

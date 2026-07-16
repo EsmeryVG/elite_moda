@@ -25,6 +25,7 @@ export default defineConfig({
                 "resources/css/caja.css",
                 "resources/css/gastos.css",
                 "resources/css/cuentas_por_cobrar.css",
+                "resources/css/nomina.css",
                 "resources/js/app.js",
                 "resources/js/dashboard.js",
                 "resources/js/categorias.js",

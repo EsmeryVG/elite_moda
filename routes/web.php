@@ -35,6 +35,8 @@ use App\Http\Controllers\CategoriaGastoController;
 use App\Http\Controllers\NotaCreditoController;
 use App\Http\Controllers\CuadreDiarioController;
 use App\Http\Controllers\CuentaPorCobrarController;
+use App\Http\Controllers\NominaController;
+use App\Http\Controllers\PerfilController;
 
 
 // ── Rutas públicas (sin auth) ────────────────────
@@ -54,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('categorias.reactivar');
 
     // Atributos y valores
-    Route::resource('atributos', AtributoController::class);
+    Route::resource('atributos', AtributoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::patch('atributos/{atributo}/reactivar', [AtributoController::class, 'reactivar'])
         ->name('atributos.reactivar');
     Route::post('atributos/{atributo}/valores', [AtributoController::class, 'storeValor'])
@@ -298,6 +300,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('gastos-fijos', [GastoFijoController::class, 'store'])->name('gastos_fijos.store');
     Route::delete('gastos-fijos/{gastoFijo}', [GastoFijoController::class, 'destroy'])->name('gastos_fijos.destroy');
     Route::post('gastos/fijos/{gastoFijo}/registrar', [GastoController::class, 'registrarGastoFijo'])->name('gastos.fijos.registrar');
+
+    // Nómina
+    Route::get('nomina', [NominaController::class, 'index'])->name('nomina.index');
+Route::post('nomina/generar', [NominaController::class, 'generar'])->name('nomina.generar');
+Route::get('nomina/{nomina}', [NominaController::class, 'show'])->name('nomina.show');
+Route::get('nomina/detalle/{detalleNomina}', [NominaController::class, 'detalleEmpleado'])->name('nomina.detalle_empleado');
+Route::patch('nomina/{nomina}/marcar-pagada', [NominaController::class, 'marcarPagada'])->name('nomina.marcar_pagada');
+
+// Perfil de usuario
+Route::put('perfil/password', [PerfilController::class, 'actualizarPassword'])->name('perfil.password.update');
 
 
 });

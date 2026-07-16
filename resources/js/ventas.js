@@ -982,8 +982,99 @@ const VentasModule = (function () {
             return;
         }
 
-        cerrarModalCobro();
-        document.getElementById("formVenta")?.submit();
+        const btnConfirmar = document.getElementById("btnConfirmarCobro");
+        if (btnConfirmar) {
+            btnConfirmar.disabled = true;
+            btnConfirmar.innerHTML =
+                '<i class="bi bi-hourglass-split me-1"></i> Procesando...';
+        }
+
+        const form = document.getElementById("formVenta");
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                Accept: "application/json",
+            },
+            body: formData,
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.errors) {
+                    const primerError = Object.values(data.errors)[0][0];
+                    alert(primerError);
+                    const btnConfirmar =
+                        document.getElementById("btnConfirmarCobro");
+                    if (btnConfirmar) {
+                        btnConfirmar.disabled = false;
+                        btnConfirmar.innerHTML =
+                            '<i class="bi bi-check-circle me-1"></i> Confirmar venta';
+                    }
+                    return;
+                }
+                if (data.error) {
+                    alert(data.error);
+                    if (btnConfirmar) {
+                        btnConfirmar.disabled = false;
+                        btnConfirmar.innerHTML =
+                            '<i class="bi bi-check-circle me-1"></i> Confirmar venta';
+                    }
+                    return;
+                }
+
+                cerrarModalCobro();
+                imprimirFacturaEnIframe(data.venta_id);
+                resetearVentaNueva();
+            })
+            .catch(() => {
+                alert(
+                    "Ocurrió un error al procesar la venta. Intenta de nuevo.",
+                );
+                if (btnConfirmar) {
+                    btnConfirmar.disabled = false;
+                    btnConfirmar.innerHTML =
+                        '<i class="bi bi-check-circle me-1"></i> Confirmar venta';
+                }
+            });
+    }
+
+    function imprimirFacturaEnIframe(ventaId) {
+        let iframe = document.getElementById("iframeFactura");
+        if (!iframe) {
+            iframe = document.createElement("iframe");
+            iframe.id = "iframeFactura";
+            iframe.style.position = "fixed";
+            iframe.style.right = "0";
+            iframe.style.bottom = "0";
+            iframe.style.width = "0";
+            iframe.style.height = "0";
+            iframe.style.border = "none";
+            document.body.appendChild(iframe);
+        }
+
+        iframe.src = `/ventas/${ventaId}/factura`;
+        iframe.onload = function () {
+            try {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            } catch (e) {
+                // Si por CSP u otra razón falla, abre en pestaña como respaldo
+                window.open(`/ventas/${ventaId}/factura`, "_blank");
+            }
+        };
+    }
+
+    function resetearVentaNueva() {
+        carrito = [];
+        renderCarrito();
+
+        const successBanner = document.createElement("div");
+        successBanner.className = "tpv-venta-exitosa-toast";
+        successBanner.innerHTML = `<i class="bi bi-check-circle-fill me-2"></i> Venta registrada correctamente.`;
+        document.body.appendChild(successBanner);
+        setTimeout(() => successBanner.remove(), 3000);
     }
 
     function validarMontoCredito(input) {

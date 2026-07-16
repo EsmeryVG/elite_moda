@@ -19,6 +19,7 @@ class Comision extends Model
         'monto_comision',
         'fecha',
         'estado',
+        'detalle_nomina_id',
     ];
 
     protected $casts = [
@@ -37,4 +38,9 @@ class Comision extends Model
     {
         return $this->belongsTo(Venta::class, 'venta_id');
     }
+
+    public function detalleNomina()
+{
+    return $this->belongsTo(DetalleNomina::class, 'detalle_nomina_id');
+}
 }

@@ -78,22 +78,28 @@
                         </div>
                     @endif
                     @if ($sesionCaja->estado === 'cerrada' && $sesionCaja->diferencia != 0)
-                        <div class="mt-3">
+                        <div class="mt-3 d-flex align-items-center gap-2 flex-wrap">
                             @if ($sesionCaja->revisada_por)
                                 <span class="badge-sesion-abierta">
+                                    <i class="bi bi-check2-circle me-1"></i>
                                     Revisada por {{ $sesionCaja->revisadaPor?->name }} el
                                     {{ $sesionCaja->revisada_en->format('d/m/Y H:i') }}
                                 </span>
                             @else
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
-                                    <span class="badge-condicion-no_conforme">Pendiente de revisión</span>
-                                    @if (Auth::user()->esAdministrador())
-                                        <a href="{{ route('sesiones_caja.pendientes_revision') }}"
-                                            class="btn btn-outline-success btn-sm" title="Ir a revisar">
-                                            <i class="bi bi-arrow-right-circle"></i>
-                                        </a>
-                                    @endif
-                                </div>
+                                <span class="badge-condicion-no_conforme">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    Pendiente de revisión
+                                </span>
+                                @if (Auth::user()->esAdministrador())
+                                    <form action="{{ route('sesiones_caja.marcar_revisada', $sesionCaja) }}"
+                                        method="POST">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="btn-accion btn-accion-success btn-accion-inline"
+                                            onclick="return confirm('¿Marcar esta diferencia como revisada?')">
+                                            <i class="bi bi-check2"></i> Marcar como revisada
+                                        </button>
+                                    </form>
+                                @endif
                             @endif
                         </div>
                     @endif
@@ -122,6 +128,7 @@
                                 <tr>
                                     <th>Código</th>
                                     <th>Cliente</th>
+                                    <th>Método de pago</th>
                                     <th class="text-end">Total</th>
                                     <th>Hora</th>
                                 </tr>
@@ -135,6 +142,9 @@
                                         <td style="font-size:13px;">
                                             {{ $venta->cliente?->nombre }} {{ $venta->cliente?->apellido }}
                                         </td>
+                                        <td style="font-size:12px; color:var(--text-muted);">
+                                            {{ $venta->pagos->pluck('tipoPago.nombre')->filter()->unique()->join(' + ') ?: '—' }}
+                                        </td>
                                         <td class="text-end fw-semibold" style="font-size:13px;">
                                             RD$ {{ number_format($venta->total, 2) }}
                                         </td>
@@ -144,7 +154,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-4"
+                                        <td colspan="5" class="text-center py-4"
                                             style="color:var(--text-muted); font-size:13px;">
                                             No se han registrado ventas en este turno.
                                         </td>

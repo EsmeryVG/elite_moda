@@ -78,6 +78,41 @@ class HomeController extends Controller
             'cajaChica'
         ));
     }
+
+    public static function obtenerAlertas(): array
+{
+    $stockAgotado = \App\Models\Stock::where('cantidad_disponible', '<=', 0)->count();
+    $stockCritico = \App\Models\Stock::where('cantidad_disponible', '>', 0)
+        ->whereColumn('cantidad_disponible', '<=', 'stock_minimo')->count();
+    $ordenesRetrasadas = \App\Models\OrdenCompra::whereIn('estado', ['confirmada', 'parcial'])
+        ->whereNotNull('fecha_esperada')->where('fecha_esperada', '<', today())->count();
+    $diferenciasCajaPendientes = \App\Models\SesionCaja::pendientesRevision()->count();
+    $cajaChica = \App\Models\CajaChica::activas()->first();
+    $cajaChicaAgotada = $cajaChica && $cajaChica->monto_disponible <= 0;
+    $cajaChicaBaja = $cajaChica && $cajaChica->monto_disponible < $cajaChica->monto_base;
+
+    $alertas = [];
+
+    if ($stockAgotado > 0) {
+        $alertas[] = ['icono' => 'x-circle', 'texto' => "{$stockAgotado} " . ($stockAgotado === 1 ? 'variante agotada' : 'variantes agotadas'), 'url' => route('stock.index', ['nivel' => 'agotado']), 'tipo' => 'danger'];
+    }
+    if ($stockCritico > 0) {
+        $alertas[] = ['icono' => 'exclamation-triangle', 'texto' => "{$stockCritico} " . ($stockCritico === 1 ? 'variante en nivel crítico' : 'variantes en nivel crítico'), 'url' => route('stock.index', ['nivel' => 'critico']), 'tipo' => 'warning'];
+    }
+    if ($ordenesRetrasadas > 0) {
+        $alertas[] = ['icono' => 'clock-history', 'texto' => "{$ordenesRetrasadas} " . ($ordenesRetrasadas === 1 ? 'orden retrasada' : 'órdenes retrasadas'), 'url' => route('ordenes_compra.index', ['estado' => 'confirmada']), 'tipo' => 'warning'];
+    }
+    if ($diferenciasCajaPendientes > 0) {
+        $alertas[] = ['icono' => 'calculator', 'texto' => "{$diferenciasCajaPendientes} " . ($diferenciasCajaPendientes === 1 ? 'diferencia de caja pendiente' : 'diferencias de caja pendientes'), 'url' => route('sesiones_caja.pendientes_revision'), 'tipo' => 'danger'];
+    }
+    if ($cajaChicaAgotada) {
+        $alertas[] = ['icono' => 'cash-stack', 'texto' => 'Caja chica agotada', 'url' => route('caja_chica.show'), 'tipo' => 'danger'];
+    } elseif ($cajaChicaBaja) {
+        $alertas[] = ['icono' => 'cash-stack', 'texto' => 'Caja chica requiere reposición', 'url' => route('caja_chica.show'), 'tipo' => 'warning'];
+    }
+
+    return $alertas;
+}
 public function graficoDatos(Request $request)
     {
         [$desde, $hasta] = $this->resolverRango($request);

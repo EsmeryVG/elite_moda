@@ -12,13 +12,14 @@
         }
 
         body {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 10.5px;
-            color: #000;
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #1a1a1a;
             background: #fff;
             width: 80mm;
             margin: 0 auto;
-            padding: 3mm 2mm;
+            padding: 4mm 3mm;
+            line-height: 1.35;
         }
 
         .center {
@@ -30,7 +31,7 @@
         }
 
         .bold {
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .small {
@@ -42,39 +43,76 @@
         }
 
         .negocio-nombre {
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 17px;
+            font-weight: 800;
             text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
 
         .negocio-info {
             font-size: 10px;
             text-align: center;
-            line-height: 1.4;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        .negocio-rnc {
+            font-size: 10.5px;
+            text-align: center;
+            font-weight: 600;
+            margin-top: 2px;
         }
 
         hr {
             border: none;
-            border-top: 1px dashed #000;
-            margin: 3px 0;
+            border-top: 1px dashed #999;
+            margin: 6px 0;
         }
 
         hr.solid {
-            border-top: 1px solid #000;
+            border-top: 1.5px solid #1a1a1a;
         }
 
-        /* ── Encabezado de columnas ── */
+        .tipo-factura-banner {
+            text-align: center;
+            font-size: 9.5px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: #f2f2f2;
+            padding: 4px 0;
+            margin: 6px 0;
+            border-radius: 3px;
+        }
+
+        .datos-transaccion {
+            font-size: 10px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .ncf-numero {
+            font-size: 11.5px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
         .col-header {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            font-weight: bold;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
-            padding: 2px 0;
-            margin: 3px 0;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-top: 1px solid #1a1a1a;
+            border-bottom: 1px solid #1a1a1a;
+            padding: 4px 0;
+            margin: 6px 0 4px;
         }
 
         .col-desc {
@@ -82,115 +120,127 @@
         }
 
         .col-itbis {
-            width: 30px;
+            width: 44px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         .col-valor {
-            width: 50px;
+            width: 60px;
             text-align: right;
+            flex-shrink: 0;
         }
 
-        /* ── Producto ── */
         .producto-item {
-            margin-bottom: 3px;
+            margin-bottom: 6px;
         }
 
         .producto-codigo {
-            font-size: 9px;
-            color: #555;
+            font-size: 8.5px;
+            color: #999;
         }
 
         .producto-nombre {
-            font-size: 10.5px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 600;
             word-break: break-word;
         }
 
         .producto-atributos {
             font-size: 9.5px;
-            color: #444;
+            color: #666;
         }
 
         .producto-row {
             display: flex;
-            justify-content: space-between;
-            font-size: 10px;
+            align-items: baseline;
+            font-size: 10.5px;
+            color: #333;
+            margin-top: 2px;
+        }
+
+        .producto-row>span:first-child {
+            flex: 1;
         }
 
         .producto-descuento {
             font-size: 9.5px;
-            color: #555;
+            color: #c62828;
         }
 
-        /* ── Totales ── */
         .total-row {
             display: flex;
             justify-content: space-between;
             font-size: 10.5px;
-            margin-bottom: 1px;
+            margin-bottom: 3px;
+            color: #333;
         }
 
         .total-row.grand {
-            font-size: 14px;
-            font-weight: bold;
-            margin-top: 2px;
-            padding-top: 2px;
-            border-top: 1px solid #000;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1.5px solid #1a1a1a;
         }
 
         .total-row.pago {
             font-size: 11px;
         }
 
-        /* ── NCF ── */
-        .ncf-label {
-            font-size: 10px;
-            font-weight: bold;
-            text-align: center;
-            text-transform: uppercase;
-            margin: 2px 0;
+        .cliente-box {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 6px 8px;
+            margin: 6px 0;
         }
 
-        .ncf-numero {
-            font-size: 12px;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 2px;
-        }
-
-        /* ── Info cliente al pie ── */
         .cliente-info {
             font-size: 10px;
             margin: 1px 0;
         }
 
-        /* ── Código de barras placeholder ── */
         .barcode-area {
             text-align: center;
-            margin: 4px 0;
-            font-size: 9px;
-            color: #555;
-            border: 1px solid #ccc;
-            padding: 4px;
+            margin: 8px 0;
         }
 
-        /* ── Mensaje pie ── */
+        .barcode-lines {
+            font-family: 'Libre Barcode 39', monospace;
+            font-size: 32px;
+            letter-spacing: 2px;
+            line-height: 1;
+        }
+
+        .barcode-numero {
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
         .mensaje-pie {
             text-align: center;
-            font-size: 10.5px;
-            margin-top: 4px;
-            text-transform: uppercase;
-            font-weight: bold;
+            font-size: 11px;
+            margin-top: 8px;
+            font-weight: 700;
         }
 
         .mensaje-sub {
             text-align: center;
             font-size: 9.5px;
-            margin-top: 2px;
+            color: #666;
+            margin-top: 3px;
         }
 
-        /* ── Botón imprimir (solo pantalla) ── */
+        .footer-final {
+            text-align: center;
+            font-size: 8.5px;
+            color: #aaa;
+            margin-top: 10px;
+        }
+
         .btn-imprimir {
             display: block;
             width: 100%;
@@ -213,7 +263,7 @@
             body {
                 width: 80mm;
                 margin: 0;
-                padding: 2mm;
+                padding: 3mm;
             }
 
             @page {
@@ -225,7 +275,6 @@
 </head>
 
 <body>
-
     <div class="no-print" style="margin-bottom:8px;">
         <button class="btn-imprimir" onclick="window.print()">
             🖨️ Imprimir factura
@@ -234,7 +283,7 @@
 
     {{-- ── Encabezado ── --}}
     <div class="negocio-nombre">
-        {{ $config['negocio_nombre']?->valor ?? 'Elite Moda' }}
+        {{ mb_strtoupper($config['negocio_nombre']?->valor ?? 'Elite Moda', 'UTF-8') }}
     </div>
     @if ($venta->almacen?->sucursal?->nombre)
         <div class="negocio-info">{{ $venta->almacen->sucursal->nombre }}</div>
@@ -246,29 +295,27 @@
         <div class="negocio-info">Tel: {{ $venta->almacen->sucursal->telefono }}</div>
     @endif
     @if ($config['negocio_rnc']?->valor)
-        <div class="negocio-info bold">RNC: {{ $config['negocio_rnc']->valor }}</div>
+        <div class="negocio-rnc">RNC: {{ $config['negocio_rnc']->valor }}</div>
     @endif
+
+    <div class="tipo-factura-banner">
+        {{ mb_strtoupper($venta->comprobanteFiscal?->tipo_comprobante ?? 'Factura de Consumo', 'UTF-8') }}
+    </div>
+
+    {{-- ── Datos de la transacción ── --}}
+    <div class="datos-transaccion">
+        <span>{{ $venta->fecha->format('d/m/Y') }}</span>
+        <span>{{ $venta->fecha->format('H:i:s') }}</span>
+    </div>
+    <div class="ncf-numero">NCF: {{ $venta->ncf }}</div>
 
     <hr class="solid">
 
-    {{-- ── Datos de la transacción ── --}}
-    <div style="font-size:10px;">
-        {{ $venta->fecha->format('d/m/y') }} {{ $venta->fecha->format('H:i:s') }}
-    </div>
-    <div style="font-size:10px;">
-        NCF: <strong>{{ $venta->ncf }}</strong>
-    </div>
-    <div class="ncf-label">
-        {{ $venta->comprobanteFiscal?->tipo_comprobante ?? 'Factura de Consumo' }}
-    </div>
-
-    <hr>
-
     {{-- ── Columnas de productos ── --}}
     <div class="col-header">
-        <span class="col-desc">DESCRIPCION</span>
-        <span class="col-itbis">ITBIS</span>
-        <span class="col-valor">VALOR</span>
+        <span class="col-desc">Descripción</span>
+        <span class="col-itbis">Itbis</span>
+        <span class="col-valor">Valor</span>
     </div>
 
     @foreach ($venta->detalles as $detalle)
@@ -302,7 +349,7 @@
             </div>
             @if ($detalle->descuento_aplicado > 0)
                 <div class="producto-descuento">
-                    Desc: -{{ number_format($detalle->descuento_aplicado, 2) }}
+                    Descuento: -{{ number_format($detalle->descuento_aplicado, 2) }}
                 </div>
             @endif
         </div>
@@ -312,12 +359,12 @@
 
     {{-- ── Totales ── --}}
     <div class="total-row">
-        <span>SUBTOTAL</span>
+        <span>Subtotal</span>
         <span>{{ number_format($venta->subtotal, 2) }}</span>
     </div>
     @if ($venta->descuento_total > 0)
         <div class="total-row">
-            <span>DESCUENTO</span>
+            <span>Descuento</span>
             <span>-{{ number_format($venta->descuento_total, 2) }}</span>
         </div>
     @endif
@@ -326,8 +373,8 @@
         <span>{{ number_format($venta->impuesto, 2) }}</span>
     </div>
     <div class="total-row grand">
-        <span>TOTAL A PAGAR</span>
-        <span>{{ number_format($venta->total, 2) }}</span>
+        <span>Total a pagar</span>
+        <span>RD$ {{ number_format($venta->total, 2) }}</span>
     </div>
 
     <hr>
@@ -335,51 +382,43 @@
     {{-- ── Pagos ── --}}
     @foreach ($venta->pagos as $pago)
         <div class="total-row pago">
-            <span>{{ strtoupper($pago->tipoPago?->nombre ?? '—') }}</span>
+            <span>{{ mb_strtoupper($pago->tipoPago?->nombre ?? '—', 'UTF-8') }}</span>
             <span>{{ number_format($pago->monto, 2) }}</span>
         </div>
     @endforeach
-
     @php $cambio = $venta->pagos->sum('monto') - $venta->total; @endphp
     @if ($cambio > 0.01)
         <div class="total-row pago bold">
-            <span>CAMBIO</span>
+            <span>Cambio</span>
             <span>{{ number_format($cambio, 2) }}</span>
         </div>
     @endif
 
-    <hr class="solid">
-
-    {{-- ── Info del cliente al pie (como La Sirena) ── --}}
-    @if (!$venta->cliente?->es_default)
-        <div class="cliente-info bold">
-            {{ strtoupper($venta->cliente?->nombre . ' ' . $venta->cliente?->apellido) }}
+    {{-- ── Info del cliente ── --}}
+    <div class="cliente-box">
+        @if (!$venta->cliente?->es_default)
+            <div class="cliente-info bold">
+                {{ mb_strtoupper(trim($venta->cliente?->nombre . ' ' . $venta->cliente?->apellido), 'UTF-8') }}
+            </div>
+            @if ($venta->cliente?->cedula)
+                <div class="cliente-info">Cédula: {{ $venta->cliente->cedula }}</div>
+            @endif
+            @if ($venta->cliente?->rnc)
+                <div class="cliente-info">RNC: {{ $venta->cliente->rnc }}</div>
+            @endif
+        @else
+            <div class="cliente-info bold">Consumidor Final</div>
+        @endif
+        <div class="cliente-info small" style="margin-top:3px; color:#777;">
+            Cajero: {{ $venta->usuario?->name ?? '—' }}
         </div>
-        @if ($venta->cliente?->cedula)
-            <div class="cliente-info">CÉD: {{ $venta->cliente->cedula }}</div>
-        @endif
-        @if ($venta->cliente?->rnc)
-            <div class="cliente-info">RNC: {{ $venta->cliente->rnc }}</div>
-        @endif
-    @else
-        <div class="cliente-info bold">CONSUMIDOR FINAL</div>
-    @endif
-
-    <div class="cliente-info small" style="margin-top:2px;">
-        Cajero: {{ $venta->usuario?->name ?? '—' }}
-        @if ($venta->empleado)
-            | Vendedor: {{ $venta->empleado->nombre_completo }}
-        @endif
     </div>
 
     <hr>
 
-    {{-- ── Código de barras (NCF como texto representativo) ── --}}
+    {{-- ── Código representativo del NCF ── --}}
     <div class="barcode-area">
-        <div style="font-size:8px; letter-spacing:3px;">
-            ||| {{ $venta->ncf }} |||
-        </div>
-        <div style="font-size:9px; margin-top:2px;">{{ $venta->ncf }}</div>
+        <div class="barcode-numero">{{ $venta->ncf }}</div>
     </div>
 
     <hr>
@@ -392,15 +431,6 @@
         <div class="mensaje-sub">{{ $config['negocio_email']->valor }}</div>
     @endif
 
-    <div class="center small" style="margin-top:6px; color:#666;">
-        Sistema Elite Moda
-    </div>
-
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
 
 </body>
 

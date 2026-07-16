@@ -29,8 +29,7 @@
                                 <td style="font-size:13px;">{{ $sesion->caja?->nombre }}</td>
                                 <td style="font-size:13px;">{{ $sesion->usuarioCierre?->name ?? '—' }}</td>
                                 <td style="font-size:12px; color:var(--text-muted);">
-                                    <a href="{{ route('cuadre_diario.index', ['fecha' => $sesion->fecha_cierre?->format('Y-m-d')]) }}"
-                                        title="Ver cuadre de este día">
+                                    <a href="{{ route('sesiones_caja.show', $sesion) }}" title="Ver detalle de esta sesión">
                                         {{ $sesion->fecha_cierre?->format('d/m/Y H:i') }}
                                         <i class="bi bi-box-arrow-up-right ms-1" style="font-size:10px;"></i>
                                     </a>
@@ -48,10 +47,9 @@
                                 <td class="text-end">
                                     <form action="{{ route('sesiones_caja.marcar_revisada', $sesion) }}" method="POST">
                                         @csrf @method('PATCH')
-                                        <button type="submit" class="btn btn-outline-success btn-sm"
-                                            title="Marcar como revisada"
+                                        <button type="submit" class="btn-accion btn-accion-success btn-accion-inline"
                                             onclick="return confirm('¿Marcar esta diferencia como revisada?')">
-                                            <i class="bi bi-check2"></i>
+                                            <i class="bi bi-check2"></i> Revisar
                                         </button>
                                     </form>
                                 </td>

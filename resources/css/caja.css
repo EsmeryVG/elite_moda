@@ -123,3 +123,33 @@
     color: var(--text-muted);
     font-weight: 500;
 }
+
+/* ── Desglose de pagos al cerrar sesión ─────────────── */
+.cierre-desglose-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+}
+
+.cierre-desglose-titulo {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+}
+
+.cierre-desglose-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border);
+}
+
+.cierre-desglose-item:last-child {
+    border-bottom: none;
+}
