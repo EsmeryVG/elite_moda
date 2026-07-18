@@ -15,25 +15,27 @@
             </span>
         </td>
         <td class="text-end">
-            <a href="{{ route('cajas.edit', $caja) }}" class="btn btn-outline-secondary btn-sm" title="Editar">
-                <i class="bi bi-pencil"></i>
-            </a>
-            @if ($caja->estado === 'activa')
-                <form action="{{ route('cajas.destroy', $caja) }}" method="POST" class="d-inline">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Desactivar"
-                        onclick="return confirm('¿Desactivar esta caja?')">
-                        <i class="bi bi-x-circle"></i>
-                    </button>
-                </form>
-            @else
-                <form action="{{ route('cajas.reactivar', $caja) }}" method="POST" class="d-inline">
-                    @csrf @method('PATCH')
-                    <button type="submit" class="btn btn-outline-success btn-sm" title="Reactivar">
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                    </button>
-                </form>
-            @endif
+            @permiso('caja.abrir')
+                <a href="{{ route('cajas.edit', $caja) }}" class="btn btn-outline-secondary btn-sm" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                @if ($caja->estado === 'activa')
+                    <form action="{{ route('cajas.destroy', $caja) }}" method="POST" class="d-inline">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Desactivar"
+                            onclick="return confirm('¿Desactivar esta caja?')">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </form>
+                @else
+                    <form action="{{ route('cajas.reactivar', $caja) }}" method="POST" class="d-inline">
+                        @csrf @method('PATCH')
+                        <button type="submit" class="btn btn-outline-success btn-sm" title="Reactivar">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </form>
+                @endif
+            @endpermiso
         </td>
     </tr>
 @empty

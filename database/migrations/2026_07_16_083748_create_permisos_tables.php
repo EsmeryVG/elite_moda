@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('permisos', function (Blueprint $table) {
+            $table->id();
+            $table->string('clave')->unique(); // ej: ventas.crear
+            $table->string('nombre');            // ej: Registrar ventas
+            $table->string('modulo');            // ej: Ventas
+            $table->timestamps();
+        });
+
+        Schema::create('rol_permiso', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('rol_id')->constrained('roles')->cascadeOnDelete();
+            $table->foreignId('permiso_id')->constrained('permisos')->cascadeOnDelete();
+            $table->unique(['rol_id', 'permiso_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('rol_permiso');
+        Schema::dropIfExists('permisos');
+    }
+};

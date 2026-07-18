@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetalleDevolucion extends Model
 {
+    protected $table = 'detalle_devoluciones';
+    
     protected $fillable = [
         'devolucion_id', 'variante_producto_id', 'detalle_venta_id',
         'cantidad', 'precio_unitario', 'subtotal',

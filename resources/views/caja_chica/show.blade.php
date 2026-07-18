@@ -5,7 +5,6 @@
 
 @section('content')
     <div class="row g-4">
-
         <div class="col-lg-4">
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
@@ -20,66 +19,72 @@
                         </div>
                     </div>
 
-                    @if ($cajaChica->puedeReponerNormal())
-                        <form action="{{ route('caja_chica.reponer') }}" method="POST" class="mt-3">
-                            @csrf
-                            <button type="submit" class="btn btn-primary w-100 btn-sm">
-                                <i class="bi bi-arrow-clockwise me-1"></i> Reestablecer saldo
-                            </button>
-                        </form>
-                    @else
-                        <p class="text-muted text-center mt-3 mb-0" style="font-size:12px;">
-                            Ya se realizó la reposición normal disponible por ahora.
-                        </p>
-                    @endif
+                    @permiso('caja_chica.gestionar')
+                        @if ($cajaChica->puedeReponerNormal())
+                            <form action="{{ route('caja_chica.reponer') }}" method="POST" class="mt-3">
+                                @csrf
+                                <button type="submit" class="btn btn-primary w-100 btn-sm">
+                                    <i class="bi bi-arrow-clockwise me-1"></i> Reestablecer saldo
+                                </button>
+                            </form>
+                        @else
+                            <p class="text-muted text-center mt-3 mb-0" style="font-size:12px;">
+                                Ya se realizó la reposición normal disponible por ahora.
+                            </p>
+                        @endif
 
-                    @if (Auth::user()->esAdministrador())
                         <button type="button" class="btn btn-outline-danger w-100 btn-sm mt-2" data-bs-toggle="modal"
                             data-bs-target="#modalExtraordinaria">
                             <i class="bi bi-exclamation-triangle me-1"></i> Reposición extraordinaria
                         </button>
-                    @endif
+                    @endpermiso
                 </div>
             </div>
 
             <div class="card page-card">
                 <div class="card-body p-4">
                     <p class="prod-section-title mb-3">Registrar gasto</p>
-                    <form action="{{ route('caja_chica.gasto') }}" method="POST">
-                        @csrf
-                        <div class="mb-2">
-                            <input type="text" name="nombre"
-                                class="form-control form-control-sm @error('nombre') is-invalid @enderror"
-                                placeholder="Concepto del gasto" value="{{ old('nombre') }}">
-                            @error('nombre')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2">
-                            <select id="selectCategoriaGastoCC" name="categoria_gasto_id"
-                                class="@error('categoria_gasto_id') is-invalid @enderror">
-                                @foreach ($categorias ?? [] as $categoria)
-                                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
-                                @endforeach
-                            </select>
-                            @error('categoria_gasto_id')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="mb-2">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text">RD$</span>
-                                <input type="number" name="monto" step="0.01" min="0.01"
-                                    class="form-control @error('monto') is-invalid @enderror" value="{{ old('monto') }}">
+                    @permiso('caja_chica.gestionar')
+                        <form action="{{ route('caja_chica.gasto') }}" method="POST">
+                            @csrf
+                            <div class="mb-2">
+                                <input type="text" name="nombre"
+                                    class="form-control form-control-sm @error('nombre') is-invalid @enderror"
+                                    placeholder="Concepto del gasto" value="{{ old('nombre') }}">
+                                @error('nombre')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            @error('monto')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 btn-sm">
-                            <i class="bi bi-dash-circle me-1"></i> Registrar gasto
-                        </button>
-                    </form>
+                            <div class="mb-2">
+                                <select id="selectCategoriaGastoCC" name="categoria_gasto_id"
+                                    class="@error('categoria_gasto_id') is-invalid @enderror">
+                                    @foreach ($categorias ?? [] as $categoria)
+                                        <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                @error('categoria_gasto_id')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-2">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">RD$</span>
+                                    <input type="number" name="monto" step="0.01" min="0.01"
+                                        class="form-control @error('monto') is-invalid @enderror" value="{{ old('monto') }}">
+                                </div>
+                                @error('monto')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-sm">
+                                <i class="bi bi-dash-circle me-1"></i> Registrar gasto
+                            </button>
+                        </form>
+                    @else
+                        <p class="text-muted text-center" style="font-size:12px;">
+                            No tienes permiso para registrar gastos de caja chica.
+                        </p>
+                    @endpermiso
                 </div>
             </div>
         </div>
@@ -108,11 +113,10 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     {{-- Modal reposición extraordinaria --}}
-    @if (Auth::user()->esAdministrador())
+    @permiso('caja_chica.gestionar')
         <div class="modal fade" id="modalExtraordinaria" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -124,8 +128,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label class="form-label">Monto a reponer <span
-                                        style="color:var(--accent);">*</span></label>
+                                <label class="form-label">Monto a reponer <span style="color:var(--accent);">*</span></label>
                                 <input type="number" name="monto" step="0.01" min="0.01" class="form-control"
                                     required>
                             </div>
@@ -143,7 +146,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endpermiso
 @endsection
 
 @push('styles')

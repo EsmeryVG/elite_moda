@@ -43,65 +43,65 @@ class NominaController extends Controller
     }
 
     public function generar(Request $request)
-{
-    [$periodoInicio, $periodoFin] = $this->calcularPeriodoActual();
+    {
+        [$periodoInicio, $periodoFin] = $this->calcularPeriodoActual();
 
-    $yaExiste = Nomina::where('periodo_inicio', $periodoInicio)
-        ->where('periodo_fin', $periodoFin)
-        ->exists();
+        $yaExiste = Nomina::where('periodo_inicio', $periodoInicio)
+            ->where('periodo_fin', $periodoFin)
+            ->exists();
 
-    if ($yaExiste) {
-        return back()->with('error', 'Ya existe una nómina generada para este período.');
-    }
+        if ($yaExiste) {
+            return back()->with('error', 'Ya existe una nómina generada para este período.');
+        }
 
-    try {
-        $nomina = DB::transaction(function () use ($periodoInicio, $periodoFin) {
-            $nomina = Nomina::create([
-                'periodo_inicio' => $periodoInicio,
-                'periodo_fin' => $periodoFin,
-                'fecha_pago' => now(),
-                'usuario_id' => Auth::id(),
-                'estado' => 'pendiente',
-            ]);
-
-            $totalGeneral = 0;
-            $empleados = Empleado::where('estado', true)->get();
-
-            foreach ($empleados as $empleado) {
-                $comisiones = Comision::where('empleado_id', $empleado->id)
-                    ->where('estado', 'pendiente')
-                    ->whereBetween('fecha', [$periodoInicio, $periodoFin])
-                    ->get();
-
-                $totalComisiones = $comisiones->sum('monto_comision');
-                $totalPagar = $empleado->salario_base + $totalComisiones;
-
-                $detalle = DetalleNomina::create([
-                    'nomina_id' => $nomina->id,
-                    'empleado_id' => $empleado->id,
-                    'salario_base' => $empleado->salario_base,
-                    'total_comisiones' => $totalComisiones,
-                    'total_pagar' => $totalPagar,
+        try {
+            $nomina = DB::transaction(function () use ($periodoInicio, $periodoFin) {
+                $nomina = Nomina::create([
+                    'periodo_inicio' => $periodoInicio,
+                    'periodo_fin' => $periodoFin,
+                    'fecha_pago' => now(),
+                    'usuario_id' => Auth::id(),
+                    'estado' => 'pendiente',
                 ]);
 
-                Comision::whereIn('id', $comisiones->pluck('id'))
-                    ->update(['detalle_nomina_id' => $detalle->id]);
+                $totalGeneral = 0;
+                $empleados = Empleado::where('estado', true)->get();
 
-                $totalGeneral += $totalPagar;
-            }
+                foreach ($empleados as $empleado) {
+                    $comisiones = Comision::where('empleado_id', $empleado->id)
+                        ->where('estado', 'pendiente')
+                        ->whereBetween('fecha', [$periodoInicio, $periodoFin])
+                        ->get();
 
-            $nomina->update(['total_general' => $totalGeneral]);
+                    $totalComisiones = $comisiones->sum('monto_comision');
+                    $totalPagar = $empleado->salario_base + $totalComisiones;
 
-            return $nomina;
-        });
-    } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
-        return redirect()->route('nomina.index')
-            ->with('error', 'Ya existe una nómina generada para este período (se detectó al guardar).');
+                    $detalle = DetalleNomina::create([
+                        'nomina_id' => $nomina->id,
+                        'empleado_id' => $empleado->id,
+                        'salario_base' => $empleado->salario_base,
+                        'total_comisiones' => $totalComisiones,
+                        'total_pagar' => $totalPagar,
+                    ]);
+
+                    Comision::whereIn('id', $comisiones->pluck('id'))
+                        ->update(['detalle_nomina_id' => $detalle->id]);
+
+                    $totalGeneral += $totalPagar;
+                }
+
+                $nomina->update(['total_general' => $totalGeneral]);
+
+                return $nomina;
+            });
+        } catch (\Illuminate\Database\UniqueConstraintViolationException $e) {
+            return redirect()->route('nomina.index')
+                ->with('error', 'Ya existe una nómina generada para este período (se detectó al guardar).');
+        }
+
+        return redirect()->route('nomina.show', $nomina)
+            ->with('success', 'Nómina generada correctamente.');
     }
-
-    return redirect()->route('nomina.show', $nomina)
-        ->with('success', 'Nómina generada correctamente.');
-}
 
     public function show(Nomina $nomina)
     {
@@ -119,7 +119,7 @@ class NominaController extends Controller
 
     public function marcarPagada(Nomina $nomina)
     {
-        abort_unless(Auth::user()->esAdministrador(), 403);
+        abort_unless(Auth::user()->tienePermiso('nomina.gestionar'), 403);
         abort_unless($nomina->estado === 'pendiente', 422, 'Esta nómina ya fue marcada como pagada.');
 
         DB::transaction(function () use ($nomina) {

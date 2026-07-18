@@ -1,16 +1,11 @@
 @extends('layouts.app')
-
 @section('page_title', $ordenes_compra->codigo)
 @section('page_subtitle', 'Detalle de la orden de compra')
-
 @section('content')
     <div class="row g-4">
-
         <div class="col-lg-4">
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
-
                     <div class="d-flex justify-content-between align-items-start mb-4">
                         <h6 class="fw-semibold mb-0">Información general</h6>
                         @php
@@ -87,10 +82,8 @@
                             <div class="field-readonly">{{ $ordenes_compra->observaciones }}</div>
                         </div>
                     @endif
-
                 </div>
             </div>
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
                     <p class="prod-section-title">Resumen</p>
@@ -110,57 +103,49 @@
                     </div>
                 </div>
             </div>
-
             <div class="card page-card">
                 <div class="card-body p-4">
                     <div class="d-grid gap-2">
-
-                        @if ($ordenes_compra->estado === 'borrador')
-                            <a href="{{ route('ordenes_compra.edit', $ordenes_compra) }}" class="btn btn-primary">
-                                <i class="bi bi-pencil-square me-1"></i> Editar
-                            </a>
-                            <form action="{{ route('ordenes_compra.confirmar', $ordenes_compra) }}" method="POST">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="btn btn-outline-primary w-100"
-                                    onclick="return confirm('¿Confirmar esta orden? Ya no se podrá editar.')">
-                                    <i class="bi bi-check2-circle me-1"></i> Confirmar orden
-                                </button>
-                            </form>
-                        @endif
-
-                        @if (in_array($ordenes_compra->estado, ['confirmada', 'parcial']))
-                            <a href="{{ route('recepciones.create', ['orden' => $ordenes_compra->id]) }}"
-                                class="btn btn-primary">
-                                <i class="bi bi-box-arrow-in-down me-1"></i> Registrar recepción
-                            </a>
-                        @endif
-
-                        @if ($ordenes_compra->esCancelable())
-                            <form action="{{ route('ordenes_compra.cancelar', $ordenes_compra) }}" method="POST">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="btn btn-outline-danger w-100"
-                                    onclick="return confirm('¿Cancelar esta orden?')">
-                                    <i class="bi bi-x-circle me-1"></i> Cancelar orden
-                                </button>
-                            </form>
-                        @endif
-
+                        @permiso('compras.gestionar')
+                            @if ($ordenes_compra->estado === 'borrador')
+                                <a href="{{ route('ordenes_compra.edit', $ordenes_compra) }}" class="btn btn-primary">
+                                    <i class="bi bi-pencil-square me-1"></i> Editar
+                                </a>
+                                <form action="{{ route('ordenes_compra.confirmar', $ordenes_compra) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="btn btn-outline-primary w-100"
+                                        onclick="return confirm('¿Confirmar esta orden? Ya no se podrá editar.')">
+                                        <i class="bi bi-check2-circle me-1"></i> Confirmar orden
+                                    </button>
+                                </form>
+                            @endif
+                            @if (in_array($ordenes_compra->estado, ['confirmada', 'parcial']))
+                                <a href="{{ route('recepciones.create', ['orden' => $ordenes_compra->id]) }}"
+                                    class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-in-down me-1"></i> Registrar recepción
+                                </a>
+                            @endif
+                            @if ($ordenes_compra->esCancelable())
+                                <form action="{{ route('ordenes_compra.cancelar', $ordenes_compra) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('¿Cancelar esta orden?')">
+                                        <i class="bi bi-x-circle me-1"></i> Cancelar orden
+                                    </button>
+                                </form>
+                            @endif
+                        @endpermiso
                         <a href="{{ route('ordenes_compra.index') }}" class="btn btn-secondary">
                             Volver
                         </a>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
         <div class="col-lg-8">
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Líneas de la orden</h6>
-
                     <div class="tabla-lineas">
                         <table>
                             <thead>
@@ -203,14 +188,11 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
-
             <div class="card page-card">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Recepciones registradas</h6>
-
                     @forelse($ordenes_compra->recepciones as $recepcion)
                         <div class="mb-3 p-3"
                             style="border:1px solid var(--border); border-radius:var(--radius-md);
@@ -234,15 +216,11 @@
                             No hay recepciones registradas aún.
                         </p>
                     @endforelse
-
                 </div>
             </div>
-
         </div>
-
     </div>
 @endsection
-
 @push('styles')
     @vite(['resources/css/ordenes_compra.css'])
 @endpush

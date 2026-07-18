@@ -928,3 +928,27 @@
     z-index: 9999;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
+.btn-accion-neutro {
+    background: rgba(31, 33, 37, 0.06);
+    color: #1f2125;
+}
+
+.btn-accion-warning {
+    background: rgba(255, 152, 0, 0.12);
+    color: #e65100;
+}
+
+.btn-accion-danger {
+    background: rgba(211, 47, 47, 0.1);
+    color: var(--accent);
+}
+
+.btn-accion-success {
+    background: rgba(76, 175, 80, 0.12);
+    color: #2e7d32;
+}
+
+.btn-accion:hover {
+    text-decoration: none;
+    filter: brightness(0.95);
+}

@@ -29,5 +29,9 @@ class AppServiceProvider extends ServiceProvider
 
         $view->with('alertasNavbar', $alertas);
     });
+
+    \Illuminate\Support\Facades\Blade::if('permiso', function (string $clave) {
+    return auth()->check() && auth()->user()->tienePermiso($clave);
+});
 }
 }

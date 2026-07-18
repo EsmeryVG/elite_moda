@@ -160,7 +160,7 @@ public function cerrar(Request $request, SesionCaja $sesionCaja)
 
 public function marcarRevisada(SesionCaja $sesionCaja)
 {
-    abort_unless(Auth::user()->esAdministrador(), 403);
+    abort_unless(Auth::user()->tienePermiso('caja.autorizar_descuadre'), 403);
     abort_unless($sesionCaja->diferencia != 0, 422, 'Esta sesión no tiene diferencia pendiente de revisión.');
 
     $sesionCaja->update([
