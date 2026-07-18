@@ -414,7 +414,8 @@
             <div class="em-nav-section">
                 <div class="em-nav-section__label">Reportes</div>
                 <div class="em-nav-item">
-                    <a href="#" class="em-nav-link">
+                    <a href="{{ route('reportes.ventas') }}"
+                        class="em-nav-link {{ request()->routeIs('reportes.ventas') ? 'active' : '' }}">
                         <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor">
                             <line x1="18" y1="20" x2="18" y2="10" />
@@ -426,7 +427,8 @@
                     <div class="em-tooltip">Reporte Ventas</div>
                 </div>
                 <div class="em-nav-item">
-                    <a href="#" class="em-nav-link">
+                    <a href="{{ route('reportes.inventario') }}"
+                        class="em-nav-link {{ request()->routeIs('reportes.inventario') ? 'active' : '' }}">
                         <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor">
                             <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -437,7 +439,8 @@
                     <div class="em-tooltip">Reporte Inventario</div>
                 </div>
                 <div class="em-nav-item">
-                    <a href="#" class="em-nav-link">
+                    <a href="{{ route('reportes.compras') }}"
+                        class="em-nav-link {{ request()->routeIs('reportes.compras') ? 'active' : '' }}">
                         <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -448,7 +451,8 @@
                     <div class="em-tooltip">Reporte Compras</div>
                 </div>
                 <div class="em-nav-item">
-                    <a href="#" class="em-nav-link">
+                    <a href="{{ route('reportes.credito') }}"
+                        class="em-nav-link {{ request()->routeIs('reportes.credito') ? 'active' : '' }}">
                         <svg class="em-nav-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -473,11 +477,11 @@
                             stroke="currentColor">
                             <path
                                 d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33
-                                    1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2
-                                    2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65
-                                    0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65
-                                    1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83
-                                    2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                                                        1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2
+                                                        2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65
+                                                        0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65
+                                                        1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83
+                                                        2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .66.39 1.26 1 1.51H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
                         </svg>
                         <span class="em-nav-label">Configuración</span>
                     </a>

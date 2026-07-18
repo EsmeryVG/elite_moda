@@ -36,6 +36,7 @@ use App\Http\Controllers\CuadreDiarioController;
 use App\Http\Controllers\CuentaPorCobrarController;
 use App\Http\Controllers\NominaController;
 use App\Http\Controllers\PerfilController;
+use App\Http\Controllers\ReporteController;
 
 // ── Rutas públicas (sin auth) ────────────────────
 Route::get('login',   [LoginController::class, 'showLoginForm'])->name('login');
@@ -224,6 +225,7 @@ Route::middleware('permiso:productos.gestionar')->group(function () {
         Route::put('ordenes_compra/{ordenes_compra}', [OrdenCompraController::class, 'update'])->name('ordenes_compra.update');
         Route::patch('ordenes_compra/{ordenes_compra}/confirmar', [OrdenCompraController::class, 'confirmar'])->name('ordenes_compra.confirmar');
         Route::patch('ordenes_compra/{ordenes_compra}/cancelar', [OrdenCompraController::class, 'cancelar'])->name('ordenes_compra.cancelar');
+        Route::patch('ordenes_compra/{ordenes_compra}/marcar-pagada', [OrdenCompraController::class, 'marcarPagada'])->name('ordenes_compra.marcar_pagada');
 
         Route::get('recepciones/create', [RecepcionMercanciaController::class, 'create'])->name('recepciones.create');
         Route::post('recepciones', [RecepcionMercanciaController::class, 'store'])->name('recepciones.store');
@@ -318,6 +320,23 @@ Route::middleware('permiso:productos.gestionar')->group(function () {
     Route::middleware('permiso:nomina.ver')->group(function () {
         Route::get('nomina/{nomina}', [NominaController::class, 'show'])->name('nomina.show');
     });
+
+    // ══════════════ REPORTES (reportes.ver) ══════════════
+    Route::middleware('permiso:reportes.ver')->group(function () {
+    Route::get('reportes', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('reportes/ventas', [ReporteController::class, 'ventas'])->name('reportes.ventas');
+    Route::get('reportes/ventas/csv', [ReporteController::class, 'ventasCsv'])->name('reportes.ventas.csv');
+    Route::get('reportes/ventas/pdf', [ReporteController::class, 'ventasPdf'])->name('reportes.ventas.pdf');
+    Route::get('reportes/inventario', [ReporteController::class, 'inventario'])->name('reportes.inventario');
+    Route::get('reportes/inventario/csv', [ReporteController::class, 'inventarioCsv'])->name('reportes.inventario.csv');
+    Route::get('reportes/inventario/pdf', [ReporteController::class, 'inventarioPdf'])->name('reportes.inventario.pdf');
+    Route::get('reportes/compras', [ReporteController::class, 'compras'])->name('reportes.compras');
+    Route::get('reportes/compras/csv', [ReporteController::class, 'comprasCsv'])->name('reportes.compras.csv');
+    Route::get('reportes/compras/pdf', [ReporteController::class, 'comprasPdf'])->name('reportes.compras.pdf');
+    Route::get('reportes/credito', [ReporteController::class, 'credito'])->name('reportes.credito');
+    Route::get('reportes/credito/csv', [ReporteController::class, 'creditoCsv'])->name('reportes.credito.csv');
+    Route::get('reportes/credito/pdf', [ReporteController::class, 'creditoPdf'])->name('reportes.credito.pdf');
+});
 
     // ══════════════ SISTEMA (solo admin en la práctica) ══════════════
     Route::middleware('permiso:usuarios.gestionar')->group(function () {

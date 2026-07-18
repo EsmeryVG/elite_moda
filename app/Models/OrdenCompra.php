@@ -23,6 +23,7 @@ class OrdenCompra extends Model
         'impuesto',
         'total',
         'estado',
+        'estado_pago',
         'observaciones',
     ];
 

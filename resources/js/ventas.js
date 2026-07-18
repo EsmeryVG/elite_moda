@@ -373,8 +373,8 @@ const VentasModule = (function () {
             labelField: "texto",
             searchField: ["texto"],
             placeholder: "Buscar cliente...",
+            preload: "focus",
             load(query, callback) {
-                if (query.length < 1) return callback();
                 fetch(`/api/clientes/buscar?q=${encodeURIComponent(query)}`, {
                     headers: { "X-CSRF-TOKEN": csrfToken },
                 })
