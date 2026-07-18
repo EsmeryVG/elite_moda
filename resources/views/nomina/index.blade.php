@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="card page-card w-100 mb-4">
         <div class="card-body p-4">
@@ -10,28 +9,27 @@
                         Período actual: {{ $periodoInicio->format('d/m/Y') }} — {{ $periodoFin->format('d/m/Y') }}
                     </p>
                 </div>
-
-                @if ($yaExiste)
-                    <span class="badge-nomina-pagada">
-                        <i class="bi bi-check2 me-1"></i> Nómina de este período ya generada
-                    </span>
-                @else
-                    <form action="{{ route('nomina.generar') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-primary"
-                            onclick="return confirm('¿Generar la nómina de este período?')">
-                            <i class="bi bi-cash-stack me-1"></i> Generar nómina del período actual
-                        </button>
-                    </form>
-                @endif
+                @permiso('nomina.gestionar')
+                    @if ($yaExiste)
+                        <span class="badge-nomina-pagada">
+                            <i class="bi bi-check2 me-1"></i> Nómina de este período ya generada
+                        </span>
+                    @else
+                        <form action="{{ route('nomina.generar') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-primary"
+                                onclick="return confirm('¿Generar la nómina de este período?')">
+                                <i class="bi bi-cash-stack me-1"></i> Generar nómina del período actual
+                            </button>
+                        </form>
+                    @endif
+                @endpermiso
             </div>
         </div>
     </div>
-
     <div class="card page-card w-100">
         <div class="card-body p-4">
             <h6 class="fw-semibold mb-4">Historial de nóminas</h6>
-
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead>
@@ -80,7 +78,6 @@
                     </tbody>
                 </table>
             </div>
-
             @if ($nominas->hasPages())
                 <div class="d-flex justify-content-center mt-3">
                     {{ $nominas->links() }}
@@ -89,7 +86,6 @@
         </div>
     </div>
 @endsection
-
 @push('styles')
     @vite(['resources/css/nomina.css'])
 @endpush

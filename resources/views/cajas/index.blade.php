@@ -11,9 +11,11 @@
                         {{ $cajas->total() }} cajas registradas
                     </p>
                 </div>
-                <a href="{{ route('cajas.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-1"></i> Nueva caja
-                </a>
+                @permiso('caja.abrir')
+                    <a href="{{ route('cajas.create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> Nueva caja
+                    </a>
+                @endpermiso
             </div>
 
             <div class="d-flex gap-2 flex-wrap mb-4">

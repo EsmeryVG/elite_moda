@@ -60,4 +60,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(Empleado::class, 'user_id');
     }
+    public function tienePermiso(string $clave): bool
+{
+    if ($this->esAdministrador()) {
+        return true; // admin siempre tiene todo, sin excepción
+    }
+
+    return $this->rol?->permisos()->where('clave', $clave)->exists() ?? false;
+}
 }

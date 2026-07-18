@@ -12,9 +12,11 @@
                         {{ $categorias->total() }} categorías registradas
                     </p>
                 </div>
-                <a href="{{ route('categorias.create') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle me-1"></i> Nueva categoría
-                </a>
+                @permiso('productos.gestionar')
+                    <a href="{{ route('categorias.create') }}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> Nueva categoría
+                    </a>
+                @endpermiso
             </div>
 
             {{-- Buscador + Filtros --}}

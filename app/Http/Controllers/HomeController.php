@@ -113,6 +113,8 @@ class HomeController extends Controller
 
     return $alertas;
 }
+
+
 public function graficoDatos(Request $request)
     {
         [$desde, $hasta] = $this->resolverRango($request);

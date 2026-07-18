@@ -109,7 +109,7 @@ class CajaChicaController extends Controller
 
     public function reponerExtraordinaria(Request $request)
 {
-    abort_unless(Auth::user()->esAdministrador(), 403, 'Solo un administrador puede hacer una reposición extraordinaria.');
+    abort_unless(Auth::user()->tienePermiso('caja_chica.gestionar'), 403, 'No tienes permiso para hacer una reposición extraordinaria.');
 
     $request->validate([
         'monto' => 'required|numeric|min:0.01',

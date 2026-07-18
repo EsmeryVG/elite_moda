@@ -1,15 +1,11 @@
 @extends('layouts.app')
-
 @section('page_title', $venta->codigo)
 @section('page_subtitle', 'Detalle de la venta')
-
 @section('content')
     <div class="row g-4">
-
         <div class="col-lg-4">
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
-
                     <div class="d-flex justify-content-between align-items-start mb-4">
                         <h6 class="fw-semibold mb-0">Información general</h6>
                         @php
@@ -24,7 +20,6 @@
                             {{ ucfirst($venta->estado) }}
                         </span>
                     </div>
-
                     <div class="mb-3">
                         <span class="field-label">Código</span>
                         <div class="field-readonly" style="font-family:monospace;">
@@ -67,10 +62,8 @@
                             <div class="field-readonly">{{ $venta->observaciones }}</div>
                         </div>
                     @endif
-
                 </div>
             </div>
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
                     <p class="prod-section-title">Resumen</p>
@@ -94,7 +87,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card page-card">
                 <div class="card-body p-4">
                     <p class="prod-section-title mb-3">Acciones</p>
@@ -103,24 +95,25 @@
                             class="btn-accion btn-accion-neutro justify-content-center">
                             <i class="bi bi-printer"></i> Reimprimir factura
                         </a>
-
-                        @if ($venta->estado === 'completada')
-                            <a href="{{ route('devoluciones.create', $venta) }}"
-                                class="btn-accion btn-accion-warning justify-content-center">
-                                <i class="bi bi-arrow-return-left"></i> Devolver productos
-                            </a>
-                        @endif
-
-                        @if ($venta->esAnulable())
-                            <form action="{{ route('ventas.anular', $venta) }}" method="POST">
-                                @csrf @method('PATCH')
-                                <button type="submit" class="btn-accion btn-accion-danger justify-content-center w-100"
-                                    onclick="return confirm('¿Anular esta venta? El stock será restaurado.')">
-                                    <i class="bi bi-x-circle"></i> Anular venta
-                                </button>
-                            </form>
-                        @endif
-
+                        @permiso('devoluciones.gestionar')
+                            @if ($venta->estado === 'completada')
+                                <a href="{{ route('devoluciones.create', $venta) }}"
+                                    class="btn-accion btn-accion-warning justify-content-center">
+                                    <i class="bi bi-arrow-return-left"></i> Devolver productos
+                                </a>
+                            @endif
+                        @endpermiso
+                        @permiso('ventas.anular')
+                            @if ($venta->esAnulable())
+                                <form action="{{ route('ventas.anular', $venta) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="btn-accion btn-accion-danger justify-content-center w-100"
+                                        onclick="return confirm('¿Anular esta venta? El stock será restaurado.')">
+                                        <i class="bi bi-x-circle"></i> Anular venta
+                                    </button>
+                                </form>
+                            @endif
+                        @endpermiso
                         <a href="{{ route('ventas.index') }}" class="btn-accion btn-accion-neutro justify-content-center">
                             <i class="bi bi-arrow-left"></i> Volver
                         </a>
@@ -128,13 +121,10 @@
                 </div>
             </div>
         </div>
-
         <div class="col-lg-8">
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Productos</h6>
-
                     <div class="tabla-lineas">
                         <table>
                             <thead>
@@ -193,11 +183,9 @@
                     </div>
                 </div>
             </div>
-
             <div class="card page-card">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Pagos</h6>
-
                     <div class="table-responsive">
                         <table class="table align-middle">
                             <thead>
@@ -227,16 +215,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 @endsection
-
 @push('styles')
     @vite(['resources/css/ventas.css'])
 @endpush
-
 @push('scripts')
     <script>
         @if (session('abrir_factura'))

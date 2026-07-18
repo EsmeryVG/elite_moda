@@ -27,32 +27,31 @@
             </div>
 
             <div class="atributo-card__actions">
-                {{-- Editar atributo --}}
-                <button class="btn btn-outline-warning btn-sm" title="Editar nombre" data-open-modal="editarAtributo"
-                    data-id="{{ $atributo->id }}" data-nombre="{{ $atributo->nombre }}">
-                    <i class="bi bi-pencil-square"></i>
-                </button>
-
-                {{-- Desactivar / Reactivar --}}
-                @if ($atributo->estado)
-                    <form action="{{ route('atributos.destroy', $atributo) }}" method="POST" class="d-inline-block">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-outline-danger btn-sm" title="Desactivar"
-                            onclick="return confirm('¿Desactivar el atributo {{ $atributo->nombre }}?')">
-                            <i class="bi bi-toggle-on"></i>
-                        </button>
-                    </form>
-                @else
-                    <form action="{{ route('atributos.reactivar', $atributo) }}" method="POST" class="d-inline-block">
-                        @csrf
-                        @method('PATCH')
-                        <button class="btn btn-outline-success btn-sm" title="Reactivar"
-                            onclick="return confirm('¿Reactivar el atributo {{ $atributo->nombre }}?')">
-                            <i class="bi bi-toggle-off"></i>
-                        </button>
-                    </form>
-                @endif
+                @permiso('productos.gestionar')
+                    <button class="btn btn-outline-warning btn-sm" title="Editar nombre" data-open-modal="editarAtributo"
+                        data-id="{{ $atributo->id }}" data-nombre="{{ $atributo->nombre }}">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    @if ($atributo->estado)
+                        <form action="{{ route('atributos.destroy', $atributo) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-outline-danger btn-sm" title="Desactivar"
+                                onclick="return confirm('¿Desactivar el atributo {{ $atributo->nombre }}?')">
+                                <i class="bi bi-toggle-on"></i>
+                            </button>
+                        </form>
+                    @else
+                        <form action="{{ route('atributos.reactivar', $atributo) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('PATCH')
+                            <button class="btn btn-outline-success btn-sm" title="Reactivar"
+                                onclick="return confirm('¿Reactivar el atributo {{ $atributo->nombre }}?')">
+                                <i class="bi bi-toggle-off"></i>
+                            </button>
+                        </form>
+                    @endif
+                @endpermiso
             </div>
         </div>
 
@@ -100,34 +99,37 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <button class="btn btn-outline-warning btn-sm" title="Editar valor"
-                                        data-open-modal="editarValor" data-atributo-id="{{ $atributo->id }}"
-                                        data-valor-id="{{ $valor->id }}" data-valor="{{ $valor->valor }}"
-                                        data-orden="{{ $valor->orden }}">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-
-                                    @if ($valor->estado)
-                                        <form action="{{ route('atributos.valores.destroy', [$atributo, $valor]) }}"
-                                            method="POST" class="d-inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-outline-danger btn-sm" title="Desactivar valor"
-                                                onclick="return confirm('¿Desactivar el valor {{ $valor->valor }}?')">
-                                                <i class="bi bi-toggle-on"></i>
-                                            </button>
-                                        </form>
+                                    @permiso('productos.gestionar')
+                                        <button class="btn btn-outline-warning btn-sm" title="Editar valor"
+                                            data-open-modal="editarValor" data-atributo-id="{{ $atributo->id }}"
+                                            data-valor-id="{{ $valor->id }}" data-valor="{{ $valor->valor }}"
+                                            data-orden="{{ $valor->orden }}">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        @if ($valor->estado)
+                                            <form action="{{ route('atributos.valores.destroy', [$atributo, $valor]) }}"
+                                                method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-outline-danger btn-sm" title="Desactivar valor"
+                                                    onclick="return confirm('¿Desactivar el valor {{ $valor->valor }}?')">
+                                                    <i class="bi bi-toggle-on"></i>
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('atributos.valores.reactivar', [$atributo, $valor]) }}"
+                                                method="POST" class="d-inline-block">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button class="btn btn-outline-success btn-sm" title="Reactivar valor"
+                                                    onclick="return confirm('¿Reactivar el valor {{ $valor->valor }}?')">
+                                                    <i class="bi bi-toggle-off"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     @else
-                                        <form action="{{ route('atributos.valores.reactivar', [$atributo, $valor]) }}"
-                                            method="POST" class="d-inline-block">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button class="btn btn-outline-success btn-sm" title="Reactivar valor"
-                                                onclick="return confirm('¿Reactivar el valor {{ $valor->valor }}?')">
-                                                <i class="bi bi-toggle-off"></i>
-                                            </button>
-                                        </form>
-                                    @endif
+                                        —
+                                    @endpermiso
                                 </td>
                             </tr>
                         @endforeach
@@ -139,15 +141,17 @@
                 </p>
             @endif
 
-            {{-- Formulario agregar nuevo valor --}}
-            <form action="{{ route('atributos.valores.store', $atributo) }}" method="POST" class="form-nuevo-valor">
-                @csrf
-                <input type="text" name="valor" class="form-control"
-                    placeholder="Nuevo valor (ej: XL, Verde, Algodón...)" required autocomplete="off">
-                <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">
-                    <i class="bi bi-plus-circle me-1"></i> Agregar
-                </button>
-            </form>
+            @permiso('productos.gestionar')
+                {{-- Formulario agregar nuevo valor --}}
+                <form action="{{ route('atributos.valores.store', $atributo) }}" method="POST" class="form-nuevo-valor">
+                    @csrf
+                    <input type="text" name="valor" class="form-control"
+                        placeholder="Nuevo valor (ej: XL, Verde, Algodón...)" required autocomplete="off">
+                    <button type="submit" class="btn btn-primary btn-sm" style="white-space:nowrap;">
+                        <i class="bi bi-plus-circle me-1"></i> Agregar
+                    </button>
+                </form>
+            @endpermiso
 
         </div>
     </div>

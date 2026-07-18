@@ -40,12 +40,14 @@
             <a href="{{ route('ordenes_compra.show', $orden) }}" class="btn btn-outline-info btn-sm" title="Ver detalle">
                 <i class="bi bi-eye"></i>
             </a>
-            @if ($orden->estado === 'borrador')
-                <a href="{{ route('ordenes_compra.edit', $orden) }}" class="btn btn-outline-warning btn-sm"
-                    title="Editar">
-                    <i class="bi bi-pencil-square"></i>
-                </a>
-            @endif
+            @permiso('compras.gestionar')
+                @if ($orden->estado === 'borrador')
+                    <a href="{{ route('ordenes_compra.edit', $orden) }}" class="btn btn-outline-warning btn-sm"
+                        title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                @endif
+            @endpermiso
         </td>
     </tr>
 @empty
@@ -65,7 +67,6 @@
         </td>
     </tr>
 @endforelse
-
 @if ($ordenes->hasPages())
     <tr>
         <td colspan="6">

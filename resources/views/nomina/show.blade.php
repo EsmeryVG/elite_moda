@@ -1,11 +1,8 @@
 @extends('layouts.app')
-
 @section('page_title', 'Nómina')
 @section('page_subtitle', $nomina->periodo_inicio->format('d/m/Y') . ' — ' . $nomina->periodo_fin->format('d/m/Y'))
-
 @section('content')
     <div class="row g-4">
-
         <div class="col-lg-4">
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
@@ -15,7 +12,6 @@
                             {{ ucfirst($nomina->estado) }}
                         </span>
                     </div>
-
                     <div class="mb-3">
                         <span class="field-label">Período</span>
                         <div class="field-readonly">
@@ -32,7 +28,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card page-card mb-4">
                 <div class="card-body p-4">
                     <div class="nomina-resumen-box text-center">
@@ -49,27 +44,26 @@
                     </div>
                 </div>
             </div>
-
-            @if ($nomina->estado === 'pendiente' && Auth::user()->esAdministrador())
-                <div class="card page-card">
-                    <div class="card-body p-4">
-                        <form action="{{ route('nomina.marcar_pagada', $nomina) }}" method="POST">
-                            @csrf @method('PATCH')
-                            <button type="submit" class="btn btn-primary w-100"
-                                onclick="return confirm('¿Marcar toda la nómina como pagada? Esto marcará todas las comisiones asociadas como pagadas.')">
-                                <i class="bi bi-check2-circle me-1"></i> Marcar nómina como pagada
-                            </button>
-                        </form>
+            @permiso('nomina.gestionar')
+                @if ($nomina->estado === 'pendiente')
+                    <div class="card page-card">
+                        <div class="card-body p-4">
+                            <form action="{{ route('nomina.marcar_pagada', $nomina) }}" method="POST">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="btn btn-primary w-100"
+                                    onclick="return confirm('¿Marcar toda la nómina como pagada? Esto marcará todas las comisiones asociadas como pagadas.')">
+                                    <i class="bi bi-check2-circle me-1"></i> Marcar nómina como pagada
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            @endif
+                @endif
+            @endpermiso
         </div>
-
         <div class="col-lg-8">
             <div class="card page-card">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Detalle por empleado</h6>
-
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
                             <thead>
@@ -107,14 +101,11 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
-
 @push('styles')
     @vite(['resources/css/nomina.css'])
 @endpush

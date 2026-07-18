@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rol;
+use App\Models\Permiso;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -38,7 +39,10 @@ class RolController extends Controller
 
     public function edit(Rol $rol)
     {
-        return view('roles.edit', compact('rol'));
+        $permisosPorModulo = Permiso::orderBy('modulo')->orderBy('nombre')->get()->groupBy('modulo');
+        $permisosAsignados = $rol->permisos()->pluck('permisos.id')->toArray();
+
+        return view('roles.edit', compact('rol', 'permisosPorModulo', 'permisosAsignados'));
     }
 
     public function update(Request $request, Rol $rol)
@@ -57,8 +61,10 @@ class RolController extends Controller
         $data['nombre'] = ucfirst(trim($data['nombre']));
         $rol->update($data);
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Rol actualizado correctamente.');
+        $rol->permisos()->sync($request->input('permisos', []));
+
+        return redirect()->route('roles.edit', $rol)
+            ->with('success', 'Rol y permisos actualizados correctamente.');
     }
 
     public function destroy(Rol $rol)

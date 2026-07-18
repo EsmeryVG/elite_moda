@@ -1,16 +1,12 @@
 @extends('layouts.app')
-
 @section('page_title', 'Buscar Factura para Devolución')
 @section('page_subtitle', 'Cuando el cliente no trae la factura física')
-
 @section('content')
     <div class="row g-4">
-
         <div class="col-lg-4">
             <div class="card page-card">
                 <div class="card-body p-4">
                     <p class="prod-section-title mb-3">Búsqueda</p>
-
                     <form action="{{ route('devoluciones.buscar') }}" method="GET" id="formBuscarFactura">
                         <div class="mb-3">
                             <label class="form-label">Cliente <span style="color:var(--accent);">*</span></label>
@@ -25,14 +21,12 @@
                                 @endif
                             </select>
                         </div>
-
                         <div class="mb-3">
                             <label class="form-label">Producto <span style="color:var(--accent);">*</span></label>
                             <select id="selectProductoBusqueda" name="variante_id"
                                 placeholder="Primero selecciona un cliente..." required>
                             </select>
                         </div>
-
                         <button type="submit" class="btn btn-primary w-100">
                             <i class="bi bi-search me-1"></i> Buscar
                         </button>
@@ -40,12 +34,10 @@
                 </div>
             </div>
         </div>
-
         <div class="col-lg-8">
             <div class="card page-card">
                 <div class="card-body p-4">
                     <h6 class="fw-semibold mb-4">Resultados</h6>
-
                     @if (request('cliente_id') && request('variante_id'))
                         @forelse($resultados as $resultado)
                             <div class="linea-devolucion-card">
@@ -60,10 +52,12 @@
                                             · Disponible: {{ $resultado['cantidad_disponible'] }}
                                         </div>
                                     </div>
-                                    <a href="{{ route('devoluciones.create', $resultado['venta']) }}"
-                                        class="btn btn-primary btn-sm">
-                                        Devolver de esta factura
-                                    </a>
+                                    @permiso('devoluciones.gestionar')
+                                        <a href="{{ route('devoluciones.create', $resultado['venta']) }}"
+                                            class="btn btn-primary btn-sm">
+                                            Devolver de esta factura
+                                        </a>
+                                    @endpermiso
                                 </div>
                             </div>
                         @empty
@@ -77,18 +71,14 @@
                             Selecciona un cliente y un producto para buscar.
                         </p>
                     @endif
-
                 </div>
             </div>
         </div>
-
     </div>
 @endsection
-
 @push('styles')
     @vite(['resources/css/devoluciones.css'])
 @endpush
-
 @push('scripts')
     @vite(['resources/js/devoluciones.js'])
 @endpush
