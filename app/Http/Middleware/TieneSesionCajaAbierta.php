@@ -14,7 +14,7 @@ class TieneSesionCajaAbierta
         $tieneSesionAbierta = SesionCaja::abiertas()->exists();
 
         if (! $tieneSesionAbierta) {
-            if (Auth::user()->esAdministrador()) {
+            if (Auth::user()->tienePermiso('caja.abrir')) {
                 return redirect()->route('sesiones_caja.abrir')
                     ->with('warning', 'No hay ninguna sesión de caja abierta. Ábrela para comenzar a vender.');
             }

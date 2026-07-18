@@ -305,4 +305,14 @@ class OrdenCompraController extends Controller
 
         return response()->json($variantes);
     }
+
+    public function marcarPagada(OrdenCompra $ordenes_compra)
+    {
+        abort_unless(Auth::user()->tienePermiso('compras.gestionar'), 403);
+
+        $ordenes_compra->update(['estado_pago' => 'pagada']);
+
+        return redirect()->route('ordenes_compra.show', $ordenes_compra)
+            ->with('success', 'Orden marcada como pagada.');
+    }
 }

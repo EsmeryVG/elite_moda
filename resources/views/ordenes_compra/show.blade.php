@@ -18,7 +18,7 @@
                                 default => 'badge-borrador',
                             };
                         @endphp
-                        <div class="d-flex gap-2 align-items-center">
+                        <div class="d-flex gap-2 align-items-center flex-wrap justify-content-end">
                             <span class="{{ $badgeEstado }}">
                                 {{ ucfirst($ordenes_compra->estado) }}
                             </span>
@@ -26,6 +26,19 @@
                                 <span class="badge-retrasada">
                                     <i class="bi bi-clock-history me-1"></i>Retrasada {{ $ordenes_compra->dias_retraso }}d
                                 </span>
+                            @endif
+                            @if ($ordenes_compra->estado !== 'cancelada')
+                                @if ($ordenes_compra->estado_pago === 'pagada')
+                                    <span class="badge rounded-pill"
+                                        style="background:rgba(76,175,80,0.12); color:#2e7d32; font-size:11px; padding:4px 10px;">
+                                        <i class="bi bi-check-circle me-1"></i>Pagada
+                                    </span>
+                                @else
+                                    <span class="badge rounded-pill"
+                                        style="background:rgba(255,152,0,0.12); color:#e65100; font-size:11px; padding:4px 10px;">
+                                        <i class="bi bi-hourglass-split me-1"></i>Pago pendiente
+                                    </span>
+                                @endif
                             @endif
                         </div>
                     </div>
@@ -125,6 +138,15 @@
                                     <i class="bi bi-box-arrow-in-down me-1"></i> Registrar recepción
                                 </a>
                             @endif
+                            @if ($ordenes_compra->estado_pago === 'pendiente' && $ordenes_compra->estado !== 'cancelada')
+                                <form action="{{ route('ordenes_compra.marcar_pagada', $ordenes_compra) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" class="btn btn-outline-success w-100"
+                                        onclick="return confirm('¿Marcar esta orden como pagada al proveedor?')">
+                                        <i class="bi bi-cash-coin me-1"></i> Marcar como pagada
+                                    </button>
+                                </form>
+                            @endif
                             @if ($ordenes_compra->esCancelable())
                                 <form action="{{ route('ordenes_compra.cancelar', $ordenes_compra) }}" method="POST">
                                     @csrf @method('PATCH')
@@ -206,7 +228,8 @@
                                         {{ $recepcion->fecha->format('d/m/Y') }}
                                     </span>
                                 </div>
-                                <a href="{{ route('recepciones.show', $recepcion) }}" class="btn btn-outline-info btn-sm">
+                                <a href="{{ route('recepciones.show', $recepcion) }}"
+                                    class="btn btn-outline-info btn-sm">
                                     <i class="bi bi-eye"></i>
                                 </a>
                             </div>
