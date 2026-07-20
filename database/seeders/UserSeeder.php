@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Administrador',
             'email'    => 'admin@elitemoda.com',
-            'password' => Hash::make('admin1234'),
+            'password' => Hash::make('EliteModaADMIN'),
             'rol_id'   => $rolAdmin?->id,
             'estado'   => true,
         ]);
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Cajero Demo',
             'email'    => 'cajero@elitemoda.com',
-            'password' => Hash::make('cajero1234'),
+            'password' => Hash::make('EliteModaCAJERO'),
             'rol_id'   => $rolCajero?->id,
             'estado'   => true,
         ]);
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         User::create([
             'name'     => 'Contable Demo',
             'email'    => 'contable@elitemoda.com',
-            'password' => Hash::make('contable1234'),
+            'password' => Hash::make('EliteModaCONTABLE'),
             'rol_id'   => $rolContable?->id,
             'estado'   => true,
         ]);

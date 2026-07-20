@@ -10,25 +10,14 @@ class SucursalSeeder extends Seeder
     public function run(): void
     {
         $sucursal = Sucursal::create([
-            'nombre'       => 'Sucursal Principal',
-            'direccion'    => 'Av. Winston Churchill, Santo Domingo',
-            'telefono'     => '8095550001',
+            'nombre'       => 'Elite Moda', // ← ajustar con nombre real
+            'direccion'    => 'Avenida José Horacio Rodríguez, La Vega', // ← confirmar dirección real
+            'telefono'     => '8095732400', // ← confirmar teléfono real
             'es_principal' => true,
             'estado'       => true,
         ]);
 
         $sucursal->codigo = 'SUC-' . str_pad($sucursal->id, 3, '0', STR_PAD_LEFT);
         $sucursal->save();
-
-        $sucursal2 = Sucursal::create([
-            'nombre'       => 'Sucursal Norte',
-            'direccion'    => 'Av. Hermanas Mirabal, Santiago',
-            'telefono'     => '8095550002',
-            'es_principal' => false,
-            'estado'       => true,
-        ]);
-
-        $sucursal2->codigo = 'SUC-' . str_pad($sucursal2->id, 3, '0', STR_PAD_LEFT);
-        $sucursal2->save();
     }
 }
