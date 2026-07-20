@@ -60,7 +60,7 @@
         <div class="em-navbar-user-wrap" style="position:relative;">
             <div class="em-navbar-user" id="navbarUserBtn" role="button" tabindex="0" aria-expanded="false">
                 <div class="em-navbar-user__avatar">
-                    {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 1)) }}
+                    {{ mb_strtoupper(mb_substr(Auth::user()->name ?? 'U', 0, 1), 'UTF-8') }}
                 </div>
                 <span class="em-navbar-user__name d-none d-md-inline">
                     {{ Auth::user()->name ?? 'Usuario' }}
