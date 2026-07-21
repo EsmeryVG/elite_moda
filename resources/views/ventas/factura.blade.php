@@ -275,15 +275,21 @@
 </head>
 
 <body>
+    @php
+        $negocioNombre = $config['negocio_nombre'] ?? null;
+        $negocioRnc = $config['negocio_rnc'] ?? null;
+        $itbisConfig = $config['itbis_porcentaje'] ?? null;
+        $mensajePie = $config['factura_mensaje_pie'] ?? null;
+        $negocioEmail = $config['negocio_email'] ?? null;
+    @endphp
     <div class="no-print" style="margin-bottom:8px;">
         <button class="btn-imprimir" onclick="window.print()">
             🖨️ Imprimir factura
         </button>
     </div>
-
     {{-- ── Encabezado ── --}}
     <div class="negocio-nombre">
-        {{ mb_strtoupper($config['negocio_nombre']?->valor ?? 'Elite Moda', 'UTF-8') }}
+        {{ mb_strtoupper($negocioNombre?->valor ?? 'Elite Moda', 'UTF-8') }}
     </div>
     @if ($venta->almacen?->sucursal?->nombre)
         <div class="negocio-info">{{ $venta->almacen->sucursal->nombre }}</div>
@@ -294,36 +300,31 @@
     @if ($venta->almacen?->sucursal?->telefono)
         <div class="negocio-info">Tel: {{ $venta->almacen->sucursal->telefono }}</div>
     @endif
-    @if ($config['negocio_rnc']?->valor)
-        <div class="negocio-rnc">RNC: {{ $config['negocio_rnc']->valor }}</div>
+    @if ($negocioRnc?->valor)
+        <div class="negocio-rnc">RNC: {{ $negocioRnc->valor }}</div>
     @endif
-
     <div class="tipo-factura-banner">
         {{ mb_strtoupper($venta->comprobanteFiscal?->tipo_comprobante ?? 'Factura de Consumo', 'UTF-8') }}
     </div>
-
     {{-- ── Datos de la transacción ── --}}
     <div class="datos-transaccion">
         <span>{{ $venta->fecha->format('d/m/Y') }}</span>
         <span>{{ $venta->fecha->format('H:i:s') }}</span>
     </div>
     <div class="ncf-numero">NCF: {{ $venta->ncf }}</div>
-
     <hr class="solid">
-
     {{-- ── Columnas de productos ── --}}
     <div class="col-header">
         <span class="col-desc">Descripción</span>
         <span class="col-itbis">Itbis</span>
         <span class="col-valor">Valor</span>
     </div>
-
     @foreach ($venta->detalles as $detalle)
         @php
             $precioConDescuento = $detalle->subtotal / $detalle->cantidad;
             $itbisLinea = 0;
             if ($detalle->itbis_aplicado) {
-                $base = $detalle->subtotal / (1 + ($config['itbis_porcentaje']?->valor ?? 18) / 100);
+                $base = $detalle->subtotal / (1 + ($itbisConfig?->valor ?? 18) / 100);
                 $itbisLinea = $detalle->subtotal - $base;
             }
             $atributos = $detalle->variante?->valores
@@ -354,9 +355,7 @@
             @endif
         </div>
     @endforeach
-
     <hr class="solid">
-
     {{-- ── Totales ── --}}
     <div class="total-row">
         <span>Subtotal</span>
@@ -369,16 +368,14 @@
         </div>
     @endif
     <div class="total-row">
-        <span>ITBIS ({{ $config['itbis_porcentaje']?->valor ?? '18' }}%)</span>
+        <span>ITBIS ({{ $itbisConfig?->valor ?? '18' }}%)</span>
         <span>{{ number_format($venta->impuesto, 2) }}</span>
     </div>
     <div class="total-row grand">
         <span>Total a pagar</span>
         <span>RD$ {{ number_format($venta->total, 2) }}</span>
     </div>
-
     <hr>
-
     {{-- ── Pagos ── --}}
     @foreach ($venta->pagos as $pago)
         <div class="total-row pago">
@@ -393,7 +390,6 @@
             <span>{{ number_format($cambio, 2) }}</span>
         </div>
     @endif
-
     {{-- ── Info del cliente ── --}}
     <div class="cliente-box">
         @if (!$venta->cliente?->es_default)
@@ -413,25 +409,19 @@
             Cajero: {{ $venta->usuario?->name ?? '—' }}
         </div>
     </div>
-
     <hr>
-
     {{-- ── Código representativo del NCF ── --}}
     <div class="barcode-area">
         <div class="barcode-numero">{{ $venta->ncf }}</div>
     </div>
-
     <hr>
-
     {{-- ── Mensaje pie ── --}}
     <div class="mensaje-pie">
-        {{ $config['factura_mensaje_pie']?->valor ?? '¡Gracias por su compra!' }}
+        {{ $mensajePie?->valor ?? '¡Gracias por su compra!' }}
     </div>
-    @if ($config['negocio_email']?->valor)
-        <div class="mensaje-sub">{{ $config['negocio_email']->valor }}</div>
+    @if ($negocioEmail?->valor)
+        <div class="mensaje-sub">{{ $negocioEmail->valor }}</div>
     @endif
-
-
 </body>
 
 </html>
