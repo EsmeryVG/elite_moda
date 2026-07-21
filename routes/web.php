@@ -234,6 +234,7 @@ Route::middleware('permiso:productos.gestionar')->group(function () {
         Route::post('proveedores', [ProveedorController::class, 'store'])->name('proveedores.store');
         Route::get('proveedores/{proveedor}/edit', [ProveedorController::class, 'edit'])->name('proveedores.edit');
         Route::put('proveedores/{proveedor}', [ProveedorController::class, 'update'])->name('proveedores.update');
+        Route::delete('proveedores/{proveedor}', [ProveedorController::class, 'destroy'])->name('proveedores.destroy');
         Route::patch('proveedores/{proveedor}/reactivar', [ProveedorController::class, 'reactivar'])->name('proveedores.reactivar');
     });
     // Wildcards {id} de compras — SIEMPRE al final del módulo
