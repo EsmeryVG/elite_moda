@@ -50,7 +50,7 @@
 
             {{-- Lista de atributos (AJAX) --}}
             <div id="listaAtributos" data-url="{{ route('atributos.index') }}">
-                @include('atributos._lista')
+                @include('atributos._tabla')
             </div>
 
         </div>
