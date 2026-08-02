@@ -3,84 +3,112 @@
    ===================================================== */
 
 const OrdenesCompraModule = (function () {
+    const csrfToken = document.querySelector(
+        'meta[name="csrf-token"]',
+    )?.content;
+    const baseUrl = document.getElementById("tablaContainer")?.dataset.url;
+    const itbisPorcentaje = parseFloat(
+        document.getElementById("itbisPorcentajeData")?.value ?? 18,
+    );
 
-    const csrfToken       = document.querySelector('meta[name="csrf-token"]')?.content;
-    const baseUrl         = document.getElementById('tablaContainer')?.dataset.url;
-    const itbisPorcentaje = parseFloat(document.getElementById('itbisPorcentajeData')?.value ?? 18);
-
-    let buscarTimeout   = null;
-    let estadoActual    = new URLSearchParams(window.location.search).get('estado')    ?? '';
-    let proveedorActual = new URLSearchParams(window.location.search).get('proveedor') ?? '';
-    let buscarActual    = new URLSearchParams(window.location.search).get('buscar')    ?? '';
-    let contadorLineas  = 0;
+    let buscarTimeout = null;
+    let estadoActual =
+        new URLSearchParams(window.location.search).get("estado") ?? "";
+    let proveedorActual =
+        new URLSearchParams(window.location.search).get("proveedor") ?? "";
+    let buscarActual =
+        new URLSearchParams(window.location.search).get("buscar") ?? "";
+    let contadorLineas = 0;
 
     // ════════════════════════════════════════════════
     // ÍNDICE — AJAX
     // ════════════════════════════════════════════════
 
     function cargarTabla(params = {}) {
-        const container = document.getElementById('tablaContainer');
+        const container = document.getElementById("tablaContainer");
         if (!container || !baseUrl) return;
 
-        container.classList.add('loading');
+        container.classList.add("loading");
 
         const url = new URL(baseUrl);
-        if (params.buscar)    url.searchParams.set('buscar',    params.buscar);
-        if (params.estado)    url.searchParams.set('estado',    params.estado);
-        if (params.proveedor) url.searchParams.set('proveedor', params.proveedor);
-        if (params.page)      url.searchParams.set('page',      params.page);
+        if (params.buscar) url.searchParams.set("buscar", params.buscar);
+        if (params.estado) url.searchParams.set("estado", params.estado);
+        if (params.proveedor)
+            url.searchParams.set("proveedor", params.proveedor);
+        if (params.page) url.searchParams.set("page", params.page);
 
-        window.history.pushState({}, '', url.toString());
+        window.history.pushState({}, "", url.toString());
 
         fetch(url.toString(), {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-TOKEN': csrfToken,
-            }
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-TOKEN": csrfToken,
+            },
         })
-        .then(res => res.text())
-        .then(html => {
-            container.innerHTML = html;
-            container.classList.remove('loading');
-            bindPaginacion();
-        })
-        .catch(() => container.classList.remove('loading'));
+            .then((res) => res.text())
+            .then((html) => {
+                container.innerHTML = html;
+                container.classList.remove("loading");
+                bindPaginacion();
+            })
+            .catch(() => container.classList.remove("loading"));
     }
 
     function bindPaginacion() {
-        document.querySelectorAll('.ajax-page').forEach(link => {
-            link.addEventListener('click', function (e) {
+        document.querySelectorAll(".ajax-page").forEach((link) => {
+            link.addEventListener("click", function (e) {
                 e.preventDefault();
-                const page = new URL(this.href).searchParams.get('page') ?? 1;
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, proveedor: proveedorActual, page });
+                const page = new URL(this.href).searchParams.get("page") ?? 1;
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    proveedor: proveedorActual,
+                    page,
+                });
             });
         });
     }
 
     function bindFiltros() {
-        document.querySelectorAll('.em-filtro').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.em-filtro').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                estadoActual = this.dataset.estado ?? '';
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, proveedor: proveedorActual });
+        document.querySelectorAll(".em-filtro").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                document
+                    .querySelectorAll(".em-filtro")
+                    .forEach((b) => b.classList.remove("active"));
+                this.classList.add("active");
+                estadoActual = this.dataset.estado ?? "";
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    proveedor: proveedorActual,
+                });
             });
         });
 
-        document.getElementById('filtroProveedor')?.addEventListener('change', function () {
-            proveedorActual = this.value;
-            cargarTabla({ buscar: buscarActual, estado: estadoActual, proveedor: proveedorActual });
-        });
+        document
+            .getElementById("filtroProveedor")
+            ?.addEventListener("change", function () {
+                proveedorActual = this.value;
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    proveedor: proveedorActual,
+                });
+            });
     }
 
     function bindBuscador() {
-        const input = document.getElementById('buscadorOrdenes');
+        const input = document.getElementById("buscadorOrdenes");
         if (!input) return;
-        input.addEventListener('input', function () {
+        input.addEventListener("input", function () {
             clearTimeout(buscarTimeout);
             buscarActual = this.value.trim();
             buscarTimeout = setTimeout(() => {
-                cargarTabla({ buscar: buscarActual, estado: estadoActual, proveedor: proveedorActual });
+                cargarTabla({
+                    buscar: buscarActual,
+                    estado: estadoActual,
+                    proveedor: proveedorActual,
+                });
             }, 400);
         });
     }
@@ -90,23 +118,33 @@ const OrdenesCompraModule = (function () {
     // ════════════════════════════════════════════════
 
     function initFormulario() {
-        if (!document.getElementById('contenedorLineas')) return;
-
-        document.getElementById('btnAgregarLinea')?.addEventListener('click', () => {
-            agregarLinea();
-        });
-
+        const contenedor = document.getElementById("contenedorLineas");
+        if (!contenedor) return;
+        document
+            .getElementById("btnAgregarLinea")
+            ?.addEventListener("click", () => {
+                agregarLinea();
+            });
+        const lineasData = contenedor.dataset.lineas;
+        if (lineasData) {
+            try {
+                const lineas = JSON.parse(lineasData);
+                lineas.forEach((linea) => agregarLinea(linea));
+            } catch (e) {
+                console.error("Error al parsear líneas iniciales:", e);
+            }
+        }
         actualizarTotales();
     }
 
     function agregarLinea(datos = null) {
-        const contenedor = document.getElementById('contenedorLineas');
+        const contenedor = document.getElementById("contenedorLineas");
         if (!contenedor) return;
 
         const idx = contadorLineas++;
 
-        const card = document.createElement('div');
-        card.className   = 'linea-card';
+        const card = document.createElement("div");
+        card.className = "linea-card";
         card.dataset.idx = idx;
 
         card.innerHTML = `
@@ -149,7 +187,7 @@ const OrdenesCompraModule = (function () {
                         <input type="number"
                                name="lineas[${idx}][precio_unitario]"
                                class="form-control linea-precio"
-                               value="${datos?.precio ?? ''}"
+                               value="${datos?.precio ?? ""}"
                                min="0" step="0.01" placeholder="0.00"
                                oninput="OrdenesCompraModule.actualizarSubtotal(${idx})">
                     </div>
@@ -162,7 +200,7 @@ const OrdenesCompraModule = (function () {
                            type="checkbox"
                            name="lineas[${idx}][itbis_incluido]"
                            id="itbis-${idx}" value="1"
-                           ${datos?.itbisIncluido !== false ? 'checked' : ''}
+                           ${datos?.itbisIncluido !== false ? "checked" : ""}
                            onchange="OrdenesCompraModule.actualizarSubtotal(${idx})">
                     <label class="form-check-label" for="itbis-${idx}"
                            style="font-size:12.5px; color:var(--text-secondary);">
@@ -193,29 +231,35 @@ const OrdenesCompraModule = (function () {
         }
     }
 
-    function initTomSelectVariante(idx, valorInicial = null, textoInicial = null) {
+    function initTomSelectVariante(
+        idx,
+        valorInicial = null,
+        textoInicial = null,
+    ) {
         const el = document.getElementById(`selectVariante-${idx}`);
-        if (!el || typeof TomSelect === 'undefined') return;
+        if (!el || typeof TomSelect === "undefined") return;
 
         const ts = new TomSelect(el, {
-            valueField:  'id',
-            labelField:  'texto',
-            searchField: ['texto', 'codigo'],
-            placeholder: 'Buscar por nombre, código o código de barras...',
+            valueField: "id",
+            labelField: "texto",
+            searchField: ["texto", "codigo"],
+            placeholder: "Buscar por nombre, código o código de barras...",
             load(query, callback) {
                 if (query.length < 2) return callback();
                 fetch(`/api/variantes/buscar?q=${encodeURIComponent(query)}`, {
-                    headers: { 'X-CSRF-TOKEN': csrfToken }
+                    headers: { "X-CSRF-TOKEN": csrfToken },
                 })
-                .then(r => r.json())
-                .then(data => callback(data))
-                .catch(() => callback());
+                    .then((r) => r.json())
+                    .then((data) => callback(data))
+                    .catch(() => callback());
             },
             onChange(value) {
                 const item = ts.options[value];
                 if (item?.precio) {
-                    const card  = document.querySelector(`.linea-card[data-idx="${idx}"]`);
-                    const input = card?.querySelector('.linea-precio');
+                    const card = document.querySelector(
+                        `.linea-card[data-idx="${idx}"]`,
+                    );
+                    const input = card?.querySelector(".linea-precio");
                     if (input && !input.value) {
                         input.value = item.precio;
                         actualizarSubtotal(idx);
@@ -243,7 +287,7 @@ const OrdenesCompraModule = (function () {
         });
 
         if (valorInicial && textoInicial) {
-            ts.addOption({ id: valorInicial, texto: textoInicial, codigo: '' });
+            ts.addOption({ id: valorInicial, texto: textoInicial, codigo: "" });
             ts.setValue(valorInicial);
         }
     }
@@ -257,16 +301,20 @@ const OrdenesCompraModule = (function () {
         const card = document.querySelector(`.linea-card[data-idx="${idx}"]`);
         if (!card) return;
 
-        const cantidad = parseFloat(card.querySelector('.linea-cantidad')?.value) || 0;
-        const precio   = parseFloat(card.querySelector('.linea-precio')?.value)   || 0;
+        const cantidad =
+            parseFloat(card.querySelector(".linea-cantidad")?.value) || 0;
+        const precio =
+            parseFloat(card.querySelector(".linea-precio")?.value) || 0;
         const subtotal = cantidad * precio;
 
         const span = card.querySelector(`.linea-subtotal[data-idx="${idx}"]`);
         if (span) {
-            span.textContent = 'RD$ ' + subtotal.toLocaleString('es-DO', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            });
+            span.textContent =
+                "RD$ " +
+                subtotal.toLocaleString("es-DO", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
         }
 
         actualizarTotales();
@@ -274,12 +322,15 @@ const OrdenesCompraModule = (function () {
 
     function actualizarTotales() {
         let subtotalSinItbis = 0;
-        let impuestoTotal    = 0;
+        let impuestoTotal = 0;
 
-        document.querySelectorAll('.linea-card').forEach(card => {
-            const cantidad      = parseFloat(card.querySelector('.linea-cantidad')?.value) || 0;
-            const precio        = parseFloat(card.querySelector('.linea-precio')?.value)   || 0;
-            const itbisIncluido = card.querySelector('.linea-itbis')?.checked ?? false;
+        document.querySelectorAll(".linea-card").forEach((card) => {
+            const cantidad =
+                parseFloat(card.querySelector(".linea-cantidad")?.value) || 0;
+            const precio =
+                parseFloat(card.querySelector(".linea-precio")?.value) || 0;
+            const itbisIncluido =
+                card.querySelector(".linea-itbis")?.checked ?? false;
 
             const lineaTotal = cantidad * precio;
 
@@ -287,7 +338,7 @@ const OrdenesCompraModule = (function () {
                 const precioBase = precio / (1 + itbisPorcentaje / 100);
                 const itbisLinea = (precio - precioBase) * cantidad;
                 subtotalSinItbis += lineaTotal - itbisLinea;
-                impuestoTotal    += itbisLinea;
+                impuestoTotal += itbisLinea;
             } else {
                 subtotalSinItbis += lineaTotal;
             }
@@ -295,18 +346,20 @@ const OrdenesCompraModule = (function () {
 
         const total = subtotalSinItbis + impuestoTotal;
 
-        const fmt = val => 'RD$ ' + val.toLocaleString('es-DO', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-        });
+        const fmt = (val) =>
+            "RD$ " +
+            val.toLocaleString("es-DO", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
 
-        const elSubtotal = document.getElementById('resumenSubtotal');
-        const elImpuesto = document.getElementById('resumenImpuesto');
-        const elTotal    = document.getElementById('resumenTotal');
+        const elSubtotal = document.getElementById("resumenSubtotal");
+        const elImpuesto = document.getElementById("resumenImpuesto");
+        const elTotal = document.getElementById("resumenTotal");
 
         if (elSubtotal) elSubtotal.textContent = fmt(subtotalSinItbis);
         if (elImpuesto) elImpuesto.textContent = fmt(impuestoTotal);
-        if (elTotal)    elTotal.textContent    = fmt(total);
+        if (elTotal) elTotal.textContent = fmt(total);
     }
 
     // ════════════════════════════════════════════════
@@ -327,8 +380,7 @@ const OrdenesCompraModule = (function () {
         actualizarSubtotal,
         actualizarTotales,
     };
-
 })();
 
 window.OrdenesCompraModule = OrdenesCompraModule;
-document.addEventListener('DOMContentLoaded', () => OrdenesCompraModule.init());
+document.addEventListener("DOMContentLoaded", () => OrdenesCompraModule.init());
