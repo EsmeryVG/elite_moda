@@ -31,12 +31,19 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-3" id="wrapperEmpleado">
                             <label class="form-label">
-                                Empleado que atiende <span style="color:var(--accent);">*</span>
+                                Empleado que atiende
+                                @unless ($esAdmin)
+                                    <span style="color:var(--accent);">*</span>
+                                @endunless
                             </label>
                             <select id="selectEmpleado" name="empleado_id" placeholder="Buscar empleado..."
-                                required></select>
+                                {{ $esAdmin ? '' : 'required' }} data-es-admin="{{ $esAdmin ? '1' : '0' }}"></select>
+                            @if ($esAdmin)
+                                <small class="text-muted">Opcional — si no seleccionas empleado, quedará registrado a tu
+                                    nombre como administrador.</small>
+                            @endif
                             @error('empleado_id')
                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                             @enderror

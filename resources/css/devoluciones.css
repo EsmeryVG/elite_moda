@@ -1,7 +1,6 @@
 /* =====================================================
    Devoluciones — Estilos del módulo
    ===================================================== */
-
 .em-filtro {
     background: transparent;
     border: 1px solid var(--border);
@@ -12,19 +11,16 @@
     transition: all 0.2s ease;
     cursor: pointer;
 }
-
 .em-filtro:hover {
     background: var(--bg-hover);
     color: var(--text-primary);
     border-color: #c4c9d1;
 }
-
 .em-filtro.active {
     background: #1f2125;
     border-color: #1f2125;
     color: #ffffff;
 }
-
 .em-pagination .page-link {
     background: transparent;
     border: 1px solid var(--border);
@@ -33,25 +29,21 @@
     padding: 5px 11px;
     transition: all 0.2s ease;
 }
-
 .em-pagination .page-link:hover {
     background: var(--bg-hover);
     color: var(--text-primary);
     border-color: #c4c9d1;
 }
-
 .em-pagination .page-item.active .page-link {
     background: #1f2125;
     border-color: #1f2125;
     color: #ffffff;
 }
-
 .em-pagination .page-item.disabled .page-link {
     color: var(--text-muted);
     background: transparent;
     border-color: var(--border);
 }
-
 #tablaContainer.loading {
     opacity: 0.5;
     pointer-events: none;
@@ -59,50 +51,89 @@
 }
 
 /* ── Badges de estado de devolución ────────────────── */
-.badge-devolucion-pendiente {
-    background: rgba(255, 152, 0, 0.12);
-    color: #e65100;
+.badge-devolucion-pendiente,
+.badge-devolucion-aprobada,
+.badge-devolucion-vencida {
     font-size: 11px;
-    padding: 3px 10px;
+    padding: 3px 10px 3px 8px;
     border-radius: 20px;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
-
+.badge-devolucion-pendiente::before,
+.badge-devolucion-aprobada::before,
+.badge-devolucion-vencida::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.badge-devolucion-pendiente {
+    background: rgba(255, 193, 7, 0.15);
+    color: #b45309;
+}
+.badge-devolucion-pendiente::before {
+    background: #eab308;
+}
 .badge-devolucion-aprobada {
     background: rgba(76, 175, 80, 0.12);
     color: #2e7d32;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
+}
+.badge-devolucion-aprobada::before {
+    background: #2e7d32;
+}
+.badge-devolucion-vencida {
+    background: rgba(211, 47, 47, 0.12);
+    color: #c62828;
+}
+.badge-devolucion-vencida::before {
+    background: #c62828;
 }
 
 /* ── Badges de condición por línea ─────────────────── */
-.badge-condicion-pendiente {
-    background: rgba(158, 158, 158, 0.12);
-    color: #616161;
+.badge-condicion-pendiente,
+.badge-condicion-conforme,
+.badge-condicion-no_conforme {
     font-size: 11px;
-    padding: 3px 10px;
+    padding: 3px 10px 3px 8px;
     border-radius: 20px;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
-
+.badge-condicion-pendiente::before,
+.badge-condicion-conforme::before,
+.badge-condicion-no_conforme::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.badge-condicion-pendiente {
+    background: rgba(158, 158, 158, 0.15);
+    color: #757575;
+}
+.badge-condicion-pendiente::before {
+    background: #9e9e9e;
+}
 .badge-condicion-conforme {
     background: rgba(76, 175, 80, 0.12);
     color: #2e7d32;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
 }
-
+.badge-condicion-conforme::before {
+    background: #2e7d32;
+}
 .badge-condicion-no_conforme {
     background: rgba(211, 47, 47, 0.1);
-    color: var(--accent);
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
+    color: #c62828;
+}
+.badge-condicion-no_conforme::before {
+    background: #c62828;
 }
 
 /* ── Nota de crédito ────────────────────────────────── */
@@ -122,11 +153,9 @@
     margin-bottom: 12px;
     transition: border-color 0.2s ease;
 }
-
 .linea-devolucion-card.linea-activa {
     border-color: var(--accent);
 }
-
 .linea-devolucion-body {
     display: grid;
     grid-template-columns: 1fr 100px 160px;
@@ -134,7 +163,6 @@
     align-items: end;
     margin-top: 10px;
 }
-
 .linea-devolucion-disponible {
     font-size: 11.5px;
     color: var(--text-muted);
@@ -156,22 +184,6 @@
     font-size: 12px;
     line-height: 1;
 }
-
 .btn-inspeccionar i {
     font-size: 12px;
-}
-
-.badge-devolucion-vencida {
-    background: rgba(211, 47, 47, 0.12);
-    color: #c62828;
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-weight: 500;
-}
-
-.btn-accion-inline {
-    width: auto;
-    padding: 5px 12px;
-    display: inline-flex;
 }
