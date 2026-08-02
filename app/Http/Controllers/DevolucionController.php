@@ -56,33 +56,33 @@ class DevolucionController extends Controller
     public function create(Venta $venta)
     {
         abort_unless($venta->estado === 'completada', 404);
+        abort_if($venta->cliente?->es_default, 422, 'No se pueden procesar devoluciones de ventas a Consumidor Final. La venta debe estar asociada a un cliente registrado.');
+
+        $esAdmin = Auth::user()->esAdministrador();
 
         $diasLimite = (int) Configuracion::get('devolucion_dias_limite', 30);
         $diasTranscurridos = (int) $venta->fecha->diffInDays(now());
         $fueraDeTiempo = $diasTranscurridos > $diasLimite;
-
         $lineas = $venta->detalles->map(function ($detalle) {
             $yaDevuelto = DetalleDevolucion::where('detalle_venta_id', $detalle->id)->sum('cantidad');
-
             return [
                 'detalle_venta_id' => $detalle->id,
                 'variante' => $detalle->variante,
                 'cantidad_original' => $detalle->cantidad,
                 'cantidad_devuelta' => $yaDevuelto,
                 'cantidad_disponible' => $detalle->cantidad - $yaDevuelto,
-                'precio_unitario' => $detalle->precio_unitario, // incluye ITBIS
+                'precio_unitario' => $detalle->precio_unitario,
                 'permite_devolucion' => $detalle->variante->producto->permite_devolucion,
             ];
         })->filter(fn ($l) => $l['cantidad_disponible'] > 0 && $l['permite_devolucion']);
-
-        return view('devoluciones.create', compact('venta', 'lineas', 'fueraDeTiempo', 'diasTranscurridos', 'diasLimite'));
+        return view('devoluciones.create', compact('venta', 'lineas', 'fueraDeTiempo', 'diasTranscurridos', 'diasLimite', 'esAdmin'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'venta_id' => 'required|exists:ventas,id',
-            'empleado_id' => 'required|exists:empleados,id',
+            'empleado_id' => Auth::user()->esAdministrador() ? 'nullable|exists:empleados,id' : 'required|exists:empleados,id',
             'admin_password' => 'nullable|string',
             'lineas' => 'required|array|min:1',
             'lineas.*.detalle_venta_id' => 'required|exists:detalle_ventas,id',
@@ -91,6 +91,7 @@ class DevolucionController extends Controller
         ]);
 
         $venta = Venta::with('detalles.variante.producto', 'cliente')->findOrFail($validated['venta_id']);
+        abort_if($venta->cliente?->es_default, 422, 'No se pueden procesar devoluciones de ventas a Consumidor Final.');
 
         $diasLimite = (int) Configuracion::get('devolucion_dias_limite', 30);
         $diasTranscurridos = (int) $venta->fecha->diffInDays(now());
@@ -141,9 +142,14 @@ class DevolucionController extends Controller
             }
         }
 
-        $empleado = Empleado::where('id', $validated['empleado_id'])->where('estado', true)->first();
-        abort_unless($empleado, 422, 'El empleado seleccionado no está activo.');
-        $empleadoId = $empleado->id;
+        $empleadoId = null;
+        if (!empty($validated['empleado_id'])) {
+            $empleado = Empleado::where('id', $validated['empleado_id'])->where('estado', true)->first();
+            abort_unless($empleado, 422, 'El empleado seleccionado no está activo.');
+            $empleadoId = $empleado->id;
+        } elseif (!Auth::user()->esAdministrador()) {
+            abort(422, 'Debes seleccionar el empleado que atiende.');
+        }
 
         $itbisPorcentaje = (float) Configuracion::get('itbis_porcentaje', 18);
 

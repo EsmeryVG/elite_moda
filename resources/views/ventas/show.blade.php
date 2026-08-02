@@ -133,7 +133,7 @@
                                     <th style="text-align:center; width:70px;">Cant.</th>
                                     <th style="text-align:right; width:100px;">Precio</th>
                                     <th style="text-align:right; width:100px;">Descuento</th>
-                                    <th style="width:60px;">ITBIS</th>
+                                    <th style="width:70px; text-align:center;">ITBIS</th>
                                     <th style="text-align:right; width:110px;">Subtotal</th>
                                 </tr>
                             </thead>
@@ -166,7 +166,7 @@
                                                 —
                                             @endif
                                         </td>
-                                        <td>
+                                        <td style="text-align:center;">
                                             @if ($detalle->itbis_aplicado)
                                                 <span style="color:#2e7d32; font-size:12px;">● Sí</span>
                                             @else

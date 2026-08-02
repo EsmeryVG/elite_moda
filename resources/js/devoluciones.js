@@ -113,9 +113,9 @@ const DevolucionesModule = (function () {
             });
 
         form.addEventListener("submit", function (e) {
-            const empleadoSeleccionado =
-                document.getElementById("selectEmpleado")?.value;
-            if (!empleadoSeleccionado) {
+            const selectEmpleado = document.getElementById("selectEmpleado");
+            const esAdmin = selectEmpleado?.dataset.esAdmin === "1";
+            if (!esAdmin && !selectEmpleado?.value) {
                 e.preventDefault();
                 alert(
                     "Debes seleccionar el empleado que atiende la devolución.",
