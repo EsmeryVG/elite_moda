@@ -56,7 +56,11 @@ class DevolucionController extends Controller
     public function create(Venta $venta)
     {
         abort_unless($venta->estado === 'completada', 404);
-        abort_if($venta->cliente?->es_default, 422, 'No se pueden procesar devoluciones de ventas a Consumidor Final. La venta debe estar asociada a un cliente registrado.');
+
+    if ($venta->cliente?->es_default) {
+        return redirect()->route('ventas.show', $venta)
+            ->with('error', 'No se pueden procesar devoluciones de ventas a Consumidor Final. La venta debe estar asociada a un cliente registrado.');
+    }
 
         $esAdmin = Auth::user()->esAdministrador();
 
@@ -91,7 +95,11 @@ class DevolucionController extends Controller
         ]);
 
         $venta = Venta::with('detalles.variante.producto', 'cliente')->findOrFail($validated['venta_id']);
-        abort_if($venta->cliente?->es_default, 422, 'No se pueden procesar devoluciones de ventas a Consumidor Final.');
+
+        if ($venta->cliente?->es_default) {
+            return redirect()->route('ventas.show', $venta)
+                ->with('error', 'No se pueden procesar devoluciones de ventas a Consumidor Final.');
+        }
 
         $diasLimite = (int) Configuracion::get('devolucion_dias_limite', 30);
         $diasTranscurridos = (int) $venta->fecha->diffInDays(now());
