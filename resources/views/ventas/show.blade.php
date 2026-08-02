@@ -96,7 +96,7 @@
                             <i class="bi bi-printer"></i> Reimprimir factura
                         </a>
                         @permiso('devoluciones.gestionar')
-                            @if ($venta->estado === 'completada')
+                            @if ($venta->estado === 'completada' && !$venta->cliente?->es_default)
                                 <a href="{{ route('devoluciones.create', $venta) }}"
                                     class="btn-accion btn-accion-warning justify-content-center">
                                     <i class="bi bi-arrow-return-left"></i> Devolver productos
