@@ -86,6 +86,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ── Preservar scroll del sidebar entre navegaciones ──
+    const sidebarNav = document.querySelector(".em-sidebar__nav");
+    if (sidebarNav) {
+        const posicionGuardada = sessionStorage.getItem("sidebarScrollPos");
+        if (posicionGuardada !== null) {
+            sidebarNav.scrollTop = parseInt(posicionGuardada, 10);
+        }
+        sidebarNav.addEventListener("scroll", function () {
+            sessionStorage.setItem("sidebarScrollPos", sidebarNav.scrollTop);
+        });
+    }
+
     // ════════════════════════════════════════════════
     // GRÁFICOS DEL DASHBOARD (solo si existen en la página)
     // ════════════════════════════════════════════════
