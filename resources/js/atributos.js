@@ -39,6 +39,9 @@ const AtributosModule = (function () {
                 container.innerHTML = html;
                 container.classList.remove("loading");
                 bindPaginacion();
+                bindExpandir();
+                bindModalAtributo();
+                bindModalValor();
             })
             .catch(() => container.classList.remove("loading"));
     }
