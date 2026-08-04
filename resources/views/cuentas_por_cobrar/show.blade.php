@@ -33,7 +33,8 @@
                         <span class="field-label">Venta de origen</span>
                         <div class="field-readonly">
                             @if ($cuentaPorCobrar->venta)
-                                href="{{ route('ventas.show', $cuentaPorCobrar->venta) }}">{{ $cuentaPorCobrar->venta->codigo }}</a>
+                                <a
+                                    href="{{ route('ventas.show', $cuentaPorCobrar->venta) }}">{{ $cuentaPorCobrar->venta->codigo }}</a>
                             @else
                                 —
                             @endif
