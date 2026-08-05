@@ -1,139 +1,88 @@
 # Elite Moda
-### Esmery Vásquez, Hugo Concepción y Colsen Charité
 
-Sistema web desarrollado con **Laravel** y **Vite**, diseñado para la gestión de una tienda de moda.
+Sistema integral de gestión comercial (punto de venta, inventario, compras, clientes y finanzas) desarrollado para una tienda de ropa. Proyecto integrador académico desarrollado bajo metodología Scrum.
 
----
+## Descripción
+
+Elite Moda cubre el ciclo operativo completo de una tienda de retail: catálogo e inventario con variantes de producto, compras a proveedores, ventas en punto de venta (TPV) con soporte de pagos combinados, devoluciones respaldadas por Notas de Crédito, gestión de clientes y crédito, control de caja, gastos, y reportes gerenciales.
+
+## Stack Tecnológico
+
+| Componente | Tecnología |
+|---|---|
+| Backend | Laravel 13 (PHP 8.3) |
+| Base de datos | MySQL 8.0 |
+| Frontend | Blade + Bootstrap 5 |
+| Build de assets | Vite |
+| Gráficos | Chart.js |
+| Selects dinámicos | Tom Select |
+| Contenedores | Docker Compose (PHP-FPM, Nginx, MySQL) |
+| Infraestructura | AWS EC2 (Ubuntu) |
+
+## Módulos Principales
+
+- **Catálogo:** categorías, atributos flexibles (talla, color, etc.), productos y variantes, descuentos
+- **Inventario:** stock por almacén, movimientos, ajustes con flujo de aprobación
+- **Compras:** proveedores, órdenes de compra, recepciones de mercancía
+- **Ventas:** punto de venta (TPV), pagos combinados, factura térmica 80mm, comprobantes fiscales
+- **Devoluciones:** flujo completo con inspección por línea y generación automática de Nota de Crédito
+- **Clientes:** gestión de clientes, grupos, sistema de crédito
+- **Cuentas por Cobrar:** seguimiento de ventas a crédito y registro de abonos
+- **Caja:** apertura/cierre de sesión, cuadre diario, caja chica
+- **Gastos:** gastos variables y fijos recurrentes
+- **Personal:** gestión de empleados
+- **Reportes:** ventas, inventario, compras, crédito y cobros, con exportación a CSV y PDF
+- **Administración:** usuarios, roles y permisos granulares, sucursales, configuración general
 
 ## Requisitos Previos
 
-Antes de comenzar, asegúrate de tener instalado lo siguiente:
+- PHP >= 8.3
+- Composer
+- Node.js y npm
+- MySQL 8.0
+- Extensión PHP: `pdo_mysql`, `mbstring`, `openssl`, `gd`, `curl`, `fileinfo`, `zip`
 
-- [PHP >= 8.1](https://www.php.net/)
-- [Composer](https://getcomposer.org/)
-- [Node.js & NPM](https://nodejs.org/)
-- [XAMPP](https://www.apachefriends.org/) (Apache + MySQL)
-- [VS Code](https://code.visualstudio.com/) *(recomendado)*
-
----
-
-## Instalación y Configuración
-
-### 1. Clonar el Repositorio
+## Instalación Local
 
 ```bash
+# Clonar el repositorio
 git clone https://github.com/EsmeryVG/elite_moda.git
-cd elite-moda
-```
+cd elite_moda
 
----
-
-### 2. Instalar Dependencias
-
-Instala los paquetes de PHP y las librerías de Frontend:
-
-```bash
+# Instalar dependencias de PHP
 composer install
+
+# Instalar dependencias de Node
 npm install
-```
 
----
-
-### 3. Configurar Variables de Entorno
-
-Copia el archivo de ejemplo y genera la clave de seguridad de la aplicación:
-
-```bash
+# Configurar variables de entorno
 cp .env.example .env
 php artisan key:generate
 ```
 
----
+Edita el archivo `.env` con los datos de tu conexión local a MySQL.
 
-### 4. Configuración de Base de Datos
-
-1. Abre **XAMPP** e inicia los servicios de **Apache** y **MySQL**.
-2. Entra a [phpMyAdmin](http://localhost/phpmyadmin) y crea una base de datos llamada `elite_moda`.
-3. Abre el archivo `.env` en VS Code y verifica que los datos de conexión coincidan:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=elite_moda
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-> En XAMPP, la contraseña de MySQL es **vacía** por defecto.
-
----
-
-### 5. Ejecutar Migraciones
-
-Crea la estructura inicial de tablas en la base de datos:
 
 ```bash
-php artisan migrate
-```
+# Ejecutar migraciones y seeders
+php artisan migrate --seed
 
----
+# Compilar assets de frontend
+npm run build
+# o, para desarrollo con recarga en caliente:
+npm run dev
 
-## Ejecución del Proyecto
-
-Para trabajar en el proyecto, debes mantener **dos terminales abiertas** de forma simultánea:
-
-**Terminal 1 — Servidor Laravel:**
-
-```bash
+# Levantar el servidor de desarrollo
 php artisan serve
 ```
 
-**Terminal 2 — Compilador Vite (Estilos y JS):**
+El sistema quedará disponible en `http://127.0.0.1:8000`.
 
-```bash
-npm run dev
-```
+## Despliegue en Producción
 
----
+El sistema está preparado para desplegarse mediante Docker Compose, con tres servicios: `app` (PHP-FPM), `nginx` (servidor web) y `mysql` (base de datos).
 
-## Acceso al Sistema
 
-Una vez que ambos servidores estén corriendo, abre tu navegador y visita:
+## Autoría
 
-```
-http://localhost:8000
-```
-
----
-
-## Estructura del Proyecto
-
-```
-elite-moda/
-├── app/            # Lógica de la aplicación (Modelos, Controladores)
-├── database/       # Migraciones y seeders
-├── public/         # Archivos públicos
-├── resources/      # Vistas (Blade), CSS y JS
-├── routes/         # Definición de rutas
-├── .env            # Variables de entorno (no subir al repositorio)
-└── ...
-```
-
----
-
-## Tecnologías Utilizadas
-
-| Tecnología   | Descripción                          |
-|--------------|--------------------------------------|
-| Laravel      | Framework PHP para el backend        |
-| Vite         | Bundler para assets de frontend      |
-| MySQL        | Base de datos relacional             |
-| XAMPP        | Entorno de desarrollo local          |
-| Blade        | Motor de plantillas de Laravel       |
-
----
-
-## Licencia
-
-Este proyecto es de uso académico/personal. Todos los derechos reservados © Elite Moda.
+**Esmery Vásquez García**
