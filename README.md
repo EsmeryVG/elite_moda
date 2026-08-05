@@ -68,8 +68,6 @@ Edita el archivo `.env` con los datos de tu conexión local a MySQL.
 php artisan migrate --seed
 
 # Compilar assets de frontend
-npm run build
-# o, para desarrollo con recarga en caliente:
 npm run dev
 
 # Levantar el servidor de desarrollo
@@ -86,3 +84,4 @@ El sistema está preparado para desplegarse mediante Docker Compose, con tres se
 ## Autoría
 
 **Esmery Vásquez García**
+Escuela en Ingeniería en Computación y Telecomunicaciones
